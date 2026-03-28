@@ -1232,6 +1232,7 @@ if (window.Telegram && window.Telegram.WebApp) {
 
 // ─── NAVIGATION ───
 function switchTab(tab, btn) {
+  loadAllData();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + tab).classList.add('active');
@@ -1524,6 +1525,26 @@ function updateStats(d) {
 }
 
 function updateTrades(d) {
+    // Stats globales
+    const wr = document.getElementById("iaWinRate");
+    if (wr) { wr.textContent = d.win_rate + "%"; wr.className = "metric-value " + (d.win_rate > 50 ? "up" : "down"); }
+    const rec = document.getElementById("iaRecommendation");
+    if (rec) rec.textContent = d.recommendation;
+    const tot = document.getElementById("iaTotalTrades");
+    if (tot) tot.textContent = d.total;
+    // Portfolio stats
+    const pw = document.getElementById("portWinRate");
+    if (pw) pw.textContent = d.win_rate + "%";
+    const pwl = document.getElementById("portWinLoss");
+    if (pwl) pwl.textContent = (d.total - Math.round(d.total * (1 - d.win_rate/100))) + "W / " + Math.round(d.total * (1 - d.win_rate/100)) + "L";
+    const pp = document.getElementById("portPnl");
+    if (pp) { pp.textContent = (d.total_profit_sol >= 0 ? "+" : "") + d.total_profit_sol.toFixed(4); pp.className = "metric-value " + (d.total_profit_sol >= 0 ? "up" : "down"); }
+    const hp = document.getElementById("homePnl");
+    if (hp) { hp.textContent = (d.total_profit_sol >= 0 ? "+" : "") + d.total_profit_sol.toFixed(4); hp.className = d.total_profit_sol >= 0 ? "up" : "down"; }
+    const hw = document.getElementById("homeWinRate");
+    if (hw) hw.textContent = d.win_rate + "%";
+    const ht = document.getElementById("homeTrades");
+    if (ht) ht.textContent = d.total;
     document.getElementById("iaWinRate").textContent = d.win_rate + "%";
     document.getElementById("iaWinRate").className = "metric-value " + (d.win_rate > 50 ? "up" : "down");
     document.getElementById("iaRecommendation").textContent = d.recommendation;
