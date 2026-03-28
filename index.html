@@ -1390,5 +1390,180 @@ window.addEventListener('DOMContentLoaded', () => {
   setInterval(updateLiveData, 5000);
 });
 </script>
+<script>
+const ORACLE_API = "https://triform-dollie-sonic.ngrok-free.dev";
+
+async function fetchAPI(endpoint) {
+    try {
+        const r = await fetch(ORACLE_API + endpoint, {
+            headers: {"ngrok-skip-browser-warning": "true"}
+        });
+        return await r.json();
+    } catch(e) {
+        console.error("API Error:", e);
+        return null;
+    }
+}
+
+async function loadAllData() {
+    const [status, market, portfolio, stats, trades] = await Promise.all([
+        fetchAPI("/api/status"),
+        fetchAPI("/api/market"),
+        fetchAPI("/api/portfolio"),
+        fetchAPI("/api/stats"),
+        fetchAPI("/api/trades"),
+    ]);
+
+    if (status) updateStatus(status);
+    if (market) updateMarket(market);
+    if (portfolio) updatePortfolio(portfolio);
+    if (stats) updateStats(stats);
+    if (trades) updateTrades(trades);
+}
+
+function updateStatus(d) {
+    // Header
+    document.getElementById("statusText").textContent = d.status;
+    document.getElementById("statusDot").style.background = d.status === "ACTIVE" ? "#0ECB81" : "#F6465D";
+    // Home
+    document.getElementById("homeBalance").textContent = d.balance_sol;
+    document.getElementById("homeBalanceUsd").textContent = d.balance_usd;
+    document.getElementById("homeMinScore").textContent = d.min_score + "/100";
+    document.getElementById("homeFocus").textContent = d.focus;
+    document.getElementById("regimeBadge").textContent = d.regime;
+    document.getElementById("fgValue").textContent = d.fear_greed;
+    document.getElementById("fgLabel").textContent = d.fear_greed_label;
+    document.getElementById("fgValue2").textContent = d.fear_greed;
+    document.getElementById("fgLabel2").textContent = d.fear_greed_label + " — Opportunité possible";
+    // Regime color
+    const badge = document.getElementById("regimeBadge");
+    badge.className = "pill " + (d.regime === "BULL" ? "pill-green" : d.regime === "BEAR" ? "pill-red" : "pill-gold");
+    // Redraw gauge
+    drawGauge("fearGaugeCanvas", d.fear_greed);
+    drawGauge("fearGaugeCanvas2", d.fear_greed);
+    // Market page
+    document.getElementById("marketRegime").textContent = d.regime;
+    const emojis = {"BULL":"🐂","BEAR":"🐻","SIDEWAYS":"➡️","SIDEWAYS_BULL":"↗️","SIDEWAYS_BEAR":"↘️","VOLATILE":"⚡"};
+    document.getElementById("marketRegimeEmoji").textContent = emojis[d.regime] || "📊";
+    const descs = {
+        "BULL":"Tendance haussière forte — Conditions favorables",
+        "BEAR":"Tendance baissière — Prudence recommandée",
+        "SIDEWAYS":"Marché lateral — Sélectivité requise",
+        "SIDEWAYS_BULL":"Légèrement haussier — Opportunités modérées",
+        "SIDEWAYS_BEAR":"Légèrement baissier — Positions réduites",
+        "VOLATILE":"Haute volatilité — Risque élevé",
+    };
+    document.getElementById("marketRegimeDesc").textContent = descs[d.regime] || "";
+    document.getElementById("stratName").textContent = d.strategy;
+    document.getElementById("stratMinScore").textContent = d.min_score + "/100";
+    document.getElementById("stratFocus").textContent = d.focus;
+    document.getElementById("stratMaxPos").textContent = "0.031 SOL";
+}
+
+function updateMarket(d) {
+    const btcEl = document.getElementById("btcChange");
+    const solEl = document.getElementById("solChange");
+    btcEl.textContent = (d.btc_change_24h > 0 ? "+" : "") + d.btc_change_24h + "%";
+    btcEl.className = "metric-change " + (d.btc_change_24h > 0 ? "up" : "down");
+    solEl.textContent = (d.sol_change_24h > 0 ? "+" : "") + d.sol_change_24h + "%";
+    solEl.className = "metric-change " + (d.sol_change_24h > 0 ? "up" : "down");
+    document.getElementById("mktBtc").textContent = (d.btc_change_24h > 0 ? "+" : "") + d.btc_change_24h + "%";
+    document.getElementById("mktBtc").className = "list-value " + (d.btc_change_24h > 0 ? "up" : "down");
+    document.getElementById("mktSol").textContent = (d.sol_change_24h > 0 ? "+" : "") + d.sol_change_24h + "%";
+    document.getElementById("mktSol").className = "list-value " + (d.sol_change_24h > 0 ? "up" : "down");
+    document.getElementById("mktVol").textContent = d.volatility + "%";
+    document.getElementById("mktConfidence").textContent = d.confidence + "%";
+}
+
+function updatePortfolio(d) {
+    document.getElementById("homeBalance").textContent = d.balance_sol;
+    document.getElementById("homeBalanceUsd").textContent = d.balance_usd;
+    const pnl = d.pnl_sol;
+    document.getElementById("homePnl").textContent = (pnl >= 0 ? "+" : "") + pnl.toFixed(4);
+    document.getElementById("homePnl").className = pnl >= 0 ? "up" : "down";
+    document.getElementById("homeWinRate").textContent = d.win_rate + "%";
+    document.getElementById("homeTrades").textContent = d.trades_total;
+    document.getElementById("portBalance").textContent = d.balance_sol + " SOL";
+    document.getElementById("portReserved").textContent = d.reserved_sol + " SOL";
+    document.getElementById("portTradable").textContent = d.tradable_sol + " SOL";
+    document.getElementById("portPnl").textContent = (pnl >= 0 ? "+" : "") + pnl.toFixed(4);
+    document.getElementById("portPnl").className = "metric-value " + (pnl >= 0 ? "up" : "down");
+    document.getElementById("portWinRate").textContent = d.win_rate + "%";
+    document.getElementById("portWinLoss").textContent = d.wins + "W / " + d.losses + "L";
+    document.getElementById("portOpenCount").textContent = d.positions.length;
+    if (d.positions.length > 0) {
+        let html = "";
+        d.positions.forEach(p => {
+            html += `<div class="position-row">
+                <div><div class="position-symbol">${p.symbol}</div>
+                <div class="position-size">${p.amount_sol} SOL @ $${p.entry_price.toFixed(6)}</div></div>
+                <span class="pill pill-gold">${p.status}</span>
+            </div>`;
+        });
+        document.getElementById("portPositions").innerHTML = html;
+    }
+}
+
+function updateStats(d) {
+    document.getElementById("homeTotalDetected").textContent = d.total_detected;
+    document.getElementById("homeBestToken").textContent = d.best_symbol + " | " + d.best_score + "/100";
+    document.getElementById("iaTotalTrades").textContent = d.total_analyzed;
+    const buckets = [
+        ["sb0", "sb0v", d.pct_0_40],
+        ["sb40", "sb40v", d.pct_40_60],
+        ["sb60", "sb60v", d.pct_60_75],
+        ["sb75", "sb75v", d.pct_75_85],
+        ["sb85", "sb85v", d.pct_85_100],
+    ];
+    buckets.forEach(([bar, val, pct]) => {
+        const el = document.getElementById(bar);
+        const velEl = document.getElementById(val);
+        if (el) el.style.width = pct + "%";
+        if (velEl) velEl.textContent = pct + "%";
+    });
+}
+
+function updateTrades(d) {
+    document.getElementById("iaWinRate").textContent = d.win_rate + "%";
+    document.getElementById("iaWinRate").className = "metric-value " + (d.win_rate > 50 ? "up" : "down");
+    document.getElementById("iaRecommendation").textContent = d.recommendation;
+    if (d.trades.length > 0) {
+        let html = "";
+        d.trades.slice(0, 10).forEach(t => {
+            const win = t.profit_pct > 0;
+            html += `<div class="trade-row">
+                <div class="trade-icon ${win ? "trade-win" : "trade-loss"}">${win ? "✅" : "❌"}</div>
+                <div style="flex:1">
+                    <div style="font-size:13px;font-weight:500;">${t.symbol}</div>
+                    <div style="font-size:11px;color:var(--text-muted);">${t.exit_reason}</div>
+                </div>
+                <div class="${win ? "up" : "down"}" style="font-family:var(--font-mono);font-size:13px;">
+                    ${win ? "+" : ""}${t.profit_pct}%
+                </div>
+            </div>`;
+        });
+        document.getElementById("portHistory").innerHTML = html;
+    }
+}
+
+// Pause/Resume depuis l app
+async function pauseOracle() {
+    await fetchAPI("/api/pause");
+    showNotif("⏸ Oracle mis en pause");
+    loadAllData();
+}
+
+async function resumeOracle() {
+    await fetchAPI("/api/resume");
+    showNotif("▶️ Oracle repris");
+    loadAllData();
+}
+
+// Load data on start and every 30 seconds
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(loadAllData, 3500);
+    setInterval(loadAllData, 30000);
+});
+</script>
 </body>
 </html>
