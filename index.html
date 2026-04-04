@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+<style>
 :root{
   --bg:#080B0F;--bg2:#0F1318;--card:#141920;--card2:#1A2128;
   --hover:#1E2830;--gold:#F0B90B;--gold2:#C99400;--gold3:rgba(240,185,11,0.12);
@@ -222,6 +223,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .curr-badge-arr{font-size:10px;color:var(--txt3)}
 </style>
 </head>
+</style>
+</head>
 <body>
 
 <div id="splash">
@@ -239,7 +242,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 </div>
 <div id="notif"></div>
 
-<!-- DÉTAIL POSITION -->
 <div id="ptPosDetailScr">
   <div class="pos-detail-header">
     <button onclick="ptClosePosDetail()" style="background:none;border:none;color:var(--txt2);font-size:22px;cursor:pointer;padding:0 4px;line-height:1">←</button>
@@ -268,7 +270,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   </div>
 </header>
 
-<!-- ACCUEIL -->
 <div class="page on" id="page-home">
   <div class="bal-card">
     <div class="card-title">Portefeuille Oracle</div>
@@ -436,7 +437,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 </div>
 
 
-<!-- ═══ PAPER TRADING v7 ═══ -->
+
 <div class="page" id="page-paper">
 
   <!-- MODAL WALLET -->
@@ -686,34 +687,35 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   <button class="tab" onclick="goTab('paper',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg><span>Paper</span></button>
 </nav>
 
+
 <script>
 // ═══ ORACLE ORIGINAL ═══
 <script>
 // ══════════════════════════════════════════════
-// ORACLE ORIGINAL — 100% intact
+
+<script>
 // ══════════════════════════════════════════════
 const API="https://triform-dollie-sonic.ngrok-free.dev";
 const HEADERS={"ngrok-skip-browser-warning":"true"};
 if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#0B0E11');Telegram.WebApp.setBackgroundColor('#0B0E11');}
-// INIT — splash disparaît après 2.5s, display:none immédiat
-window.addEventListener('DOMContentLoaded',function(){
-  setTimeout(function(){
+// INIT IMMÉDIATE
+try{ptUpdateNet();}catch(e){}
+try{ptBuildList();}catch(e){}
+try{ptBuildMemeList();}catch(e){}
+try{ptRefreshAll();}catch(e){}
+try{ptRendLearn();}catch(e){}
+loadAll().catch(function(){});
+// SPLASH — fermeture garantie après 2.5s
+(function(){
+  function hideSplash(){
     var s=document.getElementById('splash');
-    if(s){s.style.opacity='0';}
-    setTimeout(function(){
-      var s=document.getElementById('splash');
-      if(s){s.style.display='none';}
-    },450);
-  },2500);
-  // Init Paper Trading
-  try{ptUpdateNet();}catch(e){}
-  try{ptBuildList();}catch(e){}
-  try{ptBuildMemeList();}catch(e){}
-  try{ptRefreshAll();}catch(e){}
-  try{ptRendLearn();}catch(e){}
-  // Oracle en arrière-plan
-  loadAll().catch(function(){});
-});
+    if(!s)return;
+    s.style.opacity='0';
+    s.style.transition='opacity 0.4s';
+    setTimeout(function(){s.style.display='none';},400);
+  }
+  setTimeout(hideSplash, 2500);
+})();
 function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else loadAll();}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
@@ -893,6 +895,8 @@ const PT_ALL=Object.values(PT_ALL_MAP);
 // Stratégies Oracle étendues
 const PT_STRATS_ALL=[
   {id:'scalp',    name:'Scalp Oracle',    emoji:'⚡',desc:'RSI extremes · sortie 15-60min',explain:'Oracle cherche RSI<30=rebond probable. TP1 +30%, SL serré -15%. Idéal SIDEWAYS.',risk:'LOW', sl:-15,tp1:30, tp2:60,  tp3:null,tp1sz:0.50,regimes:['SIDEWAYS','SIDEWAYS_BULL','SIDEWAYS_BEAR'],minScore:70,maxLev:3,tags:['RSI','Rapide']},
+  {id:'momentum', name:'Momentum',        emoji:'🚀',desc:'Tendance + volume · trailing 2-12h',explain:'Momentum fort = volume+prix. On suit la tendance. TP1 à 50% sécurise, TP2 vise ×2.',risk:'MED', sl:-20,tp1:50, tp2:150, tp3:null,tp1sz:0.50,regimes:['BULL','SIDEWAYS_BULL'],minScore:75,maxLev:5,tags:['Tendance','Volume']},
+
   {id:'momentum', name:'Momentum',        emoji:'🚀',desc:'Tendance + volume · trailing 2-12h',explain:'Momentum fort = volume+prix. On suit la tendance. TP1 à 50% sécurise, TP2 vise ×2.',risk:'MED', sl:-20,tp1:50, tp2:150, tp3:null,tp1sz:0.50,regimes:['BULL','SIDEWAYS_BULL'],minScore:75,maxLev:5,tags:['Tendance','Volume']},
   {id:'swing',    name:'Swing Alchimizz', emoji:'🌊',desc:'24-72h · catalyseur fort · ×2-×4',explain:'Token avec catalyseur. 1-3 jours. TP1 à 80% sécurise 33%. TP3 = jackpot.',risk:'MED', sl:-25,tp1:80, tp2:200, tp3:300, tp1sz:0.33,regimes:['BULL','SIDEWAYS_BULL'],minScore:78,maxLev:3,tags:['Swing','1-3j']},
   {id:'sniper',   name:'Sniper',          emoji:'🎯',desc:'RSI+MACD+Vol confirmés · risque minimal',explain:'3 signaux convergents avant entrée. Moins de trades, meilleur win rate. SL -12%.',risk:'LOW', sl:-12,tp1:40, tp2:100, tp3:null,tp1sz:0.50,regimes:['SIDEWAYS','SIDEWAYS_BULL','BULL'],minScore:80,maxLev:2,tags:['Précis','Confirmation']},
@@ -1858,7 +1862,7 @@ setInterval(ptUpdateNet,30000);
 if(Date.now()-ptST.memeLastUpdate>86400000)setTimeout(ptRefreshMeme,4000);
 
 // ══ INIT ══
-// (ptUpdateNet/ptBuildList/etc. déjà appelés dans le setTimeout du splash)
+
 </script>
 </body>
 </html>
