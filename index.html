@@ -703,7 +703,7 @@ setTimeout(()=>{
   loadAll().catch(()=>{});
   // Init Paper Trading immédiatement — pas besoin d'attendre les prix
   ptUpdateNet();ptBuildList();ptBuildMemeList();ptRefreshAll();ptRendLearn();
-},2500);
+},2500); // splash fix
 function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else loadAll();}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
