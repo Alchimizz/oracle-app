@@ -1225,19 +1225,35 @@ function ptExecPx(sym,quote,side,latMs){
   const f=ptFees(sym,100,side);
   return Math.max(quote*0.001,(quote+drift)*(side==='buy'?(1+f.pct/100):(1-f.pct/100)));
 }
+// ── Registre de prix universel — TOUS les tokens dérivent ici ──
+function ptGetLivePrice(sym){
+  // 1. CoinGecko (priorité max)
+  if(ptLP[sym]&&ptLP[sym].loaded&&ptLP[sym].price>0) return ptLP[sym];
+  // 2. Meme Arena connu
+  const mt=ptMeme200.find(t=>t.sym===sym);
+  if(mt){
+    if(!mt._price){mt._price=0.000001+Math.random()*0.005;}
+    return{price:mt._price,loaded:true,change24h:mt.ch24||0,vol24h:mt.vol24||0,open24h:mt._price};
+  }
+  // 3. Token quelconque (Oracle DB, futur token) — créer une entrée dynamique
+  if(!ptLP[sym]||ptLP[sym].price<=0){
+    // Chercher dans les positions pour avoir le prix d'entrée comme base
+    const pos=ptST.positions.find(p=>p.sym===sym);
+    const base=pos?pos.execPx:(PT_BASE_PRICES[sym]||0.001);
+    ptLP[sym]={price:base,open24h:base,change24h:0,vol24h:0,loaded:true,ts:Date.now(),_synthetic:true};
+  }
+  return ptLP[sym];
+}
+
+function ptMeme200PriceOf(sym){
+  return ptGetLivePrice(sym);
+}
+
 function ptUnreal(pos){
-  const lp=ptLP[pos.sym]||ptMeme200PriceOf(pos.sym);
+  const lp=ptGetLivePrice(pos.sym);
   if(!lp||lp.price<=0)return{pnl:0,pct:0,mark:pos.execPx};
   const rawPct=(lp.price-pos.execPx)/pos.execPx*100;
   return{pnl:+(pos.sizeEur*rawPct*pos.lev/100).toFixed(4),pct:+(rawPct*pos.lev).toFixed(4),mark:lp.price};
-}
-// Prix simulé pour les memes sans CoinGecko
-function ptMeme200PriceOf(sym){
-  const mt=ptMeme200.find(t=>t.sym===sym);if(!mt)return null;
-  if(!mt._price){mt._price=0.000001+Math.random()*0.01;mt._loaded=true;}
-  // drift brownien léger
-  mt._price=Math.max(mt._price*0.001,mt._price*(1+(Math.random()-0.49)*0.02));
-  return{price:mt._price,loaded:true,change24h:mt.ch24,vol24h:mt.vol24,open24h:mt._price/(1+mt.ch24/100)};
 }
 function ptLiqPrice(pos){return pos.execPx*(1-0.9/pos.lev);}
 function ptFundingCost(pos){const hourlyRate=0.0001*(1+ptNet.cong*0.5);const h=(Date.now()-pos.openTs)/3600000;return pos.sizeEur*pos.lev*hourlyRate*h;}
@@ -2743,30 +2759,39 @@ function ptTickerLive(){
   // S'assurer que tous les prix sont initialisés
   ptInitPrices();
 
-  // Drift brownien TOUTES les 2s sur TOUS les tokens
-  const VOL={'L1':0.0012,'DEX':0.0018,'INFRA':0.0015,'MEME':0.004};
-  PT_ALL.forEach(tok=>{
-    const lp=ptLP[tok.sym];
-    if(!lp||lp.price<=0) return;
-    const vol=VOL[tok.type]||0.002;
+  // ── DRIFT UNIVERSEL — tous les tokens sans exception ──
+  const VOL_BY_TYPE={'L1':0.0012,'DEX':0.0018,'INFRA':0.0015,'MEME':0.005,'DEFAULT':0.003};
+
+  function applyDrift(sym, type){
+    const vol=VOL_BY_TYPE[type]||VOL_BY_TYPE.DEFAULT;
     const drift=(Math.random()-0.495)*vol;
-    lp.price=Math.max(lp.price*0.0001, lp.price*(1+drift));
-    lp.change24h=+((lp.change24h||0)+drift*80).toFixed(2);
-    lp.loaded=true;
-  });
-
-  // Drift memes
-  ptMeme200.forEach(t=>{
-    if(!t._price) t._price=0.000001+Math.random()*0.001;
-    const drift=(Math.random()-0.49)*0.005;
-    t._price=Math.max(t._price*0.0001, t._price*(1+drift));
-  });
-
-  // Pour les positions: aussi drifter le prix de leur sym si pas dans PT_ALL
-  ptST.positions.forEach(pos=>{
-    if(!ptLP[pos.sym]){
-      ptLP[pos.sym]={price:pos.execPx*(1+(Math.random()-0.495)*0.003),open24h:pos.execPx,change24h:0,vol24h:0,loaded:true,ts:Date.now()};
+    // Créer l'entrée si inexistante
+    if(!ptLP[sym]||ptLP[sym].price<=0){
+      const pos=ptST.positions.find(p=>p.sym===sym);
+      const mt=ptMeme200.find(t=>t.sym===sym);
+      const base=pos?pos.execPx:mt?mt._price||(0.000001+Math.random()*0.005):PT_BASE_PRICES[sym]||0.001;
+      ptLP[sym]={price:base,open24h:base,change24h:0,vol24h:0,loaded:true,ts:Date.now()};
     }
+    ptLP[sym].price=Math.max(ptLP[sym].price*0.0001,ptLP[sym].price*(1+drift));
+    ptLP[sym].change24h=+((ptLP[sym].change24h||0)+drift*60).toFixed(2);
+    ptLP[sym].loaded=true;
+    return ptLP[sym].price;
+  }
+
+  // 1. Tokens Oracle Top10 connus
+  PT_ALL.forEach(tok=>applyDrift(tok.sym, tok.type));
+
+  // 2. Memes Arena — synchro _price avec ptLP
+  ptMeme200.forEach(t=>{
+    const newPx=applyDrift(t.sym,'MEME');
+    t._price=newPx; // synchro bidirectionnelle
+  });
+
+  // 3. TOUTES les positions ouvertes (y compris tokens Oracle DB futurs)
+  ptST.positions.forEach(pos=>{
+    const tok=PT_ALL.find(t=>t.sym===pos.sym)||ptMeme200.find(t=>t.sym===pos.sym);
+    const type=tok?.type||'MEME'; // défaut MEME pour les inconnus
+    applyDrift(pos.sym, type);
   });
 
   // Vérifier TP/SL
@@ -2779,11 +2804,14 @@ function ptTickerLive(){
     const pnrEl=document.getElementById('ptPnlUnreal');
     if(pnrEl){pnrEl.textContent=(unreal>=0?'+':'')+ptFmt$(unreal);pnrEl.style.color=unreal>0?'#10B981':unreal<0?'#EF4444':'#94A3B8';}
 
-    // Reconstruire la liste positions (simple et fiable)
+    // Reconstruire la liste positions
     ptRefreshAll();
 
-    // Écran trade ouvert
-    if(ptCurSym){ptUpdateTradeHeader();ptRendPosCard();}
+    // Écran trade ouvert — forcer update posCard
+    if(ptCurSym){
+      ptUpdateTradeHeader();
+      ptRendPosCard();
+    }
 
     // Écran chart ouvert
     const chartScr=document.getElementById('ptChartScr');
@@ -2823,7 +2851,7 @@ function ptTickerLive(){
   loadAll().catch(function(){});
 
   // TICKER LIVE 2s — prix et P&L positions en temps réel
-  setInterval(ptTickerLive, 2000);
+  setInterval(ptTickerLive, 1000);
 
   // Sync prix toutes les 60s
   setTimeout(function(){
