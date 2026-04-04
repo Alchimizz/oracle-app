@@ -24,8 +24,7 @@ html{-webkit-font-smoothing:antialiased}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom) + 8px)}
 
 /* ── SPLASH PREMIUM ── */
-#splash{position:fixed;inset:0;z-index:1000;background:radial-gradient(ellipse at 50% 0%,#0F1A2A 0%,#080B0F 60%);display:flex;flex-direction:column;align-items:center;justify-content:center}
-#splash.hide{opacity:0;pointer-events:none;visibility:hidden}
+#splash{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:#080B0F;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s}
 #splash.hide{opacity:0;pointer-events:none}
 .s-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .s-ring{position:absolute;border-radius:50%;border:1px solid;animation:ringPulse 3s ease-in-out infinite}
@@ -696,16 +695,25 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 const API="https://triform-dollie-sonic.ngrok-free.dev";
 const HEADERS={"ngrok-skip-browser-warning":"true"};
 if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#0B0E11');Telegram.WebApp.setBackgroundColor('#0B0E11');}
-// Init immédiate de l'app
-try{ptUpdateNet();ptBuildList();ptBuildMemeList();ptRefreshAll();ptRendLearn();}catch(e){console.error('Init:',e);}
-loadAll().catch(()=>{});
-// Fermer splash après 2.5s — display:none garanti
-setTimeout(()=>{
-  const s=document.getElementById('splash');
-  if(!s)return;
-  s.classList.add('hide');
-  setTimeout(()=>{s.style.display='none';s.style.pointerEvents='none';},600);
-},2500);
+// INIT — splash disparaît après 2.5s, display:none immédiat
+window.addEventListener('DOMContentLoaded',function(){
+  setTimeout(function(){
+    var s=document.getElementById('splash');
+    if(s){s.style.opacity='0';}
+    setTimeout(function(){
+      var s=document.getElementById('splash');
+      if(s){s.style.display='none';}
+    },450);
+  },2500);
+  // Init Paper Trading
+  try{ptUpdateNet();}catch(e){}
+  try{ptBuildList();}catch(e){}
+  try{ptBuildMemeList();}catch(e){}
+  try{ptRefreshAll();}catch(e){}
+  try{ptRendLearn();}catch(e){}
+  // Oracle en arrière-plan
+  loadAll().catch(function(){});
+});
 function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else loadAll();}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
