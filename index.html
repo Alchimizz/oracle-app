@@ -9,12 +9,12 @@
 <style>
 <style>
 :root{
-  --bg:#0C1017;--bg2:#131B24;--card:#181F27;--card2:#1E2733;
-  --hover:#1E2830;--gold:#F0B90B;--gold2:#C99400;--gold3:rgba(240,185,11,0.12);
-  --green:#0ECB81;--red:#F6465D;--blue:#3B82F6;--purple:#8B5CF6;--orange:#F97316;
+  --bg:#F0F2F5;--bg2:#FFFFFF;--card:#FFFFFF;--card2:#F8F9FB;
+  --hover:#1E2830;--gold:#D4A017;--gold2:#B8860B;--gold3:rgba(212,160,23,0.12);
+  --green:#059669;--red:#DC2626;--blue:#2563EB;--purple:#8B5CF6;--orange:#F97316;
   --cyan:#06B6D4;--pink:#EC4899;
-  --txt:#F1F5F9;--txt2:#A8B8CC;--txt3:#6B7E93;
-  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.15);
+  --txt:#0D1117;--txt2:#4A5568;--txt3:#718096;
+  --border:#D1D9E0;--border2:#B8C4CE;
   --tabh:62px;--headerh:56px;
   --radius:14px;--radius-sm:8px;
   --glow-gold:0 0 20px rgba(240,185,11,0.25);
@@ -22,10 +22,10 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-font-smoothing:antialiased}
-body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom) + 8px)}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:#F0F2F5;color:#0D1117;min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom) + 8px)}
 
 /* ── SPLASH PREMIUM ── */
-#splash{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:#080B0F;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s}
+#splash{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:#0D1117;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s}
 #splash.hide{opacity:0;pointer-events:none}
 .s-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .s-ring{position:absolute;border-radius:50%;border:1px solid;animation:ringPulse 3s ease-in-out infinite}
@@ -50,26 +50,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 .s-author{font-size:12px;letter-spacing:4px;color:rgba(240,185,11,0.4);font-weight:700}
 
 /* ── HEADER PREMIUM ── */
-header{position:sticky;top:0;z-index:100;background:rgba(18,25,35,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.1);height:var(--headerh);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+header{position:sticky;top:0;z-index:100;background:#FFFFFF;border-bottom:1px solid #D1D9E0;height:var(--headerh);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,rgba(240,185,11,0.2),rgba(240,185,11,0.05));border:1px solid rgba(240,185,11,0.3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .logo-mark::before{content:'';position:absolute;inset:0;background:conic-gradient(from 0deg,transparent 60%,rgba(240,185,11,0.3));animation:logoSpin 4s linear infinite}
 @keyframes logoSpin{to{transform:rotate(360deg)}}
 .logo-eye{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFD700,#F0B90B 50%,#8B6508);position:relative;z-index:1;animation:eyePulse 3s ease infinite}
 .logo-text{line-height:1.1}
-.logo-name{font-size:16px;font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,#FFD700,#F0B90B);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-name{font-size:16px;font-weight:800;letter-spacing:1px;color:#D4A017;-webkit-text-fill-color:#D4A017;}
 .logo-sub{font-size:8px;color:var(--txt3);letter-spacing:3px;text-transform:uppercase}
 .hright{display:flex;align-items:center;gap:8px}
-.hstatus{display:flex;align-items:center;gap:5px;padding:5px 12px;background:rgba(14,203,129,0.12);border:1px solid rgba(14,203,129,0.3);border-radius:20px;cursor:pointer}
-.hdot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:hdotPulse 2s infinite}
+.hstatus{display:flex;align-items:center;gap:5px;padding:5px 12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);border-radius:20px;cursor:pointer}
+.hdot{width:6px;height:6px;border-radius:50%;background:#059669;animation:hdotPulse 2s infinite}
 @keyframes hdotPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(14,203,129,0.4)}70%{opacity:0.7;box-shadow:0 0 0 6px rgba(14,203,129,0)}}
-.hstat-txt{font-size:10px;font-weight:700;color:#1AE08A;letter-spacing:0.5px}
+.hstat-txt{font-size:10px;font-weight:700;color:#059669;letter-spacing:0.5px}
 
 /* ── NAV ── */
-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(20,28,38,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.12);height:var(--tabh);display:flex;align-items:center;padding-bottom:env(safe-area-inset-bottom)}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:8px 2px;border:none;background:none;color:#7A8FA6;transition:all .2s;position:relative}
-.tab.on{color:var(--gold);filter:drop-shadow(0 0 6px rgba(240,185,11,0.4))}
-.tab.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--gold);border-radius:1px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:#FFFFFF;border-top:1px solid #D1D9E0;height:var(--tabh);display:flex;align-items:center;padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:8px 2px;border:none;background:none;color:#6B7280;transition:all .2s;position:relative}
+.tab.on{color:#D4A017;}
+.tab.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2px;background:#D4A017;border-radius:1px}
 .tab svg{width:21px;height:21px}
 .tab span{font-size:9px;font-weight:700;letter-spacing:0.2px}
 
@@ -78,19 +78,19 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(20,28,38,
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── CARDS ── */
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;transition:border-color .2s}
-.card-glow{border-color:rgba(240,185,11,0.2);box-shadow:0 0 0 1px rgba(240,185,11,0.05)}
+.card{background:#FFFFFF;border:1px solid #D1D9E0;border-radius:var(--radius);padding:16px;margin-bottom:10px;transition:border-color .2s}
+.card-glow{border-color:#D4A017;box-shadow:0 0 0 1px rgba(240,185,11,0.05)}
 .card-title{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
-.mcard{background:rgba(25,35,48,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px}
-.mlabel{font-size:10px;font-weight:700;color:#8AA0B8;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px}
+.mcard{background:#FFFFFF;border:1px solid #D1D9E0;border-radius:10px;padding:12px}
+.mlabel{font-size:10px;font-weight:700;color:#6B7280;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px}
 .mval{font-size:18px;font-weight:700;font-family:'SF Mono',monospace}
 .mch{font-size:11px;margin-top:2px;font-family:'SF Mono',monospace}
 .up{color:var(--green)}.down{color:var(--red)}.neu{color:var(--txt2)}
 
 /* ── BAL CARD ── */
-.bal-card{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border2);border-radius:var(--radius);padding:18px;margin-bottom:10px;position:relative;overflow:hidden}
+.bal-card{background:linear-gradient(135deg,#FFFFFF 0%,#F8F9FB 100%);border:1px solid var(--border2);border-radius:var(--radius);padding:18px;margin-bottom:10px;position:relative;overflow:hidden}
 .bal-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.08),transparent 70%);pointer-events:none}
 .bal-main{font-size:30px;font-weight:800;font-family:'SF Mono',monospace;margin-bottom:2px;letter-spacing:-0.5px}
 .bal-usd{font-size:12px;color:var(--txt3);font-family:'SF Mono',monospace;margin-bottom:16px}
@@ -100,10 +100,10 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(20,28,38,
 .bal-stat-val{font-size:14px;font-weight:700;font-family:'SF Mono',monospace}
 
 /* ── INDICATEURS / ROWS ── */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0}
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0;background:#FFFFFF;border-radius:12px}
 .gauge-num{font-family:'SF Mono',monospace;font-size:32px;font-weight:800;margin-top:-8px}
 .gauge-lbl{font-size:11px;color:var(--txt2);margin-top:2px}
-.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #D1D9E0;font-size:13px}
 .row:last-child{border:none}.row-label{color:var(--txt2)}.row-val{font-family:'SF Mono',monospace;font-weight:500}
 .srow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .slabel{font-size:10px;color:var(--txt3);width:52px;font-weight:600;text-transform:uppercase}
@@ -121,12 +121,12 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(20,28,38,
 .pill-o{background:rgba(249,115,22,.12);color:var(--orange);border:1px solid rgba(249,115,22,.2)}
 
 /* ── SEC / TROW ── */
-.sec{font-size:11px;font-weight:700;color:var(--txt3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:0.8px}
+.sec{font-size:11px;font-weight:700;color:#4A5568;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #D1D9E0;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:0.8px}
 .trow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .trow:last-child{border:none}
 .tico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .twin{background:rgba(14,203,129,.12)}.tloss{background:rgba(246,70,93,.12)}
-.empty{text-align:center;padding:40px 16px;color:var(--txt3);font-size:13px}
+.empty{text-align:center;padding:40px 16px;color:#6B7280;font-size:13px}
 
 /* ── BUTTONS ── */
 .btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;width:100%;margin-bottom:8px;letter-spacing:0.3px}
@@ -139,7 +139,7 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(20,28,38,
 /* ── TOGGLES / SLIDERS ── */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
 .toggle-info .tname{font-size:13px;font-weight:500}.toggle-info .tdesc{font-size:11px;color:var(--txt3);margin-top:1px}
-.tog{width:44px;height:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tog{width:44px;height:24px;background:#E5E7EB;border:1px solid #D1D9E0;border-radius:12px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
 .tog.on{background:var(--gold);border-color:var(--gold)}
 .tog-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
 .tog.on .tog-thumb{transform:translateX(20px)}
@@ -147,11 +147,11 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(20,28,38,
 .slider-head{display:flex;justify-content:space-between;margin-bottom:6px}
 .slider-label{font-size:12px;color:var(--txt2);font-weight:500}
 .slider-val{font-size:12px;font-weight:700;color:var(--gold);font-family:'SF Mono',monospace}
-input[type=range]{width:100%;height:4px;-webkit-appearance:none;background:var(--border2);border-radius:2px;outline:none}
+input[type=range]{width:100%;height:4px;-webkit-appearance:none;background:#D1D9E0;border-radius:2px;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 0 8px rgba(240,185,11,0.4)}
 
 /* ── NOTIF ── */
-#notif{position:fixed;top:70px;left:50%;transform:translateX(-50%) scale(0.95);background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:10px 16px;font-size:13px;z-index:300;opacity:0;transition:opacity .2s,transform .2s;white-space:nowrap;pointer-events:none;max-width:94vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+#notif{position:fixed;top:70px;left:50%;transform:translateX(-50%) scale(0.95);background:#FFFFFF;border:1px solid #B8C4CE;color:#0D1117;border-radius:12px;padding:10px 16px;font-size:13px;z-index:300;opacity:0;transition:opacity .2s,transform .2s;white-space:nowrap;pointer-events:none;max-width:94vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 #notif.show{opacity:1;transform:translateX(-50%) scale(1)}
 
 /* ── MISC ── */
@@ -167,22 +167,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .tok-logo span{position:relative;z-index:1}
 
 /* ══ PT CSS ══ */
-.pt-sc{border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;background:var(--card2);transition:all .15s}
+.pt-sc{border:1px solid #D1D9E0;border-radius:12px;padding:12px;cursor:pointer;background:#FFFFFF;transition:all .15s}
 .pt-sc:active{transform:scale(0.98)}
-.pt-sc.on{border-color:var(--gold);background:rgba(240,185,11,0.06);box-shadow:0 0 0 1px rgba(240,185,11,0.1)}
+.pt-sc.on{border-color:#D4A017;background:rgba(212,160,23,0.06);box-shadow:0 0 0 1px rgba(240,185,11,0.1)}
 .pt-sc.rec{border-color:var(--green)!important;box-shadow:0 0 12px rgba(14,203,129,0.15)!important}
 .pt-fi label{font-size:10px;color:var(--txt3);display:block;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-.pt-fi input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--txt);padding:8px 10px;font-family:'SF Mono',monospace;font-size:11px;outline:none;transition:border-color .2s}
+.pt-fi input{width:100%;background:#F8F9FB;border:1px solid #D1D9E0;border-radius:8px;color:#0D1117;padding:8px 10px;font-family:'SF Mono',monospace;font-size:11px;outline:none;transition:border-color .2s}
 .pt-fi input:focus{border-color:rgba(240,185,11,0.4)}
 .pt-mode-tab{flex:1;padding:12px 6px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--txt3);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:0.3px}
 .pt-mode-tab.on{color:var(--gold);border-color:var(--gold)}
-.lev-btn{padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--txt3);font-family:inherit;transition:all .15s}
+.lev-btn{padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #D1D9E0;background:#F0F2F5;color:#374151;font-family:inherit;transition:all .15s}
 .lev-btn.on{border-color:var(--gold);background:rgba(240,185,11,0.1);color:var(--gold)}
 .lev-btn.danger{border-color:rgba(246,70,93,0.3);color:rgba(246,70,93,0.7)}
 .lev-btn.danger.on{border-color:var(--red)!important;background:rgba(246,70,93,0.1)!important;color:var(--red)!important}
 .trade-sel-row{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
 .trade-sel-row:last-child{border:none}
-.trade-sel-check{width:20px;height:20px;border-radius:5px;border:1px solid var(--border2);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px;transition:all .15s}
+.trade-sel-check{width:20px;height:20px;border-radius:5px;border:1px solid #D1D9E0;background:#F0F2F5;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px;transition:all .15s}
 .trade-sel-check.on{background:var(--gold);border-color:var(--gold);color:#000}
 
 /* ── RUG BADGES ── */
@@ -194,13 +194,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
 /* ── DEX ROW ── */
 .dex-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
-.dex-row:hover{background:rgba(255,255,255,0.02)}
-.dex-row:active{background:rgba(240,185,11,0.03)}
+.dex-row:hover{background:rgba(0,0,0,0.02)}
+.dex-row:active{background:rgba(212,160,23,0.04)}
 .dex-row:last-child{border:none}
 
 /* ── POS DETAIL ── */
-#ptPosDetailScr{display:none;position:fixed;inset:0;z-index:150;background:var(--bg);overflow-y:auto;padding-bottom:80px}
-.pos-detail-header{background:rgba(8,11,15,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+#ptPosDetailScr{display:none;position:fixed;inset:0;z-index:150;background:#F0F2F5;overflow-y:auto;padding-bottom:80px}
+.pos-detail-header{background:#FFFFFF;border-bottom:1px solid #D1D9E0;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
 .pnl-bar-track{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:4px}
 .pnl-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
 
@@ -212,14 +212,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;display:inline-block;margin-right:4px}
 
 /* ── WALLET CARD PREMIUM ── */
-.wallet-card{background:linear-gradient(135deg,rgba(15,26,40,0.85) 0%,rgba(13,30,53,0.8) 40%,rgba(9,21,37,0.9) 100%);border:1px solid rgba(240,185,11,0.25);border-radius:20px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.04)}
+.wallet-card{background:linear-gradient(135deg,#1A2D45 0%,#1E3352 40%,#152338 100%);border:1px solid rgba(240,185,11,0.25);border-radius:20px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.04)}
 .wallet-card::before{content:'';position:absolute;top:-80px;right:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.08),transparent 65%);pointer-events:none}
 .wallet-card::after{content:'';position:absolute;bottom:-60px;left:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(14,203,129,0.06),transparent 65%);pointer-events:none}
-.wallet-card .wc-amount{font-size:34px;font-weight:800;font-family:'SF Mono',monospace;letter-spacing:-1.5px;line-height:1;background:linear-gradient(135deg,#FFD700,#F0B90B);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.wallet-card .wc-amount{font-size:34px;font-weight:800;font-family:'SF Mono',monospace;letter-spacing:-1.5px;line-height:1;color:#D4A017;-webkit-text-fill-color:#D4A017;}
 .wallet-card .wc-sym{font-size:20px;font-weight:700;color:rgba(240,185,11,0.6);margin-left:4px}
-.wc-stat{padding:10px 12px;background:rgba(255,255,255,0.07);border-radius:12px;border:1px solid rgba(255,255,255,0.12);}
-.wc-stat-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,0.55);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
-.wc-stat-val{font-size:15px;font-weight:700;font-family:'SF Mono',monospace;line-height:1;color:var(--txt)}
+.wc-stat{padding:10px 12px;background:rgba(255,255,255,0.12);border-radius:12px;border:1px solid rgba(255,255,255,0.25);}
+.wc-stat-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.wc-stat-val{font-size:15px;font-weight:700;font-family:'SF Mono',monospace;line-height:1;color:#FFFFFF}
 
 /* ── CURRENCY BADGE ── */
 .curr-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);cursor:pointer;transition:all .2s}
@@ -252,7 +252,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
     <button onclick="ptClosePosDetail()" style="background:none;border:none;color:var(--txt2);font-size:22px;cursor:pointer;padding:0 4px;line-height:1">←</button>
     <div style="flex:1">
       <div style="font-size:15px;font-weight:700" id="pdTitle">—</div>
-      <div style="font-size:10px;color:var(--txt3)"><span class="live-dot"></span>Mise à jour en continu</div>
+      <div style="font-size:10px;color:#6B7280"><span class="live-dot"></span>Mise à jour en continu</div>
     </div>
     <div id="pdLevBadge" style="font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;background:rgba(240,185,11,0.12);color:var(--gold);border:1px solid rgba(240,185,11,0.2)">×1</div>
   </div>
@@ -278,7 +278,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <div class="page on" id="page-home">
   <div class="bal-card">
     <div class="card-title">Portefeuille Oracle</div>
-    <div class="bal-main"><span id="hBal">—</span> <span style="font-size:16px;color:var(--txt2)">SOL</span></div>
+    <div class="bal-main"><span id="hBal">—</span> <span style="font-size:16px;color:#4A5568">SOL</span></div>
     <div class="bal-usd">≈ $<span id="hBalUsd">—</span></div>
     <div class="bal-stats">
       <div class="bal-stat"><div class="bal-stat-label">P&L</div><div class="bal-stat-val up" id="hPnl">—</div></div>
@@ -315,9 +315,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   <div class="card">
     <div class="sec">Indicateurs</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-      <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:8px"><div style="font-size:10px;color:var(--txt3);margin-bottom:3px">RSI</div><div style="font-size:15px;font-weight:600;font-family:monospace;color:var(--gold)" id="tRsi">—</div><div style="font-size:10px;color:var(--txt2)" id="tRsiL">—</div></div>
-      <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:8px"><div style="font-size:10px;color:var(--txt3);margin-bottom:3px">Régime</div><div style="font-size:12px;font-weight:600;color:var(--gold)" id="tRegime">—</div><div style="font-size:10px;color:var(--txt2)" id="tFg">—</div></div>
-      <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:8px"><div style="font-size:10px;color:var(--txt3);margin-bottom:3px">Win Prob</div><div style="font-size:15px;font-weight:600;font-family:monospace;color:var(--blue)" id="tWinProb">—</div><div style="font-size:10px;color:var(--txt2)">Monte Carlo</div></div>
+      <div style="text-align:center;padding:10px;background:#F0F2F5;border-radius:8px"><div style="font-size:10px;color:var(--txt3);margin-bottom:3px">RSI</div><div style="font-size:15px;font-weight:600;font-family:monospace;color:var(--gold)" id="tRsi">—</div><div style="font-size:10px;color:#4A5568" id="tRsiL">—</div></div>
+      <div style="text-align:center;padding:10px;background:#F0F2F5;border-radius:8px"><div style="font-size:10px;color:var(--txt3);margin-bottom:3px">Régime</div><div style="font-size:12px;font-weight:600;color:var(--gold)" id="tRegime">—</div><div style="font-size:10px;color:#4A5568" id="tFg">—</div></div>
+      <div style="text-align:center;padding:10px;background:#F0F2F5;border-radius:8px"><div style="font-size:10px;color:var(--txt3);margin-bottom:3px">Win Prob</div><div style="font-size:15px;font-weight:600;font-family:monospace;color:var(--blue)" id="tWinProb">—</div><div style="font-size:10px;color:#4A5568">Monte Carlo</div></div>
     </div>
   </div>
   <div class="card">
@@ -329,9 +329,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   <div class="card" style="border-color:rgba(240,185,11,0.3)">
     <div class="sec">Décision Oracle</div>
     <div style="display:flex;gap:10px;margin-bottom:10px">
-      <div style="flex:1;text-align:center;padding:10px;background:rgba(246,70,93,.1);border:1px solid rgba(246,70,93,.2);border-radius:8px"><div style="font-size:10px;color:var(--txt3)">SEUIL</div><div style="font-size:20px;font-weight:700;color:var(--red);font-family:monospace" id="dThreshold">—</div></div>
+      <div style="flex:1;text-align:center;padding:10px;background:rgba(246,70,93,.1);border:1px solid rgba(246,70,93,.2);border-radius:8px"><div style="font-size:10px;color:#6B7280">SEUIL</div><div style="font-size:20px;font-weight:700;color:var(--red);font-family:monospace" id="dThreshold">—</div></div>
       <div style="font-size:18px;color:var(--txt3);display:flex;align-items:center">vs</div>
-      <div style="flex:1;text-align:center;padding:10px;background:rgba(240,185,11,.1);border:1px solid rgba(240,185,11,.2);border-radius:8px"><div style="font-size:10px;color:var(--txt3)">SCORE</div><div style="font-size:20px;font-weight:700;color:var(--gold);font-family:monospace" id="dScore">—</div></div>
+      <div style="flex:1;text-align:center;padding:10px;background:rgba(240,185,11,.1);border:1px solid rgba(240,185,11,.2);border-radius:8px"><div style="font-size:10px;color:#6B7280">SCORE</div><div style="font-size:20px;font-weight:700;color:var(--gold);font-family:monospace" id="dScore">—</div></div>
     </div>
     <div style="text-align:center;padding:10px;border-radius:8px;font-weight:600" id="dDecision">—</div>
   </div>
@@ -341,7 +341,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <div class="page" id="page-market">
   <div class="card">
     <div class="sec">Régime de marché</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:20px;font-weight:700" id="mRegime">—</div><div style="font-size:12px;color:var(--txt2)" id="mRegimeD">—</div></div><div style="font-size:36px" id="mEmoji">—</div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><div style="font-size:20px;font-weight:700" id="mRegime">—</div><div style="font-size:12px;color:#4A5568" id="mRegimeD">—</div></div><div style="font-size:36px" id="mEmoji">—</div></div>
     <div class="row"><span class="row-label">BTC 24h</span><span class="row-val" id="mBtc">—</span></div>
     <div class="row"><span class="row-label">SOL 24h</span><span class="row-val" id="mSol">—</span></div>
     <div class="row"><span class="row-label">Volatilité</span><span class="row-val neu" id="mVol">—</span></div>
@@ -369,10 +369,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <div class="page" id="page-portfolio">
   <div class="bal-card">
     <div class="card-title">Solde total</div>
-    <div class="bal-main"><span id="pBal">—</span> <span style="font-size:16px;color:var(--txt2)">SOL</span></div>
+    <div class="bal-main"><span id="pBal">—</span> <span style="font-size:16px;color:#4A5568">SOL</span></div>
     <div class="bal-usd">≈ $<span id="pBalUsd">—</span></div>
     <div style="height:4px;background:var(--bg2);border-radius:2px;margin:10px 0 5px;overflow:hidden"><div style="height:100%;width:20%;background:var(--gold)" id="pBar"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3)">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#6B7280">
       <span>Réservé: <span style="color:var(--gold);font-family:monospace" id="pRes">—</span></span>
       <span>Tradable: <span style="color:var(--green);font-family:monospace" id="pTrad">—</span></span>
     </div>
@@ -401,10 +401,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   </div>
   <div class="card">
     <div class="sec">Whale Tracker <span class="pill pill-b">8 wallets</span></div>
-    <div class="wrow"><div class="wico">🐋</div><div><div class="wname">Smart Money 1</div><div style="font-size:11px;color:var(--txt3)">Trust: 90/100</div></div><span class="pill pill-g">ACTIF</span></div>
-    <div class="wrow"><div class="wico">🐋</div><div><div class="wname">Alpha Wallet</div><div style="font-size:11px;color:var(--txt3)">Trust: 88/100</div></div><span class="pill pill-g">ACTIF</span></div>
-    <div class="wrow"><div class="wico">🐋</div><div><div class="wname">Top Trader 1</div><div style="font-size:11px;color:var(--txt3)">Trust: 85/100</div></div><span class="pill pill-g">ACTIF</span></div>
-    <div style="text-align:center;padding:10px 0;font-size:12px;color:var(--txt3)">+ 5 autres wallets</div>
+    <div class="wrow"><div class="wico">🐋</div><div><div class="wname">Smart Money 1</div><div style="font-size:11px;color:#6B7280">Trust: 90/100</div></div><span class="pill pill-g">ACTIF</span></div>
+    <div class="wrow"><div class="wico">🐋</div><div><div class="wname">Alpha Wallet</div><div style="font-size:11px;color:#6B7280">Trust: 88/100</div></div><span class="pill pill-g">ACTIF</span></div>
+    <div class="wrow"><div class="wico">🐋</div><div><div class="wname">Top Trader 1</div><div style="font-size:11px;color:#6B7280">Trust: 85/100</div></div><span class="pill pill-g">ACTIF</span></div>
+    <div style="text-align:center;padding:10px 0;font-size:12px;color:#6B7280">+ 5 autres wallets</div>
   </div>
   <div class="card" style="border-color:rgba(240,185,11,0.2)"><div class="sec">Recommandation IA</div><div style="padding:10px;background:rgba(240,185,11,0.06);border-radius:8px;font-size:13px;color:var(--txt2);line-height:1.6" id="iRec">—</div></div>
   <div class="card">
@@ -447,12 +447,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
   <!-- MODAL WALLET -->
   <div id="ptModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:flex-end;justify-content:center">
-    <div style="background:var(--card2);border-radius:18px 18px 0 0;padding:24px;width:100%;max-width:480px;border-top:1px solid var(--border2)">
+    <div style="background:#FFFFFF;border-radius:18px 18px 0 0;padding:24px;width:100%;max-width:480px;border-top:1px solid #D1D9E0">
       <div style="width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px"></div>
       <div style="font-size:16px;font-weight:700;margin-bottom:6px">Modifier le capital</div>
       <p style="font-size:12px;color:var(--txt3);margin-bottom:18px;line-height:1.5">Capital fictif · Valeur en euros de base. La devise sélectionnée s'applique automatiquement.</p>
       <div style="display:flex;gap:10px">
-        <input type="number" id="ptNewAmt" placeholder="Ex: 1000" style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--txt);padding:12px 14px;font-family:'SF Mono',monospace;font-size:16px;outline:none">
+        <input type="number" id="ptNewAmt" placeholder="Ex: 1000" style="flex:1;background:#F8F9FB;border:1px solid #D1D9E0;border-radius:10px;color:#0D1117;padding:12px 14px;font-family:'SF Mono',monospace;font-size:16px;outline:none">
         <button onclick="ptSetWallet()" style="padding:12px 24px;background:linear-gradient(135deg,#F0B90B,#C99400);border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;color:#000;font-family:inherit">OK</button>
       </div>
       <div onclick="document.getElementById('ptModal').style.display='none'" style="margin-top:16px;text-align:center;font-size:12px;color:var(--txt3);cursor:pointer;padding:8px">Annuler</div>
@@ -461,7 +461,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
   <!-- MODAL DEVISE -->
   <div id="ptCurrModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:flex-end;justify-content:center">
-    <div style="background:var(--card2);border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;border-top:1px solid var(--border2);max-height:80vh;overflow-y:auto">
+    <div style="background:#FFFFFF;border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;border-top:1px solid #D1D9E0;max-height:80vh;overflow-y:auto">
       <div style="width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px"></div>
       <div style="font-size:16px;font-weight:700;margin-bottom:4px">Devise de trading</div>
       <div style="font-size:11px;color:var(--txt3);margin-bottom:16px">Les conversions s'appliquent instantanément sur tout le Paper Trading.</div>
@@ -472,7 +472,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
   <!-- MODAL RESET -->
   <div id="ptResetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;padding:20px">
-    <div style="background:var(--card2);border-radius:18px;padding:24px;width:100%;max-width:360px;border:1px solid rgba(246,70,93,0.2);box-shadow:0 20px 60px rgba(0,0,0,0.6)">
+    <div style="background:#FFFFFF;border-radius:18px;padding:24px;width:100%;max-width:360px;border:1px solid #FECACA;box-shadow:0 20px 60px rgba(0,0,0,0.6)">
       <div style="font-size:32px;text-align:center;margin-bottom:12px">🔄</div>
       <div style="font-size:16px;font-weight:700;text-align:center;margin-bottom:8px">Réinitialiser le Paper Trading</div>
       <div style="font-size:12px;color:var(--txt3);text-align:center;line-height:1.6;margin-bottom:20px">Toutes les positions et l'historique des trades seront effacés. Cette action est irréversible.</div>
@@ -484,7 +484,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
   <!-- MODAL STRATÉGIE -->
   <div id="ptStratModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:flex-end;justify-content:center;overflow-y:auto">
-    <div style="background:var(--card2);border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;border-top:1px solid var(--border2)" id="ptStratModalContent"></div>
+    <div style="background:#FFFFFF;border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;border-top:1px solid #D1D9E0" id="ptStratModalContent"></div>
   </div>
 
   <!-- ÉCRAN LISTE -->
@@ -530,22 +530,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
         </div>
         <div class="wc-stat">
           <div class="wc-stat-lbl">Win Rate</div>
-          <div class="wc-stat-val" id="ptWinRate" style="color:var(--txt)">—</div>
+          <div class="wc-stat-val" id="ptWinRate" style="color:#0D1117">—</div>
         </div>
       </div>
     </div>
 
     <!-- Stats row 2 — réseau + frais -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-      <div style="background:var(--card2);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:14px;display:flex;align-items:center;gap:10px">
+      <div style="background:#FFFFFF;border:1px solid #D1D9E0;border-radius:14px;padding:14px;display:flex;align-items:center;gap:10px">
         <div style="width:36px;height:36px;border-radius:10px;background:rgba(246,70,93,0.1);border:1px solid rgba(246,70,93,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">💸</div>
         <div>
           <div style="font-size:9px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">Frais payés</div>
           <div style="font-size:15px;font-weight:700;font-family:'SF Mono',monospace;color:var(--red)" id="ptFeesTotal">0,00 €</div>
-          <div style="font-size:10px;color:var(--txt3)" id="ptWinDetail">0 trades</div>
+          <div style="font-size:10px;color:#6B7280" id="ptWinDetail">0 trades</div>
         </div>
       </div>
-      <div style="background:var(--card2);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:14px;display:flex;align-items:center;gap:10px">
+      <div style="background:#FFFFFF;border:1px solid #D1D9E0;border-radius:14px;padding:14px;display:flex;align-items:center;gap:10px">
         <div style="width:36px;height:36px;border-radius:10px;background:rgba(14,203,129,0.1);border:1px solid rgba(14,203,129,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0" id="ptNetMini">🟢</div>
         <div>
           <div style="font-size:9px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">Réseau Solana</div>
@@ -554,7 +554,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       </div>
     </div>
 
-    <div style="background:rgba(26,33,40,0.95);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:10px;margin-bottom:10px"><div id="ptNetworkBar"></div></div>
+    <div style="background:#FFFFFF;border:1px solid #D1D9E0;border-radius:12px;padding:10px;margin-bottom:10px"><div id="ptNetworkBar"></div></div>
 
     <!-- Positions ouvertes -->
     <div class="card" id="ptOpenPosCard" style="display:none">
@@ -568,9 +568,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
         <div style="font-size:16px;margin-bottom:3px">📊</div>
         <div style="font-size:11px;font-weight:700;color:var(--gold)">Oracle Top 10</div>
       </div>
-      <div id="ptTabMeme" onclick="ptSwitchMode('meme')" style="flex:1;padding:12px 8px;text-align:center;border-radius:14px;cursor:pointer;background:var(--card);border:1.5px solid var(--border);transition:all .2s">
+      <div id="ptTabMeme" onclick="ptSwitchMode('meme')" style="flex:1;padding:12px 8px;text-align:center;border-radius:14px;cursor:pointer;background:#FFFFFF;border:1.5px solid #D1D9E0;transition:all .2s">
         <div style="font-size:16px;margin-bottom:3px">🔥</div>
-        <div style="font-size:11px;font-weight:700;color:var(--txt3)">Meme Arena 200</div>
+        <div style="font-size:11px;font-weight:700;color:#6B7280">Meme Arena 200</div>
       </div>
     </div>
 
@@ -592,8 +592,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
     <!-- Meme Arena -->
     <div id="ptMemeList" style="display:none">
-      <div style="background:var(--card);border:1px solid rgba(249,115,22,0.15);border-radius:var(--radius);margin-bottom:10px;overflow:hidden">
-        <div style="padding:14px;background:linear-gradient(135deg,rgba(249,115,22,0.06),rgba(139,92,246,0.04));border-bottom:1px solid var(--border)">
+      <div style="background:#FFFFFF;border:1px solid #F5D0A9;border-radius:var(--radius);margin-bottom:10px;overflow:hidden">
+        <div style="padding:14px;background:linear-gradient(135deg,rgba(249,115,22,0.05),rgba(139,92,246,0.03));border-bottom:1px solid #E5E7EB">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
             <div>
               <div style="font-size:14px;font-weight:800;color:var(--orange);letter-spacing:0.3px">🔥 Meme Arena · Oracle DEX</div>
@@ -603,21 +603,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap" id="ptMemeFilters">
             <div onclick="ptMemeFilter('all')"  data-f="all"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(249,115,22,0.15);color:var(--orange);border:1px solid rgba(249,115,22,0.3)">Tous</div>
-            <div onclick="ptMemeFilter('hot')"  data-f="hot"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg2);color:var(--txt3);border:1px solid var(--border)">🔥 Hot</div>
-            <div onclick="ptMemeFilter('safe')" data-f="safe" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg2);color:var(--txt3);border:1px solid var(--border)">🛡 Safe</div>
-            <div onclick="ptMemeFilter('new')"  data-f="new"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg2);color:var(--txt3);border:1px solid var(--border)">🆕 New</div>
+            <div onclick="ptMemeFilter('hot')"  data-f="hot"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:#F0F2F5;color:#4A5568;border:1px solid #D1D9E0">🔥 Hot</div>
+            <div onclick="ptMemeFilter('safe')" data-f="safe" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:#F0F2F5;color:#4A5568;border:1px solid #D1D9E0">🛡 Safe</div>
+            <div onclick="ptMemeFilter('new')"  data-f="new"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:#F0F2F5;color:#4A5568;border:1px solid #D1D9E0">🆕 New</div>
             <div onclick="ptMemeFilter('rug')"  data-f="rug"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(246,70,93,0.08);color:var(--red);border:1px solid rgba(246,70,93,0.2)">☠ Rug</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 72px 66px 56px;gap:0;padding:7px 12px;border-bottom:1px solid var(--border);font-size:8px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px">
+        <div style="display:grid;grid-template-columns:1fr 72px 66px 56px;gap:0;padding:7px 12px;border-bottom:1px solid #D1D9E0;font-size:8px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.8px">
           <div>Token</div><div style="text-align:right">Prix / 24h</div><div style="text-align:right">MC / Vol</div><div style="text-align:right">Score / RUG</div>
         </div>
         <div id="ptMemeTokList" style="max-height:65vh;overflow-y:auto"></div>
-        <div style="padding:10px;display:flex;gap:8px;justify-content:center;align-items:center;border-top:1px solid var(--border)">
-          <button onclick="ptMemePage(-1)" style="padding:6px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--txt2);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600">◀</button>
-          <span id="ptMemePageLbl" style="font-size:11px;color:var(--txt3)">1/8</span>
-          <button onclick="ptMemePage(1)" style="padding:6px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--txt2);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600">▶</button>
-          <span style="font-size:9px;color:var(--txt3)" id="ptMemeCountLbl">200 tokens</span>
+        <div style="padding:10px;display:flex;gap:8px;justify-content:center;align-items:center;border-top:1px solid #E5E7EB">
+          <button onclick="ptMemePage(-1)" style="padding:6px 16px;background:#F0F2F5;border:1px solid #D1D9E0;border-radius:8px;color:#374151;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600">◀</button>
+          <span id="ptMemePageLbl" style="font-size:11px;color:#6B7280">1/8</span>
+          <button onclick="ptMemePage(1)" style="padding:6px 16px;background:#F0F2F5;border:1px solid #D1D9E0;border-radius:8px;color:#374151;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600">▶</button>
+          <span style="font-size:9px;color:#6B7280" id="ptMemeCountLbl">200 tokens</span>
         </div>
       </div>
     </div>
@@ -631,7 +631,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
           <span>Sélection trades</span>
           <div style="display:flex;gap:10px">
             <span onclick="ptSelectAll(true)" style="font-size:10px;color:var(--blue);cursor:pointer;font-weight:700">Tout</span>
-            <span style="color:var(--txt3)">·</span>
+            <span style="color:#6B7280">·</span>
             <span onclick="ptSelectAll(false)" style="font-size:10px;color:var(--txt3);cursor:pointer;font-weight:700">Aucun</span>
           </div>
         </div>
@@ -661,7 +661,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       </div>
     </div>
     <div id="ptOracleRec" style="border-radius:12px;font-size:11px;margin-bottom:12px;padding:12px 14px;line-height:1.7"></div>
-    <div id="ptCCWrap" style="position:relative;height:230px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px"><canvas id="ptCC" style="width:100%;height:100%"></canvas></div>
+    <div id="ptCCWrap" style="position:relative;height:230px;background:#F8F9FB;border:1px solid #D1D9E0;border-radius:14px;overflow:hidden;margin-bottom:12px"><canvas id="ptCC" style="width:100%;height:100%"></canvas></div>
     <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px" id="ptIndic"></div>
     <div id="ptPosCard" style="margin-bottom:12px"></div>
     <div class="card" style="padding:12px;margin-bottom:10px">
@@ -682,21 +682,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="ptSGrid"></div>
     </div>
     <div class="card" style="padding:14px;margin-bottom:10px">
-      <div style="display:flex;background:var(--bg2);border-radius:10px;overflow:hidden;margin-bottom:14px;border:1px solid var(--border)">
+      <div style="display:flex;background:#F0F2F5;border-radius:10px;overflow:hidden;margin-bottom:14px;border:1px solid #D1D9E0">
         <div id="ptTabB" onclick="ptSetSide('buy')" style="flex:1;padding:11px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;background:rgba(14,203,129,0.12);color:var(--green);border-radius:9px 0 0 9px">▲ Long</div>
-        <div id="ptTabS" onclick="ptSetSide('sell')" style="flex:1;padding:11px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;color:var(--txt3)">▼ Clôturer</div>
+        <div id="ptTabS" onclick="ptSetSide('sell')" style="flex:1;padding:11px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;color:#6B7280">▼ Clôturer</div>
       </div>
       <div style="margin-bottom:12px">
         <div style="font-size:10px;font-weight:600;color:var(--txt3);margin-bottom:6px;display:flex;justify-content:space-between;text-transform:uppercase;letter-spacing:0.5px">
           <span>Montant <span id="ptLevAmtLabel" style="color:var(--gold);text-transform:none"></span></span>
           <span style="color:var(--gold);cursor:pointer;text-transform:none" onclick="ptMax()">MAX →</span>
         </div>
-        <input type="number" id="ptAmt" placeholder="Ex: 100" oninput="ptPreview()" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--txt);padding:12px 14px;font-family:'SF Mono',monospace;font-size:16px;outline:none">
+        <input type="number" id="ptAmt" placeholder="Ex: 100" oninput="ptPreview()" style="width:100%;background:#F8F9FB;border:1px solid #D1D9E0;border-radius:10px;color:#0D1117;padding:12px 14px;font-family:'SF Mono',monospace;font-size:16px;outline:none">
         <div style="display:flex;gap:6px;margin-top:8px">
-          <div onclick="ptPct(25)" style="flex:1;padding:7px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--txt3)">25%</div>
-          <div onclick="ptPct(50)" style="flex:1;padding:7px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--txt3)">50%</div>
-          <div onclick="ptPct(75)" style="flex:1;padding:7px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--txt3)">75%</div>
-          <div onclick="ptPct(100)" style="flex:1;padding:7px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--txt3)">100%</div>
+          <div onclick="ptPct(25)" style="flex:1;padding:7px;background:#F0F2F5;border:1px solid #D1D9E0;border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#374151">25%</div>
+          <div onclick="ptPct(50)" style="flex:1;padding:7px;background:#F0F2F5;border:1px solid #D1D9E0;border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#374151">50%</div>
+          <div onclick="ptPct(75)" style="flex:1;padding:7px;background:#F0F2F5;border:1px solid #D1D9E0;border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#374151">75%</div>
+          <div onclick="ptPct(100)" style="flex:1;padding:7px;background:#F0F2F5;border:1px solid #D1D9E0;border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#374151">100%</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="ptTpSl"></div>
@@ -738,7 +738,7 @@ function applyStatus(d){if(!d)return;set('hstatus',d.status);document.getElement
 function applyMarket(d){if(!d)return;const fg=d.fear_greed;set('hFg',fg);set('hFgL',d.fear_greed_label);set('mFg',fg);set('mFgL',d.fear_greed_label);drawGauge('gauge1',fg);drawGauge('gauge2',fg);document.getElementById('hFg').style.color=fg<25?'#F6465D':fg<50?'#F0B90B':'#0ECB81';document.getElementById('mFg').style.color=fg<25?'#F6465D':fg<50?'#F0B90B':'#0ECB81';const btcUp=d.btc_change_24h>=0,solUp=d.sol_change_24h>=0;set('hBtcC',(btcUp?'+':'')+d.btc_change_24h+'%');setClass('hBtcC','mch '+(btcUp?'up':'down'));set('hSolC',(solUp?'+':'')+d.sol_change_24h+'%');setClass('hSolC','mch '+(solUp?'up':'down'));set('mBtc',(btcUp?'+':'')+d.btc_change_24h+'%');setClass('mBtc','row-val '+(btcUp?'up':'down'));set('mSol',(solUp?'+':'')+d.sol_change_24h+'%');setClass('mSol','row-val '+(solUp?'up':'down'));set('mVol',d.volatility+'%');set('mConf',d.confidence+'%');set('mNews',d.news_sentiment);set('mNewsScore',d.news_score+'/100');set('mNewsCount',d.news_count);set('mWhales',d.whales_monitored);set('mStratDesc','Focus: '+d.min_score_override+' pts min requis');}
 function applyPortfolio(d){if(!d)return;set('hBal',d.balance_sol);set('hBalUsd',d.balance_usd);set('pBal',d.balance_sol);set('pBalUsd',d.balance_usd);set('pRes',d.reserved_sol+' SOL');set('pTrad',d.tradable_sol+' SOL');const pnl=d.pnl_sol;set('hPnl',(pnl>=0?'+':'')+pnl.toFixed(4));setClass('hPnl','bal-stat-val '+(pnl>=0?'up':'down'));set('pPnl',(pnl>=0?'+':'')+pnl.toFixed(4));setClass('pPnl','mval '+(pnl>=0?'up':'down'));set('hWr',d.win_rate+'%');set('pWr',d.win_rate+'%');set('hTrades',d.trades_total);set('pWrDetail',d.wins+'W / '+d.losses+'L');set('pPosCount',d.positions.length);if(d.positions.length>0){document.getElementById('pPositions').innerHTML=d.positions.map(p=>`<div class="trow"><div class="tico twin">📈</div><div style="flex:1"><div style="font-size:13px;font-weight:500">${p.symbol}</div><div style="font-size:11px;color:var(--txt3);font-family:monospace">${p.amount_sol} SOL</div></div><span class="pill pill-y">${p.status}</span></div>`).join('');}}
 function applyStats(d){if(!d)return;set('hDetected',d.total_detected);set('hBest',d.best_symbol+' | '+d.best_score+'/100');set('iTotal',d.total_analyzed);[['ib0','ib0v',d.pct_0_40],['ib40','ib40v',d.pct_40_60],['ib60','ib60v',d.pct_60_75],['ib75','ib75v',d.pct_75_85],['ib85','ib85v',d.pct_85_100]].forEach(([b,v,p])=>{setStyle(b,'width',p+'%');set(v,p+'%');});setStyle('sglobal','width',d.best_score+'%');set('sglobalv',d.best_score);set('dScore',d.best_score);const minScore=parseFloat(document.getElementById('dThreshold').textContent)||75;const ok=d.best_score>=minScore;const dEl=document.getElementById('dDecision');if(dEl){dEl.textContent=ok?'✅ SIGNAL DÉTECTÉ — PRÊT À TRADER':'❌ SCORE INSUFFISANT';dEl.style.background=ok?'rgba(14,203,129,0.1)':'rgba(246,70,93,0.1)';dEl.style.color=ok?'#0ECB81':'#F6465D';}set('tSymbol',d.best_symbol);set('tScore',d.best_score+'/100');initPriceChart(d.best_symbol);if(Array.isArray(d.tokens)){d.tokens.forEach(tk=>{const pt=PT_ALL.find(t=>t.sym===tk.symbol);if(pt){if(tk.score!==undefined)pt.score=tk.score;if(tk.rsi!==undefined)pt.rsi=tk.rsi;}});}}
-function applyTrades(d){if(!d)return;set('iWr',d.win_rate+'%');setClass('iWr','mval '+(d.win_rate>=50?'up':'down'));set('iRec',d.recommendation);set('iAvgP','+'+d.avg_profit+'%');set('iAvgL',d.avg_loss+'%');set('iBest','+'+d.best_trade+'%');set('iWorst',d.worst_trade+'%');const tp=d.total_profit_sol;set('iTotalPnl',(tp>=0?'+':'')+tp.toFixed(4)+' SOL');setClass('iTotalPnl','row-val '+(tp>=0?'up':'down'));if(d.trades&&d.trades.length>0){document.getElementById('pHistory').innerHTML=d.trades.slice(0,10).map(t=>{const w=t.profit_pct>0;return`<div class="trow"><div class="tico ${w?'twin':'tloss'}">${w?'✅':'❌'}</div><div style="flex:1"><div style="font-size:13px;font-weight:500">${t.symbol}</div><div style="font-size:11px;color:var(--txt3)">${t.exit_reason} · Score ${t.score}</div></div><div class="${w?'up':'down'}" style="font-family:monospace;font-size:13px">${w?'+':''}${t.profit_pct}%</div></div>`;}).join('');}}
+function applyTrades(d){if(!d)return;set('iWr',d.win_rate+'%');setClass('iWr','mval '+(d.win_rate>=50?'up':'down'));set('iRec',d.recommendation);set('iAvgP','+'+d.avg_profit+'%');set('iAvgL',d.avg_loss+'%');set('iBest','+'+d.best_trade+'%');set('iWorst',d.worst_trade+'%');const tp=d.total_profit_sol;set('iTotalPnl',(tp>=0?'+':'')+tp.toFixed(4)+' SOL');setClass('iTotalPnl','row-val '+(tp>=0?'up':'down'));if(d.trades&&d.trades.length>0){document.getElementById('pHistory').innerHTML=d.trades.slice(0,10).map(t=>{const w=t.profit_pct>0;return`<div class="trow"><div class="tico ${w?'twin':'tloss'}">${w?'✅':'❌'}</div><div style="flex:1"><div style="font-size:13px;font-weight:500">${t.symbol}</div><div style="font-size:11px;color:#6B7280">${t.exit_reason} · Score ${t.score}</div></div><div class="${w?'up':'down'}" style="font-family:monospace;font-size:13px">${w?'+':''}${t.profit_pct}%</div></div>`;}).join('');}}
 function applyStrategy(d){if(!d)return;set('mStratName',d.name);set('mStratDesc',d.description);set('mMaxPos',d.position_sol+' SOL');setStyle('stech','width','54%');set('stechv','54');setStyle('sdev','width','50%');set('sdevv','50');set('tRsi','57');set('tRsiL','Neutre');set('tWinProb','42%');}
 async function loadAll(){const[status,market,portfolio,stats,trades,strategy]=await Promise.all([api('/api/status'),api('/api/market'),api('/api/portfolio'),api('/api/stats'),api('/api/trades'),api('/api/strategy')]);applyStatus(status);applyMarket(market);applyPortfolio(portfolio);applyStats(stats);applyTrades(trades);applyStrategy(strategy);if(market){const btcBase=84000*(1+market.btc_change_24h/100),solBase=129*(1+market.sol_change_24h/100);set('hBtcP','$'+Math.round(btcBase).toLocaleString());set('hSolP','$'+solBase.toFixed(1));}const now=new Date();set('hRefresh','Màj: '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0'));}
 async function pauseOracle(){await fetch(API+'/api/pause',{method:'POST',headers:HEADERS});notif('⏸ Oracle mis en pause');loadAll();}
@@ -974,7 +974,7 @@ function ptUpdateNet(){
   const col=ptNet.cong>0.7?'#F6465D':ptNet.cong>0.4?'#F0B90B':'#0ECB81';
   const lbl=ptNet.cong>0.7?'🔴 Congestionné':ptNet.cong>0.4?'🟡 Chargé':'🟢 Fluide';
   const nb=document.getElementById('ptNetworkBar');
-  if(nb)nb.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:10px;color:var(--txt3)">Solana · ${Math.round(ptNet.tps).toLocaleString()} TPS</span><span style="font-size:10px;font-weight:600;color:${col}">${lbl}</span></div><div style="height:3px;background:var(--border);border-radius:2px"><div style="height:100%;width:${Math.round(ptNet.cong*100)}%;background:${col};border-radius:2px;transition:width 1.2s"></div></div>`;
+  if(nb)nb.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:10px;color:#6B7280">Solana · ${Math.round(ptNet.tps).toLocaleString()} TPS</span><span style="font-size:10px;font-weight:600;color:${col}">${lbl}</span></div><div style="height:3px;background:var(--border);border-radius:2px"><div style="height:100%;width:${Math.round(ptNet.cong*100)}%;background:${col};border-radius:2px;transition:width 1.2s"></div></div>`;
   const ns=document.getElementById('ptNetStat');if(ns){ns.textContent=lbl+' · '+Math.round(ptNet.tps).toLocaleString()+' TPS';ns.style.color=col;}
   const nm=document.getElementById('ptNetMini');if(nm){nm.textContent=ptNet.cong>0.7?'🔴':ptNet.cong>0.4?'🟡':'🟢';nm.style.fontSize='18px';}
   const ns2=document.getElementById('ptNetStat2');if(ns2){ns2.textContent=Math.round(ptNet.tps).toLocaleString()+' TPS';ns2.style.color=col;}
@@ -1259,12 +1259,12 @@ function ptRendPosDetail(sym){
     </div>
 <div class="card" style="padding:12px;margin-bottom:10px">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:10px">📊 Niveaux TP / SL · Distances au prix actuel</div>
-      ${s.tp3?`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600;color:#FFD700">🏆 TP3 (+${s.tp3}%)</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx*(1+s.tp3/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:#FFD700">+${((pos.execPx*(1+s.tp3/100)-mark)/mark*100).toFixed(1)}% restant</div></div></div>`:''}
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600;color:var(--green)">✅ TP2 (+${s.tp2}%)</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx*(1+s.tp2/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--green)">+${distTp2}% restant</div></div></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600;color:var(--green)">🎯 TP1 (+${s.tp1}%) ${pos.tp1Hit?'<span style="color:var(--gold)">✓ ATTEINT</span>':''}</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx*(1+s.tp1/100))} · clôture ${Math.round(s.tp1sz*100)}%</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:${parseFloat(distTp1)<0?'var(--green)':'var(--txt2)'}">+${distTp1}% restant</div></div></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:11px;font-weight:600;color:var(--txt3)">➡️ ENTRÉE</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx)}</div></div><div style="text-align:right;font-size:11px;color:var(--txt3)">référence</div></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0${pos.lev>1?';border-bottom:1px solid var(--border)':''}"><div><div style="font-size:12px;font-weight:600;color:var(--red)">🛑 SL (${s.sl}%)</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx*(1+s.sl/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--red)">${distSl}% restant</div></div></div>
-      ${pos.lev>1?`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0"><div><div style="font-size:12px;font-weight:700;color:var(--red);animation:pulse 2s infinite">💥 LIQUIDATION</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(liqPx)} · -${(100/pos.lev*0.9).toFixed(1)}% mouvement</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:700;color:var(--red)">${((liqPx-mark)/mark*100).toFixed(1)}% restant</div></div></div>`:''}
+      ${s.tp3?`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #E5E7EB"><div><div style="font-size:12px;font-weight:600;color:#FFD700">🏆 TP3 (+${s.tp3}%)</div><div style="font-size:10px;color:#6B7280">$${ptFmt(pos.execPx*(1+s.tp3/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:#FFD700">+${((pos.execPx*(1+s.tp3/100)-mark)/mark*100).toFixed(1)}% restant</div></div></div>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #E5E7EB"><div><div style="font-size:12px;font-weight:600;color:var(--green)">✅ TP2 (+${s.tp2}%)</div><div style="font-size:10px;color:#6B7280">$${ptFmt(pos.execPx*(1+s.tp2/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--green)">+${distTp2}% restant</div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #E5E7EB"><div><div style="font-size:12px;font-weight:600;color:var(--green)">🎯 TP1 (+${s.tp1}%) ${pos.tp1Hit?'<span style="color:var(--gold)">✓ ATTEINT</span>':''}</div><div style="font-size:10px;color:#6B7280">$${ptFmt(pos.execPx*(1+s.tp1/100))} · clôture ${Math.round(s.tp1sz*100)}%</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:${parseFloat(distTp1)<0?'var(--green)':'var(--txt2)'}">+${distTp1}% restant</div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #E5E7EB"><div><div style="font-size:11px;font-weight:600;color:#6B7280">➡️ ENTRÉE</div><div style="font-size:10px;color:#6B7280">$${ptFmt(pos.execPx)}</div></div><div style="text-align:right;font-size:11px;color:#6B7280">référence</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0${pos.lev>1?';border-bottom:1px solid #E5E7EB':''}"><div><div style="font-size:12px;font-weight:600;color:var(--red)">🛑 SL (${s.sl}%)</div><div style="font-size:10px;color:#6B7280">$${ptFmt(pos.execPx*(1+s.sl/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--red)">${distSl}% restant</div></div></div>
+      ${pos.lev>1?`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0"><div><div style="font-size:12px;font-weight:700;color:var(--red);animation:pulse 2s infinite">💥 LIQUIDATION</div><div style="font-size:10px;color:#6B7280">$${ptFmt(liqPx)} · -${(100/pos.lev*0.9).toFixed(1)}% mouvement</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:700;color:var(--red)">${((liqPx-mark)/mark*100).toFixed(1)}% restant</div></div></div>`:''}
     </div>
 <div class="card" style="padding:12px;margin-bottom:10px">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:10px">⚡ Métriques d'exécution réelles</div>
@@ -1278,7 +1278,7 @@ function ptRendPosDetail(sym){
     </div>
 <div class="card" style="padding:12px;margin-bottom:14px">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:10px">🎯 Scénarios P&L estimés (net frais)</div>
-      ${[{l:'TP3 🏆',p:s.tp3,col:'#FFD700'},{l:'TP2 ✅',p:s.tp2,col:'var(--green)'},{l:'TP1 🎯',p:s.tp1,col:'var(--green)'},{l:'SL 🛑',p:s.sl,col:'var(--red)'}].filter(x=>x.p!=null).map(x=>{const grossPnl=pos.sizeEur*x.p*pos.lev/100;const exitF=ptFees(sym,Math.abs(x.p)>100?pos.sizeEur*s.tp1sz:pos.sizeEur,'sell');const net=grossPnl-exitF.total;return`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(43,49,57,0.5)"><span style="font-size:11px;color:var(--txt2)">${x.l} (${x.p>=0?'+':''}${x.p}%)</span><div style="text-align:right"><div style="font-size:12px;font-weight:700;font-family:monospace;color:${x.col}">${net>=0?'+':''}${ptEuro(net)}</div><div style="font-size:10px;color:var(--txt3)">brut ${grossPnl>=0?'+':''}${ptEuro(grossPnl)}</div></div></div>`;}).join('')}
+      ${[{l:'TP3 🏆',p:s.tp3,col:'#FFD700'},{l:'TP2 ✅',p:s.tp2,col:'var(--green)'},{l:'TP1 🎯',p:s.tp1,col:'var(--green)'},{l:'SL 🛑',p:s.sl,col:'var(--red)'}].filter(x=>x.p!=null).map(x=>{const grossPnl=pos.sizeEur*x.p*pos.lev/100;const exitF=ptFees(sym,Math.abs(x.p)>100?pos.sizeEur*s.tp1sz:pos.sizeEur,'sell');const net=grossPnl-exitF.total;return`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(43,49,57,0.5)"><span style="font-size:11px;color:#4A5568">${x.l} (${x.p>=0?'+':''}${x.p}%)</span><div style="text-align:right"><div style="font-size:12px;font-weight:700;font-family:monospace;color:${x.col}">${net>=0?'+':''}${ptEuro(net)}</div><div style="font-size:10px;color:#6B7280">brut ${grossPnl>=0?'+':''}${ptEuro(grossPnl)}</div></div></div>`;}).join('')}
     </div>
 <button onclick="ptCloseAll('${sym}')" style="width:100%;padding:14px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:var(--red);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Clôturer ${sym}×${pos.lev} au prix marché</button>
     <button onclick="ptClosePosDetail()" style="width:100%;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--txt2);font-weight:600;font-size:13px;cursor:pointer;font-family:inherit">← Retour au Paper Trading</button>
@@ -1320,8 +1320,8 @@ function ptRefreshAll(){
         return`<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="ptOpenPosDetail('${pos.sym}')">
           <div style="width:28px;height:28px;border-radius:50%;background:${tok?.color||'#F0B90B'};color:${tok?.tc||'#111'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${pos.sym[0]}</div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:12px;font-weight:600">${pos.sym} <span style="color:var(--gold);font-size:10px">×${pos.lev}</span> <span style="font-size:10px;color:var(--txt3)">· ${pos.strat.name} · ${dur}</span></div>
-            <div style="font-size:10px;color:var(--txt3)">${ptEuro(pos.sizeEur)} · $${ptFmt(pos.execPx)}${pos.lev>1?' · 💥$'+ptFmt(liqPx):''}</div>
+            <div style="font-size:12px;font-weight:600">${pos.sym} <span style="color:var(--gold);font-size:10px">×${pos.lev}</span> <span style="font-size:10px;color:#6B7280">· ${pos.strat.name} · ${dur}</span></div>
+            <div style="font-size:10px;color:#6B7280">${ptEuro(pos.sizeEur)} · $${ptFmt(pos.execPx)}${pos.lev>1?' · 💥$'+ptFmt(liqPx):''}</div>
             <div style="font-size:9px;color:var(--blue);margin-top:2px">Tap pour détail complet →</div>
           </div>
           <div style="text-align:right;margin-right:4px">
@@ -1368,18 +1368,18 @@ function ptBuildList(){
     const pStr=lp?.loaded?'$'+ptFmt(lp.price):'…';
     const cStr=lp?.loaded?(lp.change24h>=0?'+':'')+lp.change24h.toFixed(2)+'%':'…';
     const cCol=lp?.loaded?(lp.change24h>=0?'var(--green)':'var(--red)'):'var(--txt3)';
-    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="ptOpenTrade('${tok.sym}','classic')">
-      <span style="font-size:10px;color:var(--txt3);width:14px;flex-shrink:0">${tok.rank}</span>
-      ${tokLogoHTML(tok.sym,34)}
+    return`<div style="display:flex;align-items:center;gap:10px;padding:11px 8px;border-radius:12px;cursor:pointer;margin-bottom:4px;background:#FFFFFF;border:1px solid #D1D9E0" onclick="ptOpenTrade('${tok.sym}','classic')">
+      <span style="font-size:9px;color:#8899AA;width:12px;flex-shrink:0;text-align:center">${tok.rank}</span>
+      ${tokLogoHTML(tok.sym,38)}
       <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:600">${tok.sym}${hasPos?'<span style="color:var(--gold);margin-left:4px;font-size:9px">●</span>':''}</div>
-        <div style="font-size:10px;color:var(--txt3)">${tok.name} · ${tok.type}</div>
+        <div style="font-size:14px;font-weight:700;color:#0D1117;display:flex;align-items:center;gap:5px">${tok.sym}${hasPos?'<span style="color:var(--gold);font-size:8px;background:rgba(240,185,11,0.15);padding:1px 5px;border-radius:4px">OPEN</span>':''}</div>
+        <div style="font-size:10px;color:#6B7280;margin-top:1px">${tok.name}</div>
       </div>
-      <div style="text-align:right;margin-right:8px;flex-shrink:0">
-        <div style="font-size:13px;font-weight:600;font-family:monospace">${pStr}</div>
-        <div style="font-size:11px;color:${cCol}">${cStr}</div>
+      <div style="text-align:right;flex-shrink:0;margin-right:4px">
+        <div style="font-size:13px;font-weight:700;font-family:'SF Mono',monospace;color:#0D1117">${pStr}</div>
+        <div style="font-size:11px;font-weight:600;color:${cCol}">${cStr}</div>
       </div>
-      <div style="font-size:15px;font-weight:700;font-family:monospace;color:${scCol};width:28px;text-align:right;flex-shrink:0">${sc}</div>
+      <div style="font-size:14px;font-weight:800;font-family:'SF Mono',monospace;color:${scCol};width:26px;text-align:center;background:${sc>=ptOracleMinScore?'rgba(240,185,11,0.12)':'rgba(255,255,255,0.05)'};border-radius:6px;padding:3px 0;flex-shrink:0">${sc}</div>
     </div>`;
   }).join('');
 }
@@ -1438,7 +1438,7 @@ function ptBuildMemeList(){
         <span style="font-size:9px;color:var(--txt3);width:16px;flex-shrink:0">${start+i+1}</span>
         <div style="width:30px;height:30px;border-radius:8px;background:${col};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;letter-spacing:-0.5px">${tok.sym.slice(0,3)}</div>
         <div style="min-width:0">
-          <div style="font-size:12px;font-weight:700;display:flex;align-items:center;gap:3px">${tok.sym}${hasPos?'<span style="color:var(--gold);font-size:9px">●</span>':''}${isBig?'<span style="font-size:9px">🔥</span>':''}${age?`<span style="font-size:8px;color:var(--txt3)">${age}</span>`:''}</div>
+          <div style="font-size:12px;font-weight:700;display:flex;align-items:center;gap:3px">${tok.sym}${hasPos?'<span style="color:var(--gold);font-size:9px">●</span>':''}${isBig?'<span style="font-size:9px">🔥</span>':''}${age?`<span style="font-size:8px;color:#6B7280">${age}</span>`:''}</div>
           <div style="font-size:9px;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px">${tok.name}</div>
         </div>
       </div>
@@ -1447,8 +1447,8 @@ function ptBuildMemeList(){
         <div style="font-size:10px;color:${chPos?'var(--green)':'var(--red)'};font-weight:${isBig?'700':'400'}">${chStr}</div>
       </div>
       <div style="width:64px;text-align:right;flex-shrink:0">
-        <div style="font-size:10px;color:var(--txt2)">$${mc}</div>
-        <div style="font-size:9px;color:var(--txt3)">$${vol}</div>
+        <div style="font-size:10px;color:#4A5568">$${mc}</div>
+        <div style="font-size:9px;color:#6B7280">$${vol}</div>
       </div>
       <div style="width:54px;text-align:right;flex-shrink:0">
         <div style="font-size:11px;font-weight:700;font-family:monospace;color:${scCol}">${sc}</div>
@@ -1553,8 +1553,8 @@ function ptShowStratDetail(id){
   const riskColor={'LOW':'var(--green)','MED':'var(--gold)','HIGH':'var(--red)','MAX':'#FF00FF'}[s.risk];
   const m=document.getElementById('ptStratModal');const c=document.getElementById('ptStratModalContent');
   if(!m||!c)return;
-  c.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="font-size:18px;font-weight:700">${s.emoji} ${s.name}</div><div onclick="document.getElementById('ptStratModal').style.display='none'" style="font-size:24px;cursor:pointer;color:var(--txt3)">×</div></div>
-    <div style="padding:10px 14px;border-radius:8px;background:rgba(240,185,11,0.06);border:1px solid rgba(240,185,11,0.15);margin-bottom:12px;font-size:11px;line-height:1.7;color:var(--txt2)"><strong style="color:var(--gold)">🔮 Explication Oracle</strong><br>${s.explain}</div>
+  c.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="font-size:18px;font-weight:700">${s.emoji} ${s.name}</div><div onclick="document.getElementById('ptStratModal').style.display='none'" style="font-size:24px;cursor:pointer;color:#6B7280">×</div></div>
+    <div style="padding:10px 14px;border-radius:8px;background:rgba(240,185,11,0.06);border:1px solid rgba(240,185,11,0.15);margin-bottom:12px;font-size:11px;line-height:1.7;color:#4A5568"><strong style="color:var(--gold)">🔮 Explication Oracle</strong><br>${s.explain}</div>
     <div class="grid2" style="margin-bottom:10px">
       <div class="mcard"><div class="mlabel">Risque</div><div class="mval" style="font-size:14px;color:${riskColor}">${s.risk}</div></div>
       <div class="mcard"><div class="mlabel">Score min</div><div class="mval" style="font-size:14px">${s.minScore}/100</div></div>
@@ -1645,7 +1645,7 @@ function ptBuildIndic(){
     ...(mt?[{l:'RUG',v:mt.rug.risk.toUpperCase(),c:mt.rug.risk==='danger'?'var(--red)':mt.rug.risk==='warn'?'var(--gold)':'var(--green)'}]:[]),
     ...(ptLev>1?[{l:`SL×${ptLev}`,v:(ptCurStrat?ptCurStrat.sl/ptLev:'-?')+'%',c:'var(--red)'}]:[]),
   ];
-  el.innerHTML=items.filter(i=>i.v!=='…'||i.l==='Vol 24h').map(i=>`<div style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:5px;font-size:10px;white-space:nowrap"><span style="color:var(--txt3)">${i.l}</span><span style="font-weight:600;margin-left:4px;color:${i.c}">${i.v}</span></div>`).join('');
+  el.innerHTML=items.filter(i=>i.v!=='…'||i.l==='Vol 24h').map(i=>`<div style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:5px;font-size:10px;white-space:nowrap"><span style="color:#6B7280">${i.l}</span><span style="font-weight:600;margin-left:4px;color:${i.c}">${i.v}</span></div>`).join('');
 }
 
 // ══ TP/SL NIVEAUX ══
@@ -1674,17 +1674,17 @@ function ptPreview(){
   const tp1n=+(netAmt*s.tp1*lm/100-ptFees(ptCurSym,netAmt*s.tp1sz,'sell').total).toFixed(2);
   const tp2n=+(netAmt*s.tp2*lm/100-ptFees(ptCurSym,netAmt*(1-s.tp1sz),'sell').total).toFixed(2);
   const sln=+(netAmt*Math.abs(s.sl)/100+ptFees(ptCurSym,netAmt,'sell').total).toFixed(2);
-  const expStr=lm>1?`<div style="display:flex;justify-content:space-between;font-weight:600"><span style="color:var(--gold)">Expo réelle ×${lm}</span><span style="color:var(--gold)">${ptEuro(netAmt*lm)}</span></div><div style="display:flex;justify-content:space-between"><span style="color:var(--red)">Liquidation</span><span style="color:var(--red)">-${(100/lm*0.9).toFixed(1)}% mouvement</span></div><div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Funding ~${(0.01*lm).toFixed(2)}%/h</span><span style="color:var(--red)">≈ -${ptEuro(netAmt*lm*0.0001)}/h</span></div>`:'';
+  const expStr=lm>1?`<div style="display:flex;justify-content:space-between;font-weight:600"><span style="color:var(--gold)">Expo réelle ×${lm}</span><span style="color:var(--gold)">${ptEuro(netAmt*lm)}</span></div><div style="display:flex;justify-content:space-between"><span style="color:var(--red)">Liquidation</span><span style="color:var(--red)">-${(100/lm*0.9).toFixed(1)}% mouvement</span></div><div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Funding ~${(0.01*lm).toFixed(2)}%/h</span><span style="color:var(--red)">≈ -${ptEuro(netAmt*lm*0.0001)}/h</span></div>`:'';
   el.innerHTML=`
     <div style="margin-bottom:10px;padding:9px 10px;background:rgba(246,70,93,0.05);border:1px solid rgba(246,70,93,0.12);border-radius:8px;font-size:10px;line-height:1.85">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:4px">💸 Frais réels Solana/Jupiter</div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Jupiter 0.1%</span><span style="color:var(--red)">-${ptEuro(fees.jupFee)}</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Pool Raydium 0.25%</span><span style="color:var(--red)">-${ptEuro(fees.poolFee)}</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Impact AMM (${fees.impactPct.toFixed(3)}%)</span><span style="color:var(--red)">-${ptEuro(fees.impact)}</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Gas + Jito</span><span style="color:var(--red)">-${ptEuro(fees.gas)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Jupiter 0.1%</span><span style="color:var(--red)">-${ptEuro(fees.jupFee)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Pool Raydium 0.25%</span><span style="color:var(--red)">-${ptEuro(fees.poolFee)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Impact AMM (${fees.impactPct.toFixed(3)}%)</span><span style="color:var(--red)">-${ptEuro(fees.impact)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Gas + Jito</span><span style="color:var(--red)">-${ptEuro(fees.gas)}</span></div>
       <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);margin-top:3px;padding-top:3px;font-weight:600"><span>Total</span><span style="color:var(--red)">-${ptEuro(fees.total)} (${fees.pct.toFixed(2)}%)</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Break-even A/R</span><span style="color:var(--gold);font-weight:600">+${be}%</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Latence</span><span>${(latMs/1000).toFixed(1)}s</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Break-even A/R</span><span style="color:var(--gold);font-weight:600">+${be}%</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Latence</span><span>${(latMs/1000).toFixed(1)}s</span></div>
       ${expStr}
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px">
@@ -1692,7 +1692,7 @@ function ptPreview(){
       <span style="color:var(--green)">TP1: +${ptEuro(tp1n)}</span>
       <span style="color:var(--green)">TP2: +${ptEuro(tp2n)}</span>
       <span style="color:var(--red)">SL: -${ptEuro(sln)}</span>
-      <span style="color:var(--txt3)">R/R ${(s.tp2*lm/Math.abs(s.sl)).toFixed(1)}x</span>
+      <span style="color:#6B7280">R/R ${(s.tp2*lm/Math.abs(s.sl)).toFixed(1)}x</span>
     </div>`;
 }
 
@@ -1746,7 +1746,7 @@ function ptRendHist(){
       </div>
       <div style="text-align:right;flex-shrink:0">
         <div style="font-weight:700;font-family:monospace;color:${isWin?'var(--green)':'var(--red)'}">${isWin?'+':''}${t.netPnl?.toFixed(2)||'—'} €</div>
-        <div style="font-size:9px;color:var(--txt3)">net</div>
+        <div style="font-size:9px;color:#6B7280">net</div>
       </div>
     </div>`;
   }).join('');
@@ -1765,7 +1765,7 @@ function ptBuildTradeSelList(){
   const el=document.getElementById('ptTradeSelList');if(!el)return;
   const sells=ptST.trades.filter(t=>t.side==='sell'&&t.netPnl!=null);
   if(!sells.length){el.innerHTML='<div style="font-size:12px;color:var(--txt3);padding:8px">Aucun trade clôturé</div>';return;}
-  el.innerHTML=sells.map(t=>{const on=ptSelectedTrades.has(t.id);const isWin=t.netPnl>0;return`<div class="trade-sel-row" onclick="ptToggleTradeSel(${t.id})"><div class="trade-sel-check${on?' on':''}">${on?'✓':''}</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600">${t.sym} · ${t.stratName}</div><div style="font-size:10px;color:var(--txt3)">${ptEuro(t.sizeEur)} · ${t.exitReason}</div></div><div style="text-align:right;flex-shrink:0;font-size:12px;font-weight:600;font-family:monospace;color:${isWin?'var(--green)':'var(--red)'}">${isWin?'+':''}${t.netPnl.toFixed(2)} €</div></div>`;}).join('');
+  el.innerHTML=sells.map(t=>{const on=ptSelectedTrades.has(t.id);const isWin=t.netPnl>0;return`<div class="trade-sel-row" onclick="ptToggleTradeSel(${t.id})"><div class="trade-sel-check${on?' on':''}">${on?'✓':''}</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600">${t.sym} · ${t.stratName}</div><div style="font-size:10px;color:#6B7280">${ptEuro(t.sizeEur)} · ${t.exitReason}</div></div><div style="text-align:right;flex-shrink:0;font-size:12px;font-weight:600;font-family:monospace;color:${isWin?'var(--green)':'var(--red)'}">${isWin?'+':''}${t.netPnl.toFixed(2)} €</div></div>`;}).join('');
   const sc=document.querySelector('#ptSelectSection .sel-count');if(sc)sc.textContent=ptSelectedTrades.size+' sélectionné(s)';
 }
 
@@ -1792,12 +1792,12 @@ function ptRendLearn(){
     </div>
     <div style="background:rgba(246,70,93,0.05);border:1px solid rgba(246,70,93,0.12);border-radius:8px;padding:10px;margin-bottom:10px;font-size:10px;line-height:1.9">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:5px">📊 Métriques d'exécution</div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Frais totaux</span><span style="color:var(--red);font-weight:600">-${ptEuro(totalFees)}</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Latence moy.</span><span>${(avgLat/1000).toFixed(2)}s</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Durée position moy.</span><span>${ptDur(avgHold)}</span></div>
-      ${levTrades.length?`<div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Win Rate levier</span><span style="color:${parseFloat(levWr)>=50?'var(--green)':'var(--red)'};font-weight:600">${levWr}% (${levTrades.length})</span></div>`:''}
-      ${memeTrades.length?`<div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Win Rate memecoins</span><span style="color:${parseFloat(memeWr)>=50?'var(--green)':'var(--red)'};font-weight:600">${memeWr}% (${memeTrades.length})</span></div>`:''}
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--txt3)">Coût frais/gain</span><span style="font-weight:600;color:${totalFees/(Math.abs(totalPnl)+totalFees||1)*100>25?'var(--red)':'var(--gold)'}">${(totalFees/(Math.abs(totalPnl)+totalFees||1)*100).toFixed(1)}%</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Frais totaux</span><span style="color:var(--red);font-weight:600">-${ptEuro(totalFees)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Latence moy.</span><span>${(avgLat/1000).toFixed(2)}s</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Durée position moy.</span><span>${ptDur(avgHold)}</span></div>
+      ${levTrades.length?`<div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Win Rate levier</span><span style="color:${parseFloat(levWr)>=50?'var(--green)':'var(--red)'};font-weight:600">${levWr}% (${levTrades.length})</span></div>`:''}
+      ${memeTrades.length?`<div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Win Rate memecoins</span><span style="color:${parseFloat(memeWr)>=50?'var(--green)':'var(--red)'};font-weight:600">${memeWr}% (${memeTrades.length})</span></div>`:''}
+      <div style="display:flex;justify-content:space-between"><span style="color:#6B7280">Coût frais/gain</span><span style="font-weight:600;color:${totalFees/(Math.abs(totalPnl)+totalFees||1)*100>25?'var(--red)':'var(--gold)'}">${(totalFees/(Math.abs(totalPnl)+totalFees||1)*100).toFixed(1)}%</span></div>
     </div>
     <div style="font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Win rate par stratégie</div>
     ${Object.entries(byStrat).sort(([,a],[,b])=>b.pnl-a.pnl).map(([k,v])=>{const w=(v.w/v.n*100).toFixed(0);const col=w>=60?'var(--green)':w>=40?'var(--gold)':'var(--red)';return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${k}</span><span style="color:${col};font-weight:600">${w}% · ${v.pnl>=0?'+':''}${v.pnl.toFixed(2)} € (${v.n})</span></div><div style="height:4px;background:var(--bg2);border-radius:2px"><div style="height:100%;width:${w}%;background:${col};border-radius:2px"></div></div></div>`;}).join('')}
@@ -1855,7 +1855,7 @@ function ptBuildCurrencyModal(){
       <div style="font-size:22px;width:36px;text-align:center">${c.flag}</div>
       <div style="flex:1">
         <div style="font-size:13px;font-weight:600">${c.name}</div>
-        <div style="font-size:10px;color:var(--txt3)">1 € = ${c.rate>=1?c.rate.toFixed(c.decimals<3?2:c.decimals):c.rate.toFixed(6)} ${c.sym}</div>
+        <div style="font-size:10px;color:#6B7280">1 € = ${c.rate>=1?c.rate.toFixed(c.decimals<3?2:c.decimals):c.rate.toFixed(6)} ${c.sym}</div>
       </div>
       <div style="text-align:right">
         <div style="font-size:13px;font-weight:700;font-family:monospace;color:${on?'var(--gold)':'var(--txt2)'}">${fmtVal} ${c.sym}</div>
