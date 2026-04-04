@@ -2090,187 +2090,233 @@ setInterval(ptFetchPrices,60000);
 // Boucles gérées dans INIT FINAL
 if(Date.now()-ptST.memeLastUpdate>86400000)setTimeout(function(){try{ptRefreshMeme();}catch(e){}},5000);
 
-// ══ FOND ANIMÉ — BOUGIES CRYPTO ══
+// ══ FOND ANIMÉ — ORACLE LOGO + BOUGIES CRYPTO ══
 (function(){
   const canvas = document.getElementById('bgCanvas');
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
-  let W, H, candles = [], particles = [], frame = 0;
-  
-  const COLORS = {
-    up: '#10B981', upBody: '#059669',
-    down: '#EF4444', downBody: '#DC2626',
-    grid: 'rgba(255,255,255,0.03)',
-    text: 'rgba(255,255,255,0.08)',
-    particle: '#F0B90B'
-  };
-  
+  let W, H, candles=[], particles=[], frame=0;
+  let logoAngle=0, logoPulse=0, logoX, logoY, logoR;
+
+  function randBetween(a,b){return a+Math.random()*(b-a);}
+
   function resize(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+    logoX=W/2; logoY=H/2; logoR=Math.min(W,H)*0.28;
     initCandles();
   }
-  
-  function randBetween(a,b){ return a + Math.random()*(b-a); }
-  
+
   function initCandles(){
-    candles = [];
-    const cols = Math.ceil(W / 28) + 2;
-    const rows = 3; // 3 rangées de chandeliers à différentes tailles
-    for(let row=0; row<rows; row++){
-      const baseY = H * (0.25 + row * 0.28);
-      const candleW = row===0?14:row===1?10:7;
-      const gap = candleW + 4;
-      const numC = Math.ceil(W/gap) + 2;
-      let price = 50 + row*20;
-      for(let i=0; i<numC; i++){
-        const change = randBetween(-8,8);
-        const open = price;
-        price += change;
-        const close = price;
-        const isUp = close >= open;
-        const bodyH = Math.abs(close-open)*0.8 + 1;
-        const wickTop = randBetween(1,5);
-        const wickBot = randBetween(1,5);
+    candles=[];
+    // 4 rangées de chandeliers — plus grands qu'avant
+    const rows=[
+      {yRatio:0.18, candleW:22, speed:0.4,  alpha:0.55, scale:2.2},
+      {yRatio:0.42, candleW:16, speed:0.28, alpha:0.38, scale:1.6},
+      {yRatio:0.65, candleW:11, speed:0.18, alpha:0.25, scale:1.1},
+      {yRatio:0.85, candleW:7,  speed:0.12, alpha:0.15, scale:0.7},
+    ];
+    rows.forEach((row,ri)=>{
+      const gap=row.candleW+5;
+      const numC=Math.ceil(W/gap)+4;
+      let price=50+ri*25;
+      for(let i=0;i<numC;i++){
+        const change=randBetween(-12,12);
+        const open=price; price+=change; const close=price;
+        const isUp=close>=open;
+        const bodyH=Math.abs(change)*0.9+1;
+        const wickTop=randBetween(2,8); const wickBot=randBetween(2,8);
         candles.push({
-          x: i*gap - gap,
-          y: baseY,
-          w: candleW,
-          open, close, isUp,
-          bodyH: Math.max(1, bodyH),
-          wickTop, wickBot,
-          speed: randBetween(0.15, 0.35) * (row===0?1:row===1?0.7:0.45),
-          row, gap,
-          alpha: row===0?0.7:row===1?0.45:0.28,
-          scale: row===0?1.4:row===1?1:0.7
+          x:i*gap-gap*2, y:H*row.yRatio,
+          w:row.candleW, open,close,isUp,
+          bodyH:Math.max(2,bodyH),wickTop,wickBot,
+          speed:row.speed*(0.7+Math.random()*0.6),
+          gap,alpha:row.alpha,scale:row.scale,row:ri
         });
       }
-    }
-    // Particules flottantes (prix/scores)
-    particles = [];
-    const labels = ['SOL','BTC','ETH','BONK','WIF','JUP','SOL','PEPE','ARB'];
-    for(let i=0;i<12;i++){
+    });
+    // Particules — labels crypto flottants
+    particles=[];
+    const labels=['SOL','BTC','ETH','BONK','WIF','JUP','PEPE','ARB','ORCA','RAY'];
+    for(let i=0;i<16;i++){
       particles.push({
-        x: Math.random()*W, y: Math.random()*H,
-        vx: randBetween(-0.2,0.2), vy: randBetween(-0.3,-0.1),
-        label: labels[i%labels.length],
-        val: '+' + (Math.random()*30).toFixed(1) + '%',
-        alpha: randBetween(0.04, 0.1),
-        size: randBetween(9,13)
+        x:Math.random()*W, y:Math.random()*H,
+        vx:randBetween(-0.15,0.15), vy:randBetween(-0.25,-0.08),
+        label:labels[i%labels.length],
+        val:(Math.random()>0.5?'+':'-')+(Math.random()*40).toFixed(1)+'%',
+        alpha:randBetween(0.05,0.12),
+        size:randBetween(10,15),
+        green:Math.random()>0.45
       });
     }
   }
-  
+
   function drawCandle(cd){
-    const scl = cd.scale;
-    const x = cd.x;
-    const y = cd.y;
-    const w = cd.w;
-    const col = cd.isUp ? COLORS.up : COLORS.down;
-    const bodyCol = cd.isUp ? COLORS.upBody : COLORS.downBody;
-    
-    ctx.globalAlpha = cd.alpha;
-    
+    const bh=cd.bodyH*cd.scale;
+    const mid=cd.x+cd.w/2;
+    const col=cd.isUp?'#10B981':'#EF4444';
+    ctx.globalAlpha=cd.alpha;
     // Mèche
-    ctx.strokeStyle = col;
-    ctx.lineWidth = 1;
+    ctx.strokeStyle=col; ctx.lineWidth=1.2;
     ctx.beginPath();
-    ctx.moveTo(x + w/2, y - cd.bodyH/2 - cd.wickTop*scl);
-    ctx.lineTo(x + w/2, y + cd.bodyH/2 + cd.wickBot*scl);
+    ctx.moveTo(mid, cd.y-bh/2-cd.wickTop*cd.scale);
+    ctx.lineTo(mid, cd.y+bh/2+cd.wickBot*cd.scale);
     ctx.stroke();
-    
     // Corps
-    ctx.fillStyle = cd.isUp ? col : bodyCol;
-    const bh = cd.bodyH * scl;
-    ctx.fillRect(x, y - bh/2, w, bh);
-    
-    // Reflet
-    if(cd.isUp && bh > 4){
-      ctx.fillStyle = 'rgba(255,255,255,0.15)';
-      ctx.fillRect(x+1, y - bh/2, 3, bh*0.4);
+    ctx.fillStyle=col;
+    ctx.fillRect(cd.x, cd.y-bh/2, cd.w, Math.max(1,bh));
+    // Reflet haussier
+    if(cd.isUp&&bh>5){
+      ctx.fillStyle='rgba(255,255,255,0.18)';
+      ctx.fillRect(cd.x+1,cd.y-bh/2,Math.min(3,cd.w*0.3),bh*0.45);
     }
-    
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha=1;
   }
-  
+
+  function drawOracleLogo(){
+    const cx=logoX, cy=logoY, r=logoR;
+    logoPulse+=0.018; logoAngle+=0.004;
+    const pulse=Math.sin(logoPulse)*0.06+1;
+
+    // Halo extérieur pulsant
+    const haloGrad=ctx.createRadialGradient(cx,cy,r*0.6,cx,cy,r*1.4);
+    haloGrad.addColorStop(0,'rgba(240,185,11,0.04)');
+    haloGrad.addColorStop(0.5,'rgba(240,185,11,0.02)');
+    haloGrad.addColorStop(1,'rgba(240,185,11,0)');
+    ctx.fillStyle=haloGrad;
+    ctx.beginPath(); ctx.arc(cx,cy,r*1.4,0,Math.PI*2); ctx.fill();
+
+    // Cercles concentriques — anneau externe
+    [1.0, 0.82, 0.65].forEach((ratio,i)=>{
+      ctx.beginPath();
+      ctx.arc(cx, cy, r*ratio*pulse, 0, Math.PI*2);
+      ctx.strokeStyle=`rgba(240,185,11,${[0.12,0.08,0.05][i]})`;
+      ctx.lineWidth=[2,1.5,1][i];
+      ctx.stroke();
+    });
+
+    // Arc rotatif (scanner)
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(logoAngle);
+    const arcGrad=ctx.createConicalGradient?ctx.createConicalGradient(0,0,0):null;
+    ctx.beginPath();
+    ctx.arc(0,0,r*0.82,0,Math.PI*0.6);
+    ctx.strokeStyle='rgba(240,185,11,0.18)';
+    ctx.lineWidth=2;
+    ctx.stroke();
+    ctx.restore();
+
+    // Deuxième arc contre-rotatif
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(-logoAngle*0.7);
+    ctx.beginPath();
+    ctx.arc(0,0,r*0.65,Math.PI*0.2,Math.PI*0.9);
+    ctx.strokeStyle='rgba(14,203,129,0.12)';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // Lignes scanning aux 4 points cardinaux
+    const scanLen=r*0.18;
+    const scanAlpha=0.15+Math.sin(logoPulse*1.5)*0.06;
+    [[0,-1],[1,0],[0,1],[-1,0]].forEach(([dx,dy])=>{
+      ctx.beginPath();
+      ctx.moveTo(cx+dx*(r*0.68), cy+dy*(r*0.68));
+      ctx.lineTo(cx+dx*(r*0.68+scanLen), cy+dy*(r*0.68+scanLen));
+      ctx.strokeStyle=`rgba(240,185,11,${scanAlpha})`;
+      ctx.lineWidth=1.5; ctx.stroke();
+    });
+
+    // Cercle central doré
+    const coreR=r*0.18*pulse;
+    const coreGrad=ctx.createRadialGradient(cx-coreR*0.3,cy-coreR*0.3,0,cx,cy,coreR);
+    coreGrad.addColorStop(0,'rgba(255,230,100,0.35)');
+    coreGrad.addColorStop(0.5,'rgba(240,185,11,0.22)');
+    coreGrad.addColorStop(1,'rgba(200,148,0,0.1)');
+    ctx.fillStyle=coreGrad;
+    ctx.beginPath(); ctx.arc(cx,cy,coreR,0,Math.PI*2); ctx.fill();
+
+    // Pupille Oracle
+    const pupR=r*0.07;
+    ctx.fillStyle='rgba(240,185,11,0.45)';
+    ctx.beginPath(); ctx.arc(cx,cy,pupR,0,Math.PI*2); ctx.fill();
+
+    // Point central vif
+    ctx.fillStyle='rgba(255,215,0,0.6)';
+    ctx.beginPath(); ctx.arc(cx,cy,pupR*0.4,0,Math.PI*2); ctx.fill();
+  }
+
   function draw(){
-    ctx.clearRect(0, 0, W, H);
-    
-    // Grille de fond subtile
-    ctx.strokeStyle = COLORS.grid;
-    ctx.lineWidth = 0.5;
-    for(let x=0; x<W; x+=40){
-      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
-    }
-    for(let y=0; y<H; y+=40){
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
-    }
-    
-    // Lignes de prix horizontales animées
-    const numLines = 5;
-    for(let i=0; i<numLines; i++){
-      const y = (H/(numLines+1)) * (i+1) + Math.sin(frame*0.005 + i)*8;
-      ctx.strokeStyle = `rgba(240,185,11,${0.03 + Math.sin(frame*0.01+i)*0.01})`;
-      ctx.lineWidth = 0.5;
-      ctx.setLineDash([8,16]);
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    ctx.clearRect(0,0,W,H);
+
+    // Logo Oracle en fond CENTRÉ
+    drawOracleLogo();
+
+    // Grille subtile
+    ctx.strokeStyle='rgba(255,255,255,0.025)';
+    ctx.lineWidth=0.5;
+    for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+    // Lignes de prix horizontales dorées animées
+    for(let i=0;i<6;i++){
+      const y=H/(7)*(i+1)+Math.sin(frame*0.006+i)*10;
+      ctx.strokeStyle=`rgba(240,185,11,${0.025+Math.sin(frame*0.012+i)*0.008})`;
+      ctx.lineWidth=0.5; ctx.setLineDash([10,20]);
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
       ctx.setLineDash([]);
-      // Prix label
-      ctx.globalAlpha = 0.06;
-      ctx.fillStyle = '#F0B90B';
-      ctx.font = '9px SF Mono, monospace';
-      ctx.fillText('$' + (40000 + i*8000 + Math.sin(frame*0.008)*200).toFixed(0), 8, y-3);
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha=0.07;
+      ctx.fillStyle='#F0B90B';
+      ctx.font='9px SF Mono,monospace';
+      ctx.fillText('$'+(38000+i*9000+Math.sin(frame*0.01)*300).toFixed(0),8,y-3);
+      ctx.globalAlpha=1;
     }
-    
+
     // Bougies
-    candles.forEach(cd => {
-      cd.x += cd.speed;
-      if(cd.x > W + 20) {
-        cd.x = -cd.w;
-        const change = randBetween(-8,8);
-        cd.open = cd.close || 50;
-        cd.close = cd.open + change;
-        cd.isUp = cd.close >= cd.open;
-        cd.bodyH = Math.max(1, Math.abs(change)*0.8 + 1);
-        cd.wickTop = randBetween(1,5);
-        cd.wickBot = randBetween(1,5);
+    candles.forEach(cd=>{
+      cd.x+=cd.speed;
+      if(cd.x>W+30){
+        cd.x=-cd.w*2;
+        const change=randBetween(-12,12);
+        cd.open=cd.close||50; cd.close=cd.open+change;
+        cd.isUp=cd.close>=cd.open;
+        cd.bodyH=Math.max(2,Math.abs(change)*0.9+1);
+        cd.wickTop=randBetween(2,8); cd.wickBot=randBetween(2,8);
       }
       drawCandle(cd);
     });
-    
-    // Particules texte (symboles + %)
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if(p.y < -20) { p.y = H + 10; p.x = Math.random()*W; }
-      if(p.x < -40) p.x = W + 10;
-      if(p.x > W+40) p.x = -10;
-      ctx.globalAlpha = p.alpha;
-      ctx.fillStyle = '#F0B90B';
-      ctx.font = `${p.size}px -apple-system, sans-serif`;
-      ctx.fillText(p.label, p.x, p.y);
-      ctx.font = `${p.size-2}px SF Mono, monospace`;
-      ctx.fillStyle = '#10B981';
-      ctx.fillText(p.val, p.x, p.y + p.size);
-      ctx.globalAlpha = 1;
+
+    // Particules
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.y<-20){p.y=H+10;p.x=Math.random()*W;}
+      if(p.x<-60)p.x=W+20; if(p.x>W+60)p.x=-20;
+      ctx.globalAlpha=p.alpha;
+      ctx.font=`700 ${p.size}px -apple-system,sans-serif`;
+      ctx.fillStyle='#F0B90B';
+      ctx.fillText(p.label,p.x,p.y);
+      ctx.font=`${p.size-2}px SF Mono,monospace`;
+      ctx.fillStyle=p.green?'#10B981':'#EF4444';
+      ctx.fillText(p.val,p.x,p.y+p.size);
+      ctx.globalAlpha=1;
     });
-    
-    // Scanline Oracle (rayon qui balaie)
-    const scanX = (frame * 1.5) % (W + 200) - 100;
-    const grad = ctx.createLinearGradient(scanX-60, 0, scanX+60, 0);
-    grad.addColorStop(0, 'transparent');
-    grad.addColorStop(0.5, 'rgba(240,185,11,0.04)');
-    grad.addColorStop(1, 'transparent');
-    ctx.fillStyle = grad;
-    ctx.fillRect(scanX-60, 0, 120, H);
-    
+
+    // Scanline Oracle
+    const scanX=(frame*1.2)%(W+200)-100;
+    const sg=ctx.createLinearGradient(scanX-80,0,scanX+80,0);
+    sg.addColorStop(0,'transparent');
+    sg.addColorStop(0.5,'rgba(240,185,11,0.035)');
+    sg.addColorStop(1,'transparent');
+    ctx.fillStyle=sg; ctx.fillRect(scanX-80,0,160,H);
+
     frame++;
     requestAnimationFrame(draw);
   }
-  
-  window.addEventListener('resize', resize);
-  resize();
-  draw();
+
+  window.addEventListener('resize',resize);
+  resize(); draw();
 })();
 
 // ══ ÉCRAN GRAPHIQUE COMPLET ══
@@ -2673,83 +2719,83 @@ function chartBuildHist() {
 
 
 // ══ TICKER LIVE 2 SECONDES — positions et prix en temps réel ══
-function ptTickerLive(){
-  // Drift brownien sur tous les prix connus (simule le marché live)
-  PT_ALL.forEach(tok => {
-    const lp = ptLP[tok.sym];
-    if(!lp || !lp.loaded || lp.price <= 0) return;
-    // Volatilité selon le type de token
-    const vol = {'L1':0.0008,'DEX':0.0012,'INFRA':0.001,'MEME':0.003}[tok.type] || 0.0015;
-    const drift = (Math.random() - 0.495) * vol; // légèrement biaisé à la hausse
-    lp.prev = lp.price;
-    lp.price = Math.max(lp.price * 0.001, lp.price * (1 + drift));
-    // Mettre à jour le change24h progressivement
-    lp.change24h = +(lp.change24h + drift * 100 * 0.1).toFixed(3);
+// Prix de base Paper Trading (simulés, indépendants de CoinGecko)
+const PT_BASE_PRICES={SOL:130,JUP:0.55,BONK:0.000018,WIF:1.8,PYTH:0.28,POPCAT:0.45,BOME:0.008,RAY:2.1,ORCA:3.5,MOODENG:0.12};
+
+function ptInitPrices(){
+  // Initialiser TOUS les prix avec des valeurs de base si CoinGecko pas dispo
+  PT_ALL.forEach(tok=>{
+    const lp=ptLP[tok.sym];
+    if(!lp||lp.loaded) return; // déjà chargé
+    const base=PT_BASE_PRICES[tok.sym]||0.01;
+    ptLP[tok.sym]={price:base,open24h:base,change24h:(Math.random()-0.5)*10,vol24h:base*1e6,loaded:true,ts:Date.now()};
   });
-
-  // Drift des memecoins aussi
-  ptMeme200.forEach(t => {
-    if(!t._price) return;
-    const vol = 0.004;
-    const drift = (Math.random() - 0.49) * vol;
-    t._price = Math.max(t._price * 0.001, t._price * (1 + drift));
+  // Init des memes
+  ptMeme200.forEach(t=>{
+    if(!t._price){
+      t._price=0.000001+Math.random()*0.001;
+      t._loaded=true;
+    }
   });
-
-  // Vérifier les TP/SL avec le nouveau prix
-  ptCheckAutoClose();
-
-  // Mettre à jour l'UI des positions ouvertes
-  if(ptST.positions.length > 0){
-    // Update wallet P&L unrealisé
-    let unreal = 0;
-    ptST.positions.forEach(p => { unreal += ptUnreal(p).pnl; });
-    const se = (id,val,col) => {const e=document.getElementById(id);if(e){e.textContent=val;if(col)e.style.color=col;}};
-    se('ptPnlUnreal',(unreal>=0?'+':'')+ptFmt$(unreal),unreal===0?'var(--txt2)':unreal>0?'#10B981':'#EF4444');
-
-    // Update la liste des positions ouvertes
-    const posList = document.getElementById('ptOpenPosList');
-    if(posList && posList.innerHTML !== '' && document.getElementById('ptOpenPosCard').style.display !== 'none'){
-      // Mettre à jour uniquement les valeurs P&L sans reconstruire tout le DOM
-      ptST.positions.forEach(pos => {
-        const {pnl, pct} = ptUnreal(pos);
-        const isPos = pnl >= 0;
-        // Chercher les éléments par data attribut
-        const pnlEls = posList.querySelectorAll('[data-pos-pnl="'+pos.sym+'"]');
-        pnlEls.forEach(el => {
-          el.textContent = (isPos?'+':'') + pnl.toFixed(2) + ' €';
-          el.style.color = isPos ? '#10B981' : '#EF4444';
-        });
-        const pctEls = posList.querySelectorAll('[data-pos-pct="'+pos.sym+'"]');
-        pctEls.forEach(el => {
-          el.textContent = (isPos?'+':'') + pct.toFixed(2) + '%';
-          el.style.color = isPos ? '#10B981' : '#EF4444';
-        });
-      });
-    }
-
-    // Update pos card dans l'écran trade
-    if(ptCurSym) ptRendPosCard();
-
-    // Update écran chart si ouvert
-    if(chartCurSym && document.getElementById('ptChartScr').style.display !== 'none'){
-      chartBuildPos();
-    }
-
-    // Update écran détail position si ouvert
-    if(ptDetailInterval && ptCurSym){
-      ptRendPosDetail(ptCurSym);
-    }
-  }
-
-  // Update le prix affiché dans l'écran trade
-  if(ptCurSym) ptUpdateTradeHeader();
-
-  // Update le ticker du header trade dans chart
-  if(chartCurSym && document.getElementById('ptChartScr').style.display !== 'none'){
-    chartBuildHeader(chartCurSym);
-  }
 }
 
+function ptTickerLive(){
+  // S'assurer que tous les prix sont initialisés
+  ptInitPrices();
+
+  // Drift brownien TOUTES les 2s sur TOUS les tokens
+  const VOL={'L1':0.0012,'DEX':0.0018,'INFRA':0.0015,'MEME':0.004};
+  PT_ALL.forEach(tok=>{
+    const lp=ptLP[tok.sym];
+    if(!lp||lp.price<=0) return;
+    const vol=VOL[tok.type]||0.002;
+    const drift=(Math.random()-0.495)*vol;
+    lp.price=Math.max(lp.price*0.0001, lp.price*(1+drift));
+    lp.change24h=+((lp.change24h||0)+drift*80).toFixed(2);
+    lp.loaded=true;
+  });
+
+  // Drift memes
+  ptMeme200.forEach(t=>{
+    if(!t._price) t._price=0.000001+Math.random()*0.001;
+    const drift=(Math.random()-0.49)*0.005;
+    t._price=Math.max(t._price*0.0001, t._price*(1+drift));
+  });
+
+  // Pour les positions: aussi drifter le prix de leur sym si pas dans PT_ALL
+  ptST.positions.forEach(pos=>{
+    if(!ptLP[pos.sym]){
+      ptLP[pos.sym]={price:pos.execPx*(1+(Math.random()-0.495)*0.003),open24h:pos.execPx,change24h:0,vol24h:0,loaded:true,ts:Date.now()};
+    }
+  });
+
+  // Vérifier TP/SL
+  ptCheckAutoClose();
+
+  // MISE À JOUR UI — directe et simple
+  if(ptST.positions.length>0){
+    let unreal=0;
+    ptST.positions.forEach(p=>{unreal+=ptUnreal(p).pnl;});
+    const pnrEl=document.getElementById('ptPnlUnreal');
+    if(pnrEl){pnrEl.textContent=(unreal>=0?'+':'')+ptFmt$(unreal);pnrEl.style.color=unreal>0?'#10B981':unreal<0?'#EF4444':'#94A3B8';}
+
+    // Reconstruire la liste positions (simple et fiable)
+    ptRefreshAll();
+
+    // Écran trade ouvert
+    if(ptCurSym){ptUpdateTradeHeader();ptRendPosCard();}
+
+    // Écran chart ouvert
+    const chartScr=document.getElementById('ptChartScr');
+    if(chartScr&&chartScr.style.display!=='none'){chartBuildHeader(chartCurSym);chartBuildPos();}
+
+    // Détail position ouvert
+    if(ptDetailInterval&&ptCurSym) ptRendPosDetail(ptCurSym);
+  } else {
+    // Pas de position : juste update les prix dans la liste
+    if(ptCurSym) ptUpdateTradeHeader();
+  }
+}
 // ══ INIT FINAL — toutes les variables sont déclarées ══
 (function(){
   // Fermer le splash après 2.5s garanti
@@ -2764,6 +2810,8 @@ function ptTickerLive(){
     },450);
   },2500);
 
+  // Initialiser les prix de base IMMÉDIATEMENT (sans attendre CoinGecko)
+  try{ptInitPrices();}catch(e){console.warn('ptInitPrices',e);}
   // Init Paper Trading
   try{ptUpdateNet();}catch(e){console.warn('ptUpdateNet',e);}
   try{ptBuildList();}catch(e){console.warn('ptBuildList',e);}
