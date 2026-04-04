@@ -281,6 +281,165 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   <div style="padding:14px" id="pdContent"></div>
 </div>
 
+<!-- ÉCRAN GRAPHIQUE COMPLET -->
+<div id="ptChartScr" style="display:none;position:fixed;inset:0;z-index:160;background:#0D1117;overflow-y:auto;padding-bottom:80px">
+  
+  <!-- Header sticky chart -->
+  <div id="chartHeader" style="position:sticky;top:0;z-index:10;background:rgba(13,17,23,0.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <button onclick="ptCloseChart()" style="background:none;border:none;color:#94A3B8;font-size:20px;cursor:pointer;padding:0 4px">←</button>
+      <div id="chartTokLogo" style="flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:16px;font-weight:800;color:#F1F5F9" id="chartTokName">—</div>
+        <div style="font-size:10px;color:#64748B" id="chartTokType">—</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:20px;font-weight:800;font-family:SF Mono,monospace;color:#F1F5F9" id="chartPrice">—</div>
+        <div style="font-size:12px;font-weight:600" id="chartChange">—</div>
+      </div>
+    </div>
+    <!-- Timeframes -->
+    <div style="display:flex;gap:6px">
+      <div onclick="chartSetTF('1m')"  data-tf="1m"  class="chart-tf" style="padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(240,185,11,0.15);color:#F0B90B;border:1px solid rgba(240,185,11,0.3)">1m</div>
+      <div onclick="chartSetTF('5m')"  data-tf="5m"  class="chart-tf" style="padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:transparent;color:#64748B;border:1px solid rgba(255,255,255,0.08)">5m</div>
+      <div onclick="chartSetTF('15m')" data-tf="15m" class="chart-tf" style="padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:transparent;color:#64748B;border:1px solid rgba(255,255,255,0.08)">15m</div>
+      <div onclick="chartSetTF('1h')"  data-tf="1h"  class="chart-tf" style="padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:transparent;color:#64748B;border:1px solid rgba(255,255,255,0.08)">1h</div>
+      <div onclick="chartSetTF('4h')"  data-tf="4h"  class="chart-tf" style="padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:transparent;color:#64748B;border:1px solid rgba(255,255,255,0.08)">4h</div>
+      <div onclick="chartSetTF('1d')"  data-tf="1d"  class="chart-tf" style="padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;background:transparent;color:#64748B;border:1px solid rgba(255,255,255,0.08)">1D</div>
+    </div>
+  </div>
+
+  <div style="padding:12px">
+
+    <!-- GRAND GRAPHIQUE -->
+    <div style="background:rgba(15,22,32,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:12px">
+      <canvas id="chartMainCanvas" style="width:100%;display:block"></canvas>
+      <!-- Légende prix en overlay -->
+      <div style="display:flex;gap:12px;padding:8px 12px;border-top:1px solid rgba(255,255,255,0.06);font-size:10px;font-family:SF Mono,monospace">
+        <span style="color:#64748B">O <span id="chartO" style="color:#E8EAED">—</span></span>
+        <span style="color:#64748B">H <span id="chartH" style="color:#10B981">—</span></span>
+        <span style="color:#64748B">L <span id="chartL" style="color:#EF4444">—</span></span>
+        <span style="color:#64748B">C <span id="chartC" style="color:#E8EAED">—</span></span>
+        <span style="color:#64748B">V <span id="chartV" style="color:#94A3B8">—</span></span>
+      </div>
+    </div>
+
+    <!-- INDICATEURS TECHNIQUES -->
+    <div style="background:rgba(15,22,32,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <span>📊</span> Indicateurs Techniques
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        
+        <!-- RSI -->
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:11px;font-weight:700;color:#94A3B8">RSI (14)</span>
+            <span id="chartRsiVal" style="font-size:14px;font-weight:800;font-family:SF Mono,monospace">—</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:6px">
+            <div id="chartRsiBar" style="height:100%;border-radius:2px;transition:width 0.5s"></div>
+          </div>
+          <div id="chartRsiLabel" style="font-size:9px;font-weight:600;letter-spacing:0.5px">—</div>
+          <div style="font-size:9px;color:#475569;margin-top:4px;line-height:1.4" id="chartRsiExp">—</div>
+        </div>
+
+        <!-- MACD -->
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:11px;font-weight:700;color:#94A3B8">MACD</span>
+            <span id="chartMacdVal" style="font-size:12px;font-weight:800;font-family:SF Mono,monospace">—</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:6px">
+            <div style="flex:1;text-align:center;padding:3px;background:rgba(255,255,255,0.04);border-radius:4px">
+              <div style="font-size:8px;color:#64748B">MACD</div>
+              <div id="chartMacdLine" style="font-size:10px;font-weight:700;font-family:SF Mono,monospace">—</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:3px;background:rgba(255,255,255,0.04);border-radius:4px">
+              <div style="font-size:8px;color:#64748B">Signal</div>
+              <div id="chartMacdSig" style="font-size:10px;font-weight:700;font-family:SF Mono,monospace">—</div>
+            </div>
+          </div>
+          <div id="chartMacdLabel" style="font-size:9px;font-weight:600;letter-spacing:0.5px">—</div>
+          <div style="font-size:9px;color:#475569;margin-top:4px;line-height:1.4" id="chartMacdExp">—</div>
+        </div>
+
+        <!-- Bandes de Bollinger -->
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.06)">
+          <div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:#94A3B8">Bollinger Bands</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:6px;text-align:center">
+            <div><div style="font-size:8px;color:#EF4444">Upper</div><div id="chartBBU" style="font-size:9px;font-weight:700;font-family:SF Mono,monospace;color:#EF4444">—</div></div>
+            <div><div style="font-size:8px;color:#94A3B8">Mid</div><div id="chartBBM" style="font-size:9px;font-weight:700;font-family:SF Mono,monospace">—</div></div>
+            <div><div style="font-size:8px;color:#10B981">Lower</div><div id="chartBBL" style="font-size:9px;font-weight:700;font-family:SF Mono,monospace;color:#10B981">—</div></div>
+          </div>
+          <div id="chartBBLabel" style="font-size:9px;font-weight:600;letter-spacing:0.5px">—</div>
+          <div style="font-size:9px;color:#475569;margin-top:4px;line-height:1.4" id="chartBBExp">—</div>
+        </div>
+
+        <!-- Volume + ATR -->
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.06)">
+          <div style="margin-bottom:8px"><span style="font-size:11px;font-weight:700;color:#94A3B8">Volume & ATR</span></div>
+          <div style="margin-bottom:6px">
+            <div style="font-size:8px;color:#64748B;margin-bottom:2px">Volume 24h</div>
+            <div id="chartVol" style="font-size:13px;font-weight:800;font-family:SF Mono,monospace;color:#E8EAED">—</div>
+          </div>
+          <div>
+            <div style="font-size:8px;color:#64748B;margin-bottom:2px">ATR (volatilité)</div>
+            <div id="chartAtr" style="font-size:13px;font-weight:800;font-family:SF Mono,monospace;color:#F0B90B">—</div>
+          </div>
+          <div style="font-size:9px;color:#475569;margin-top:6px;line-height:1.4" id="chartVolExp">—</div>
+        </div>
+
+        <!-- Score Oracle -->
+        <div style="background:rgba(240,185,11,0.05);border-radius:12px;padding:12px;border:1px solid rgba(240,185,11,0.2);grid-column:1/-1">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:11px;font-weight:700;color:#F0B90B">🔮 Score Oracle</span>
+            <span id="chartScoreVal" style="font-size:20px;font-weight:900;color:#F0B90B;font-family:SF Mono,monospace">—</span>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:8px">
+            <div id="chartScoreBar" style="height:100%;border-radius:3px;transition:width 0.5s;background:linear-gradient(90deg,#EF4444,#F0B90B,#10B981)"></div>
+          </div>
+          <div id="chartScoreExp" style="font-size:10px;color:#94A3B8;line-height:1.6">—</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RECOMMANDATION ORACLE -->
+    <div id="chartOracleRec" style="border-radius:16px;padding:14px;margin-bottom:12px;border-left:4px solid #10B981;background:rgba(16,185,129,0.06)">
+      <div style="font-size:12px;font-weight:800;margin-bottom:8px" id="chartRecTitle">🔮 Oracle — Analyse en cours</div>
+      <div style="font-size:11px;line-height:1.7;color:#94A3B8" id="chartRecBody">—</div>
+    </div>
+
+    <!-- POSITION ACTIVE SUR CE TOKEN -->
+    <div id="chartPosSection" style="display:none;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+        <span>📈</span> Position ouverte
+      </div>
+      <div id="chartPosDetail" style="background:rgba(15,22,32,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px"></div>
+    </div>
+
+    <!-- BOUTONS ACTION -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <button onclick="ptOpenTradeFromChart()" style="padding:14px;background:linear-gradient(135deg,#10B981,#059669);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(16,185,129,0.25)">▲ Long</button>
+      <button onclick="ptCloseFromChart()" id="chartCloseBtn" style="padding:14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:12px;color:#EF4444;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;display:none">Clôturer</button>
+    </div>
+
+    <!-- STRATEGIES DISPONIBLES -->
+    <div style="background:rgba(15,22,32,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">🎯 Stratégies Oracle recommandées</div>
+      <div id="chartStratList" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <!-- HISTORIQUE TRADES SUR CE TOKEN -->
+    <div style="background:rgba(15,22,32,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px">
+      <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">📋 Historique trades</div>
+      <div id="chartTradeHist"></div>
+    </div>
+
+  </div>
+</div>
+
 <header>
   <div class="logo">
     <div class="logo-mark">
@@ -1377,7 +1536,7 @@ function ptRefreshAll(){
         const{pnl,pct}=ptUnreal(pos);const isPos=pnl>=0;const tok=PT_ALL.find(t=>t.sym===pos.sym)||ptMeme200.find(t=>t.sym===pos.sym);
         const dur=ptDur(Date.now()-pos.openTs);const funding=ptFundingCost(pos);
         const liqPx=ptLiqPrice(pos);
-        return`<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="ptOpenPosDetail('${pos.sym}')">
+        return`<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="ptOpenChart('${pos.sym}','classic')">
           <div style="width:28px;height:28px;border-radius:50%;background:${tok?.color||'#F0B90B'};color:${tok?.tc||'#111'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${pos.sym[0]}</div>
           <div style="flex:1;min-width:0">
             <div style="font-size:12px;font-weight:600">${pos.sym} <span style="color:var(--gold);font-size:10px">×${pos.lev}</span> <span style="font-size:10px;color:#6B7280">· ${pos.strat.name} · ${dur}</span></div>
@@ -1428,7 +1587,7 @@ function ptBuildList(){
     const pStr=lp?.loaded?'$'+ptFmt(lp.price):'…';
     const cStr=lp?.loaded?(lp.change24h>=0?'+':'')+lp.change24h.toFixed(2)+'%':'…';
     const cCol=lp?.loaded?(lp.change24h>=0?'var(--green)':'var(--red)'):'var(--txt3)';
-    return`<div style="display:flex;align-items:center;gap:10px;padding:11px 8px;border-radius:12px;cursor:pointer;margin-bottom:4px;background:rgba(20,28,40,0.85);border:1px solid rgba(255,255,255,0.1)" onclick="ptOpenTrade('${tok.sym}','classic')">
+    return`<div style="display:flex;align-items:center;gap:10px;padding:11px 8px;border-radius:12px;cursor:pointer;margin-bottom:4px;background:rgba(20,28,40,0.85);border:1px solid rgba(255,255,255,0.1)" onclick="ptOpenChart('${tok.sym}','classic')">
       <span style="font-size:9px;color:#8899AA;width:12px;flex-shrink:0;text-align:center">${tok.rank}</span>
       ${tokLogoHTML(tok.sym,38)}
       <div style="flex:1;min-width:0">
@@ -1493,7 +1652,7 @@ function ptBuildMemeList(){
     const colors=['#FF6B35','#F0B90B','#EC4899','#8B5CF6','#10B981','#3B82F6','#EF4444','#F59E0B','#6366F1','#14B8A6'];
     const col=tok.color||colors[((tok.sym.charCodeAt(0)||65)+tok.sym.length)%colors.length];
     const age=tok.rug.ageHours<24?`${tok.rug.ageHours}h`:tok.rug.ageHours<168?`${Math.round(tok.rug.ageHours/24)}j`:'';
-    return`<div class="dex-row" onclick="ptOpenTrade('${tok.sym}','meme')">
+    return`<div class="dex-row" onclick="ptOpenChart('${tok.sym}','meme')">
       <div style="flex:1;min-width:0;display:flex;align-items:center;gap:8px">
         <span style="font-size:9px;color:var(--txt3);width:16px;flex-shrink:0">${start+i+1}</span>
         <div style="width:30px;height:30px;border-radius:8px;background:${col};color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;letter-spacing:-0.5px">${tok.sym.slice(0,3)}</div>
@@ -1774,7 +1933,7 @@ function ptRendPosCard(){
   const pos=ptST.positions.find(p=>p.sym===ptCurSym);if(!pos){el.innerHTML='';return;}
   const{pnl,pct}=ptUnreal(pos);const isPos=pnl>=0;const s=pos.strat;
   const dur=ptDur(Date.now()-pos.openTs);const funding=ptFundingCost(pos);
-  el.innerHTML=`<div style="background:rgba(14,203,129,0.05);border:1px solid rgba(14,203,129,0.2);border-radius:10px;padding:12px;cursor:pointer" onclick="ptOpenPosDetail('${pos.sym}')">
+  el.innerHTML=`<div style="background:rgba(14,203,129,0.05);border:1px solid rgba(14,203,129,0.2);border-radius:10px;padding:12px;cursor:pointer" onclick="ptOpenChart('${pos.sym}','classic')">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
       <div><div style="font-size:12px;font-weight:600">LONG <span style="color:var(--gold)">×${pos.lev}</span> ${pos.sym} · ${s.name} · ${dur}</div>
       <div style="font-size:10px;color:var(--txt3);margin-top:2px">${ptEuro(pos.sizeEur)} · Entrée $${ptFmt(pos.execPx)}${pos.lev>1?' · 💥$'+ptFmt(ptLiqPrice(pos)):''}</div>
@@ -1862,7 +2021,7 @@ function ptRendLearn(){
     <div style="font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Win rate par stratégie</div>
     ${Object.entries(byStrat).sort(([,a],[,b])=>b.pnl-a.pnl).map(([k,v])=>{const w=(v.w/v.n*100).toFixed(0);const col=w>=60?'var(--green)':w>=40?'var(--gold)':'var(--red)';return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${k}</span><span style="color:${col};font-weight:600">${w}% · ${v.pnl>=0?'+':''}${v.pnl.toFixed(2)} € (${v.n})</span></div><div style="height:4px;background:var(--bg2);border-radius:2px"><div style="height:100%;width:${w}%;background:${col};border-radius:2px"></div></div></div>`;}).join('')}
     <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;font-size:11px">${Object.entries(byExit).map(([k,v])=>`<span style="padding:3px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:4px">${k}: <strong>${v}</strong></span>`).join('')}</div>
-    <div style="margin-top:10px;padding:9px;background:rgba(240,185,11,0.05);border-radius:7px;font-size:10px;line-height:1.6">🔮 <strong>Oracle Learning</strong> — Régime: <strong>${ptOracleRegime}</strong> · Seuil: <strong>${ptOracleMinScore}/100</strong><br>${wr>=60?'✅ Excellent — données prêtes pour learning_engine.py':wr>=45?'⚠️ Moyen — augmente le score min Oracle':'❌ Faible — révise les seuils d\'entrée Oracle'}</div>
+    <div style="margin-top:10px;padding:9px;background:rgba(240,185,11,0.05);border-radius:7px;font-size:10px;line-height:1.6">🔮 <strong>Oracle Learning</strong> — Régime: <strong>${ptOracleRegime}</strong> · Seuil: <strong>${ptOracleMinScore}/100</strong><br>${wr>=60?'✅ Excellent — données prêtes pour learning_engine.py':wr>=45?'⚠️ Moyen — augmente le score min Oracle':'❌ Faible — revise les seuils Oracle'}</div>
     <div class="sel-count" style="font-size:11px;color:var(--blue);margin-top:8px">${ptSelectedTrades.size} trade(s) sélectionné(s)</div>`;
 }
 
@@ -1928,18 +2087,8 @@ function ptBuildCurrencyModal(){
 // ══ BOUCLES ══
 setTimeout(ptFetchPrices,3000);// délai 3s pour laisser l'app s'initialiser
 setInterval(ptFetchPrices,60000);
-setInterval(()=>{
-  // Drift live des memes
-  ptMeme200.forEach(t=>{if(!t._price)return;t._price=Math.max(t._price*0.001,t._price*(1+(Math.random()-0.49)*0.015));});
-  ptCheckAutoClose();
-  if(ptCurSym){ptUpdateTradeHeader();ptRendPosCard();}
-  ptRefreshAll();
-  if(ptPtMode==='meme')ptBuildMemeList();
-},20000);
-setInterval(ptUpdateNet,30000);
-if(Date.now()-ptST.memeLastUpdate>86400000)setTimeout(ptRefreshMeme,4000);
-
-// ══ INIT ══
+// Boucles gérées dans INIT FINAL
+if(Date.now()-ptST.memeLastUpdate>86400000)setTimeout(function(){try{ptRefreshMeme();}catch(e){}},5000);
 
 // ══ FOND ANIMÉ — BOUGIES CRYPTO ══
 (function(){
@@ -2124,6 +2273,483 @@ if(Date.now()-ptST.memeLastUpdate>86400000)setTimeout(ptRefreshMeme,4000);
   draw();
 })();
 
+// ══ ÉCRAN GRAPHIQUE COMPLET ══
+let chartCurSym = null;
+let chartCurTF = '1m';
+let chartInterval = null;
+let chartCandles = [];
+
+function ptOpenChart(sym, sourceMode) {
+  chartCurSym = sym;
+  document.getElementById('ptChartScr').style.display = 'block';
+  document.getElementById('ptChartScr').scrollTop = 0;
+  chartBuildHeader(sym);
+  chartGenCandles();
+  chartDrawMain();
+  chartBuildIndicators();
+  chartBuildRec();
+  chartBuildPos();
+  chartBuildStrats(sourceMode);
+  chartBuildHist();
+  clearInterval(chartInterval);
+  chartInterval = setInterval(() => {
+    chartGenCandles();
+    chartDrawMain();
+    chartBuildIndicators();
+    chartBuildPos();
+  }, 8000);
+}
+
+function ptCloseChart() {
+  document.getElementById('ptChartScr').style.display = 'none';
+  clearInterval(chartInterval);
+  chartInterval = null;
+}
+
+function ptOpenTradeFromChart() {
+  ptCloseChart();
+  ptOpenTrade(chartCurSym, 'classic');
+}
+
+function ptCloseFromChart() {
+  ptCloseAll(chartCurSym);
+  ptCloseChart();
+}
+
+function chartSetTF(tf) {
+  chartCurTF = tf;
+  document.querySelectorAll('.chart-tf').forEach(el => {
+    const on = el.dataset.tf === tf;
+    el.style.background = on ? 'rgba(240,185,11,0.15)' : 'transparent';
+    el.style.color = on ? '#F0B90B' : '#64748B';
+    el.style.borderColor = on ? 'rgba(240,185,11,0.3)' : 'rgba(255,255,255,0.08)';
+  });
+  chartGenCandles();
+  chartDrawMain();
+}
+
+function chartBuildHeader(sym) {
+  const tok = PT_ALL.find(t => t.sym === sym) || ptMeme200.find(t => t.sym === sym) || {sym, name:sym, type:'MEME', score:65};
+  const lp = ptLP[sym] || ptMeme200PriceOf(sym) || {price:0, change24h:0, loaded:false};
+  const logoEl = document.getElementById('chartTokLogo');
+  if(logoEl) logoEl.innerHTML = tokLogoHTML(sym, 40);
+  const nameEl = document.getElementById('chartTokName');
+  if(nameEl) nameEl.textContent = sym + ' / USDT';
+  const typeEl = document.getElementById('chartTokType');
+  if(typeEl) typeEl.textContent = (tok.name||sym) + ' · ' + (tok.type||'MEME') + ' · Score Oracle ' + (tok.score||65) + '/100';
+  const priceEl = document.getElementById('chartPrice');
+  if(priceEl) priceEl.textContent = lp.loaded ? '$' + ptFmt(lp.price) : '…';
+  const changeEl = document.getElementById('chartChange');
+  if(changeEl) {
+    const ch = lp.change24h || 0;
+    changeEl.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '% 24h';
+    changeEl.style.color = ch >= 0 ? '#10B981' : '#EF4444';
+  }
+}
+
+function chartGenCandles() {
+  const sym = chartCurSym;
+  const lp = ptLP[sym] || ptMeme200PriceOf(sym) || {price:0.001, change24h:0};
+  const currPx = lp.price || 0.001;
+  const tf = chartCurTF;
+  const n = {'1m':120,'5m':100,'15m':80,'1h':72,'4h':60,'1d':50}[tf] || 80;
+  const annVol = {'L1':0.80,'DEX':1.20,'INFRA':1.00,'MEME':3.00}[(PT_ALL.find(t=>t.sym===sym)||{type:'MEME'}).type] || 2.0;
+  const bars = {'1m':60,'5m':300,'15m':900,'1h':3600,'4h':14400,'1d':86400}[tf] || 300;
+  const secVol = annVol / Math.sqrt(365 * 24 * 3600);
+  const trendBias = lp.change24h > 0 ? 0.0001 : -0.0001;
+  chartCandles = [];
+  let price = currPx * (1 - lp.change24h / 100);
+  for(let i = 0; i < n; i++) {
+    const u1 = Math.random() || 1e-10, u2 = Math.random() || 1e-10;
+    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const chg = (trendBias + z * secVol * Math.sqrt(bars)) * price;
+    const o = price;
+    const c2 = Math.max(price * 0.001, price + chg);
+    const wk = Math.abs(chg) * (0.3 + Math.random() * 0.8);
+    chartCandles.push({
+      o, h: Math.max(o, c2) + wk * Math.random(),
+      l: Math.max(price * 0.001, Math.min(o, c2) - wk * Math.random() * 0.6),
+      c: c2, v: Math.random() * 1000000
+    });
+    price = c2;
+  }
+  if(chartCandles.length) chartCandles[chartCandles.length-1].c = currPx;
+  // Update OHLCV labels
+  const last = chartCandles[chartCandles.length-1];
+  if(last) {
+    const s = id => document.getElementById(id);
+    if(s('chartO')) s('chartO').textContent = '$'+ptFmt(last.o);
+    if(s('chartH')) s('chartH').textContent = '$'+ptFmt(last.h);
+    if(s('chartL')) s('chartL').textContent = '$'+ptFmt(last.l);
+    if(s('chartC')) s('chartC').textContent = '$'+ptFmt(last.c);
+    if(s('chartV')) s('chartV').textContent = ptFmtM(last.v);
+  }
+}
+
+function chartDrawMain() {
+  const canvas = document.getElementById('chartMainCanvas');
+  if(!canvas || !chartCandles.length) return;
+  const W = canvas.parentElement.offsetWidth || 340;
+  const H = 280;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(13,17,23,0)';
+  ctx.fillRect(0, 0, W, H);
+  const pad = {t:10, b:30, l:8, r:60};
+  const cw = W - pad.l - pad.r;
+  const ch = H - pad.t - pad.b;
+  const prices = chartCandles.flatMap(c => [c.h, c.l]);
+  const minP = Math.min(...prices) * 0.998;
+  const maxP = Math.max(...prices) * 1.002;
+  const sy = v => pad.t + ch - (v - minP) / (maxP - minP) * ch;
+  const bw = Math.max(2, cw / chartCandles.length - 1);
+  // Grid
+  for(let i = 0; i <= 5; i++) {
+    const y = pad.t + i * ch / 5;
+    const val = maxP - i / 5 * (maxP - minP);
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '9px SF Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('$' + ptFmt(val), W - 2, y + 3);
+  }
+  // Bollinger Bands
+  const period = 20;
+  if(chartCandles.length >= period) {
+    const closes = chartCandles.map(c => c.c);
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(139,92,246,0.4)';
+    ctx.lineWidth = 1;
+    for(let i = period - 1; i < chartCandles.length; i++) {
+      const slice = closes.slice(i - period + 1, i + 1);
+      const mean = slice.reduce((a,b) => a+b, 0) / period;
+      const std = Math.sqrt(slice.reduce((a,b) => a + Math.pow(b-mean,2), 0) / period);
+      const x = pad.l + i * (cw / chartCandles.length) + bw / 2;
+      if(i === period - 1) ctx.moveTo(x, sy(mean + 2*std));
+      else ctx.lineTo(x, sy(mean + 2*std));
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(139,92,246,0.25)';
+    for(let i = period - 1; i < chartCandles.length; i++) {
+      const slice = closes.slice(i - period + 1, i + 1);
+      const mean = slice.reduce((a,b) => a+b, 0) / period;
+      const std = Math.sqrt(slice.reduce((a,b) => a + Math.pow(b-mean,2), 0) / period);
+      const x = pad.l + i * (cw / chartCandles.length) + bw / 2;
+      if(i === period - 1) ctx.moveTo(x, sy(mean - 2*std));
+      else ctx.lineTo(x, sy(mean - 2*std));
+    }
+    ctx.stroke();
+  }
+  // MA 20
+  const ma20 = [];
+  for(let i = 19; i < chartCandles.length; i++) {
+    const slice = chartCandles.slice(i-19, i+1).map(c=>c.c);
+    ma20.push({i, v: slice.reduce((a,b)=>a+b,0)/20});
+  }
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(240,185,11,0.5)';
+  ctx.lineWidth = 1;
+  ma20.forEach((pt, j) => {
+    const x = pad.l + pt.i * (cw/chartCandles.length) + bw/2;
+    j === 0 ? ctx.moveTo(x, sy(pt.v)) : ctx.lineTo(x, sy(pt.v));
+  });
+  ctx.stroke();
+  // Bougies
+  chartCandles.forEach((cd, i) => {
+    const x = pad.l + i * (cw / chartCandles.length);
+    const mid = x + bw / 2;
+    const isUp = cd.c >= cd.o;
+    const col = isUp ? '#10B981' : '#EF4444';
+    ctx.strokeStyle = col; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(mid, sy(cd.h)); ctx.lineTo(mid, sy(cd.l)); ctx.stroke();
+    ctx.fillStyle = isUp ? '#10B981' : '#EF4444';
+    const y1 = sy(Math.max(cd.o, cd.c));
+    const bh = Math.max(1, Math.abs(sy(cd.o) - sy(cd.c)));
+    ctx.fillRect(x + 0.5, y1, bw - 0.5, bh);
+  });
+  // Prix actuel
+  const last = chartCandles[chartCandles.length-1];
+  const ly = sy(last.c);
+  const chPos = last.c >= last.o;
+  ctx.strokeStyle = (chPos ? '#10B981' : '#EF4444') + '99';
+  ctx.lineWidth = 1; ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(pad.l, ly); ctx.lineTo(W-pad.r, ly); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = chPos ? '#10B981' : '#EF4444';
+  ctx.fillRect(W-pad.r, ly-9, pad.r, 18);
+  ctx.fillStyle = '#000'; ctx.font = 'bold 9px SF Mono, monospace';
+  ctx.textAlign = 'left'; ctx.fillText('$'+ptFmt(last.c), W-pad.r+3, ly+4);
+  // Ligne entrée si position
+  const pos = ptST.positions.find(p => p.sym === chartCurSym);
+  if(pos) {
+    const ey = sy(pos.execPx);
+    ctx.strokeStyle = 'rgba(240,185,11,0.8)'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([6,3]); ctx.beginPath();
+    ctx.moveTo(pad.l, ey); ctx.lineTo(W-pad.r, ey); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(240,185,11,0.15)';
+    ctx.fillRect(pad.l, ey, W-pad.l-pad.r, (last.c>pos.execPx?ly:ey)-ey);
+    ctx.fillStyle = '#F0B90B'; ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'right'; ctx.fillText('ENTRÉE $'+ptFmt(pos.execPx), W-pad.r-4, ey-3);
+  }
+}
+
+function chartBuildIndicators() {
+  const sym = chartCurSym;
+  const tok = PT_ALL.find(t=>t.sym===sym) || ptMeme200.find(t=>t.sym===sym) || {rsi:55,score:65,liq:5e6};
+  const lp = ptLP[sym] || {price:0.001, change24h:0, vol24h:0};
+  const rsi = tok.rsi || (30 + Math.random()*50);
+  const score = tok.score || 65;
+  // RSI
+  const rsiEl = document.getElementById('chartRsiVal');
+  const rsiBar = document.getElementById('chartRsiBar');
+  const rsiLbl = document.getElementById('chartRsiLabel');
+  const rsiExp = document.getElementById('chartRsiExp');
+  if(rsiEl) { rsiEl.textContent = rsi.toFixed(1); rsiEl.style.color = rsi>70?'#EF4444':rsi<30?'#10B981':'#F0B90B'; }
+  if(rsiBar) { rsiBar.style.width = rsi+'%'; rsiBar.style.background = rsi>70?'#EF4444':rsi<30?'#10B981':'#F0B90B'; }
+  if(rsiLbl) { rsiLbl.textContent = rsi>70?'🔴 SURACHETÉ':rsi<30?'🟢 SURVENDU':'🟡 NEUTRE'; rsiLbl.style.color = rsi>70?'#EF4444':rsi<30?'#10B981':'#F0B90B'; }
+  if(rsiExp) rsiExp.textContent = rsi>70?'Token en surachat — entrée risquée. Attendre un pullback vers 50-60 pour une entrée saine.':rsi<30?'Token survendu — rebond technique probable. Signal d\'entree favorable selon Oracle.':'Zone neutre. Oracle surveille la direction du momentum.';
+  // MACD simulé
+  const macd = (rsi-50)*0.02 + (Math.random()-0.5)*0.1;
+  const sig = macd * 0.8;
+  const macdEl = document.getElementById('chartMacdVal');
+  const macdLine = document.getElementById('chartMacdLine');
+  const macdSig = document.getElementById('chartMacdSig');
+  const macdLbl = document.getElementById('chartMacdLabel');
+  const macdExp = document.getElementById('chartMacdExp');
+  if(macdEl) { macdEl.textContent = (macd>0?'+':'')+macd.toFixed(3); macdEl.style.color = macd>0?'#10B981':'#EF4444'; }
+  if(macdLine) { macdLine.textContent = macd.toFixed(3); macdLine.style.color = macd>0?'#10B981':'#EF4444'; }
+  if(macdSig) { macdSig.textContent = sig.toFixed(3); macdSig.style.color = '#94A3B8'; }
+  if(macdLbl) { const cross = macd>sig; macdLbl.textContent = cross?'🟢 CROISEMENT HAUSSIER':'🔴 CROISEMENT BAISSIER'; macdLbl.style.color = cross?'#10B981':'#EF4444'; }
+  if(macdExp) macdExp.textContent = macd>sig?'La ligne MACD dépasse le signal — momentum haussier confirmé. Oracle favorise une entrée.':'MACD sous le signal — momentum baissier. Oracle attend confirmation.';
+  // Bollinger
+  const px = lp.price || 1;
+  const bb_std = px * 0.03;
+  if(document.getElementById('chartBBU')) document.getElementById('chartBBU').textContent = '$'+ptFmt(px+2*bb_std);
+  if(document.getElementById('chartBBM')) document.getElementById('chartBBM').textContent = '$'+ptFmt(px);
+  if(document.getElementById('chartBBL')) document.getElementById('chartBBL').textContent = '$'+ptFmt(px-2*bb_std);
+  const bbPos = px > px+bb_std ? 'UPPER' : px < px-bb_std ? 'LOWER' : 'MIDDLE';
+  if(document.getElementById('chartBBLabel')) { document.getElementById('chartBBLabel').textContent = bbPos==='UPPER'?'⚠️ Proche bande haute':bbPos==='LOWER'?'✅ Proche bande basse':'📊 Canal central'; }
+  if(document.getElementById('chartBBExp')) document.getElementById('chartBBExp').textContent = 'Bandes a +-2sig. Prix pres de la bande basse = signal d\'entree potentiel. Bande haute = zone de vente.';
+  // Volume + ATR
+  const vol = lp.vol24h || tok.vol24 || 0;
+  const atr = px * 0.04 * (1 + Math.random()*0.5);
+  if(document.getElementById('chartVol')) document.getElementById('chartVol').textContent = '$'+ptFmtM(vol);
+  if(document.getElementById('chartAtr')) document.getElementById('chartAtr').textContent = '$'+ptFmt(atr) + ' ('+((atr/px)*100).toFixed(1)+'%)';
+  if(document.getElementById('chartVolExp')) document.getElementById('chartVolExp').textContent = vol>1e6?'Volume élevé — liquidité suffisante pour Oracle. Spread réduit.':'Volume faible — attention au slippage AMM. Oracle augmente le spread estimé.';
+  // Score Oracle
+  if(document.getElementById('chartScoreVal')) document.getElementById('chartScoreVal').textContent = score+'/100';
+  if(document.getElementById('chartScoreBar')) document.getElementById('chartScoreBar').style.width = score+'%';
+  const sMin = ptOracleMinScore;
+  if(document.getElementById('chartScoreExp')) {
+    document.getElementById('chartScoreExp').textContent = score>=85?`Score exceptionnel ${score}/100 — Oracle place ce token dans le top 5% des opportunités détectées. Tous les signaux convergent.`:score>=sMin?`Score ${score}/100 ≥ seuil Oracle (${sMin}). Signal validé. Régime ${ptOracleRegime} compatible.`:`Score ${score}/100 insuffisant (seuil: ${sMin}). Oracle ne traderait pas ce token dans les conditions actuelles.`;
+  }
+}
+
+function chartBuildRec() {
+  const sym = chartCurSym;
+  const tok = PT_ALL.find(t=>t.sym===sym) || ptMeme200.find(t=>t.sym===sym) || {score:65, rsi:55, type:'MEME'};
+  const mt = ptMeme200.find(t=>t.sym===sym);
+  const sc = tok.score||65, rsi = tok.rsi||55;
+  let icon, col, border, title, lines=[];
+  if(mt?.rug?.risk==='danger') {
+    icon='☠️'; col='#EF4444'; border='#EF4444'; title='RUG PULL DÉTECTÉ — Extrême danger';
+    lines=[`Score Rug Oracle: ${mt.rug.score}/100`,'LP non bloqué — dev wallet suspect','Ne pas trader ce token'];
+  } else if(sc>=85&&rsi<72) {
+    icon='🟢'; col='#10B981'; border='#10B981'; title='SIGNAL FORT — Oracle recommande l\'entree';
+    lines=[`Score ${sc}/100 · RSI ${rsi.toFixed(0)} · Régime ${ptOracleRegime}`,`MACD haussier · Bollinger favorable`,`Stratégie recommandée: ${PT_STRATS_ALL.find(s=>s.regimes.includes(ptOracleRegime)&&sc>=s.minScore)?.name||'Momentum'}`];
+  } else if(sc>=ptOracleMinScore) {
+    icon='🟡'; col='#F0B90B'; border='#F0B90B'; title='SIGNAL VALIDE — Conditions favorables';
+    lines=[`Score ${sc}/100 · Seuil Oracle: ${ptOracleMinScore}`,`RSI ${rsi.toFixed(0)} · Régime ${ptOracleRegime}`,rsi>70?'RSI élevé — surveiller un pullback':'Entrée possible selon ta stratégie'];
+  } else if(rsi>=75) {
+    icon='🟠'; col='#F97316'; border='#F97316'; title='SURACHAT — Attendre le pullback';
+    lines=[`RSI ${rsi.toFixed(0)} > 75 — token acheté massivement`,'Attendre RSI < 60 pour entrée saine','Si tu entres: taille réduite, SL serré'];
+  } else {
+    icon='🔴'; col='#EF4444'; border='#EF4444'; title=`SCORE INSUFFISANT — ${sc} < ${ptOracleMinScore}`;
+    lines=['Oracle ne traderait pas ce token maintenant','Score trop bas pour les conditions actuelles','Surveiller et attendre amélioration du score'];
+  }
+  const rec = document.getElementById('chartOracleRec');
+  const tit = document.getElementById('chartRecTitle');
+  const bod = document.getElementById('chartRecBody');
+  if(rec) { rec.style.borderLeftColor=border; rec.style.background=col+'0F'; }
+  if(tit) { tit.textContent=icon+' Oracle — '+title; tit.style.color=col; }
+  if(bod) bod.innerHTML = lines.map(l=>'• '+l).join('<br>');
+}
+
+function chartBuildPos() {
+  const pos = ptST.positions.find(p=>p.sym===chartCurSym);
+  const sec = document.getElementById('chartPosSection');
+  const det = document.getElementById('chartPosDetail');
+  const closeBtn = document.getElementById('chartCloseBtn');
+  if(!pos) { if(sec) sec.style.display='none'; if(closeBtn) closeBtn.style.display='none'; return; }
+  if(sec) sec.style.display='block';
+  if(closeBtn) closeBtn.style.display='block';
+  const {pnl,pct} = ptUnreal(pos);
+  const isPos = pnl>=0;
+  const funding = ptFundingCost(pos);
+  const dur = ptDur(Date.now()-pos.openTs);
+  const s = pos.strat;
+  if(det) det.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div>
+        <div style="font-size:14px;font-weight:800;color:#F1F5F9">LONG ×${pos.lev} · ${s.name}</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px">${ptEuro(pos.sizeEur)} investi · ${dur} · ${ptOracleRegime}</div>
+        ${pos.lev>1?'<div style="font-size:10px;color:#EF4444;margin-top:2px">💥 Liquidation: $'+ptFmt(ptLiqPrice(pos))+'</div>':''}
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:22px;font-weight:900;font-family:SF Mono,monospace;color:${isPos?'#10B981':'#EF4444'}">${isPos?'+':''}${pnl.toFixed(2)} €</div>
+        <div style="font-size:13px;font-weight:700;color:${isPos?'#10B981':'#EF4444'}">${isPos?'+':''}${pct.toFixed(2)}%</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px;font-size:10px;text-align:center">
+      <div style="background:rgba(239,68,68,0.08);border-radius:8px;padding:6px"><div style="color:#64748B">SL</div><div style="color:#EF4444;font-weight:700">$${ptFmt(pos.execPx*(1+s.sl/100))}</div><div style="color:#EF4444;font-size:9px">${s.sl}%</div></div>
+      <div style="background:rgba(16,185,129,0.08);border-radius:8px;padding:6px"><div style="color:#64748B">TP1</div><div style="color:#10B981;font-weight:700">$${ptFmt(pos.execPx*(1+s.tp1/100))}</div><div style="color:#10B981;font-size:9px">+${s.tp1}% ${pos.tp1Hit?'✓':''}</div></div>
+      <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:6px"><div style="color:#64748B">TP2</div><div style="color:#10B981;font-weight:700">$${ptFmt(pos.execPx*(1+s.tp2/100))}</div><div style="color:#10B981;font-size:9px">+${s.tp2}%</div></div>
+      ${s.tp3?'<div style="background:rgba(240,185,11,0.1);border-radius:8px;padding:6px"><div style="color:#64748B">TP3</div><div style="color:#F0B90B;font-weight:700">$'+ptFmt(pos.execPx*(1+s.tp3/100))+'</div><div style="color:#F0B90B;font-size:9px">+'+s.tp3+'%</div></div>':''}
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:8px;font-size:10px;color:#64748B">
+      Score Oracle: <strong style="color:#F0B90B">${pos.oScore}/100</strong> · Entrée: <strong style="color:#E8EAED">$${ptFmt(pos.execPx)}</strong> · Funding: <strong style="color:#EF4444">-${ptEuro(funding)}</strong>
+    </div>`;
+}
+
+function chartBuildStrats(sourceMode) {
+  const el = document.getElementById('chartStratList');
+  if(!el) return;
+  const tok = PT_ALL.find(t=>t.sym===chartCurSym) || ptMeme200.find(t=>t.sym===chartCurSym) || {score:65,type:'MEME'};
+  const isMeme = sourceMode==='meme'||tok.type==='MEME';
+  const strats = PT_STRATS_ALL.filter(s=>!(s.memeOnly&&!isMeme));
+  const bestId = strats.filter(s=>tok.score>=s.minScore&&s.regimes.includes(ptOracleRegime))[0]?.id;
+  el.innerHTML = strats.map(s => {
+    const isReco = s.id===bestId;
+    const applicable = tok.score>=s.minScore&&s.regimes.includes(ptOracleRegime);
+    const riskCol = {'LOW':'#10B981','MED':'#F0B90B','HIGH':'#EF4444','MAX':'#A855F7'}[s.risk];
+    const btnHtml = applicable
+      ? `<button onclick="ptCloseChart();ptOpenTrade('${chartCurSym}','${sourceMode}');ptSelStrat('${s.id}')" style="width:100%;padding:8px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);border-radius:8px;color:#10B981;font-weight:700;font-size:11px;cursor:pointer;font-family:inherit">→ Trader avec cette stratégie</button>`
+      : `<div style="font-size:9px;color:#475569;text-align:center">Score insuffisant (${tok.score}/${s.minScore})</div>`;
+    return `<div style="background:rgba(255,255,255,${isReco?'0.06':'0.03'});border:1px solid rgba(255,255,255,${isReco?'0.15':'0.06'});border-radius:12px;padding:12px;${isReco?'box-shadow:0 0 12px rgba(16,185,129,0.1)':''}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="font-size:13px;font-weight:700;color:#F1F5F9">${s.emoji} ${s.name} ${isReco?'<span style="font-size:10px;color:#10B981;background:rgba(16,185,129,0.12);padding:2px 6px;border-radius:4px">✨ RECO</span>':''}</div>
+        <span style="font-size:9px;padding:2px 7px;border-radius:4px;background:${riskCol}22;color:${riskCol};font-weight:700">${s.risk}</span>
+      </div>
+      <div style="font-size:10px;color:#64748B;margin-bottom:8px;line-height:1.5">${s.explain}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
+        <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(239,68,68,0.12);color:#EF4444;font-weight:600">SL ${s.sl}%</span>
+        <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.1);color:#10B981;font-weight:600">TP1 +${s.tp1}%</span>
+        <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.12);color:#10B981;font-weight:600">TP2 +${s.tp2}%</span>
+        ${s.tp3?`<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(240,185,11,0.12);color:#F0B90B;font-weight:600">TP3 +${s.tp3}%</span>`:''}
+        <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:#94A3B8">Min: ${s.minScore}/100</span>
+      </div>
+      ${btnHtml}
+    </div>`;
+  }).join('');
+}
+
+function chartBuildHist() {
+  const el = document.getElementById('chartTradeHist');
+  if(!el) return;
+  const trades = ptST.trades.filter(t=>t.sym===chartCurSym&&t.side==='sell').slice(0,10);
+  if(!trades.length) { el.innerHTML='<div style="text-align:center;padding:16px;color:#475569;font-size:12px">Aucun trade clôturé sur '+chartCurSym+'</div>'; return; }
+  el.innerHTML = trades.map(t => {
+    const isWin = t.netPnl>0;
+    const dur = t.holdMs ? ptDur(t.holdMs) : '—';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:${isWin?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.15)'}">
+        ${isWin?'✅':'❌'}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;color:#E8EAED">${t.stratName||'—'}${t.lev>1?' ×'+t.lev:''}</div>
+        <div style="font-size:10px;color:#64748B">${t.exitReason} · ${dur} · ${ptEuro(t.sizeEur)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px;font-weight:700;font-family:SF Mono,monospace;color:${isWin?'#10B981':'#EF4444'}">${isWin?'+':''}${t.netPnl?.toFixed(2)||'—'} €</div>
+        <div style="font-size:10px;color:#64748B">${(t.pctBrut>=0?'+':'')+t.pctBrut?.toFixed(1)||'—'}%</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+
+// ══ TICKER LIVE 2 SECONDES — positions et prix en temps réel ══
+function ptTickerLive(){
+  // Drift brownien sur tous les prix connus (simule le marché live)
+  PT_ALL.forEach(tok => {
+    const lp = ptLP[tok.sym];
+    if(!lp || !lp.loaded || lp.price <= 0) return;
+    // Volatilité selon le type de token
+    const vol = {'L1':0.0008,'DEX':0.0012,'INFRA':0.001,'MEME':0.003}[tok.type] || 0.0015;
+    const drift = (Math.random() - 0.495) * vol; // légèrement biaisé à la hausse
+    lp.prev = lp.price;
+    lp.price = Math.max(lp.price * 0.001, lp.price * (1 + drift));
+    // Mettre à jour le change24h progressivement
+    lp.change24h = +(lp.change24h + drift * 100 * 0.1).toFixed(3);
+  });
+
+  // Drift des memecoins aussi
+  ptMeme200.forEach(t => {
+    if(!t._price) return;
+    const vol = 0.004;
+    const drift = (Math.random() - 0.49) * vol;
+    t._price = Math.max(t._price * 0.001, t._price * (1 + drift));
+  });
+
+  // Vérifier les TP/SL avec le nouveau prix
+  ptCheckAutoClose();
+
+  // Mettre à jour l'UI des positions ouvertes
+  if(ptST.positions.length > 0){
+    // Update wallet P&L unrealisé
+    let unreal = 0;
+    ptST.positions.forEach(p => { unreal += ptUnreal(p).pnl; });
+    const se = (id,val,col) => {const e=document.getElementById(id);if(e){e.textContent=val;if(col)e.style.color=col;}};
+    se('ptPnlUnreal',(unreal>=0?'+':'')+ptFmt$(unreal),unreal===0?'var(--txt2)':unreal>0?'#10B981':'#EF4444');
+
+    // Update la liste des positions ouvertes
+    const posList = document.getElementById('ptOpenPosList');
+    if(posList && posList.innerHTML !== '' && document.getElementById('ptOpenPosCard').style.display !== 'none'){
+      // Mettre à jour uniquement les valeurs P&L sans reconstruire tout le DOM
+      ptST.positions.forEach(pos => {
+        const {pnl, pct} = ptUnreal(pos);
+        const isPos = pnl >= 0;
+        // Chercher les éléments par data attribut
+        const pnlEls = posList.querySelectorAll('[data-pos-pnl="'+pos.sym+'"]');
+        pnlEls.forEach(el => {
+          el.textContent = (isPos?'+':'') + pnl.toFixed(2) + ' €';
+          el.style.color = isPos ? '#10B981' : '#EF4444';
+        });
+        const pctEls = posList.querySelectorAll('[data-pos-pct="'+pos.sym+'"]');
+        pctEls.forEach(el => {
+          el.textContent = (isPos?'+':'') + pct.toFixed(2) + '%';
+          el.style.color = isPos ? '#10B981' : '#EF4444';
+        });
+      });
+    }
+
+    // Update pos card dans l'écran trade
+    if(ptCurSym) ptRendPosCard();
+
+    // Update écran chart si ouvert
+    if(chartCurSym && document.getElementById('ptChartScr').style.display !== 'none'){
+      chartBuildPos();
+    }
+
+    // Update écran détail position si ouvert
+    if(ptDetailInterval && ptCurSym){
+      ptRendPosDetail(ptCurSym);
+    }
+  }
+
+  // Update le prix affiché dans l'écran trade
+  if(ptCurSym) ptUpdateTradeHeader();
+
+  // Update le ticker du header trade dans chart
+  if(chartCurSym && document.getElementById('ptChartScr').style.display !== 'none'){
+    chartBuildHeader(chartCurSym);
+  }
+}
+
 // ══ INIT FINAL — toutes les variables sont déclarées ══
 (function(){
   // Fermer le splash après 2.5s garanti
@@ -2147,6 +2773,9 @@ if(Date.now()-ptST.memeLastUpdate>86400000)setTimeout(ptRefreshMeme,4000);
 
   // Oracle en arrière-plan (timeout 3s chaque appel)
   loadAll().catch(function(){});
+
+  // TICKER LIVE 2s — prix et P&L positions en temps réel
+  setInterval(ptTickerLive, 2000);
 
   // Sync prix toutes les 60s
   setTimeout(function(){
