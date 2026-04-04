@@ -695,14 +695,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 const API="https://triform-dollie-sonic.ngrok-free.dev";
 const HEADERS={"ngrok-skip-browser-warning":"true"};
 if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#0B0E11');Telegram.WebApp.setBackgroundColor('#0B0E11');}
-setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>document.getElementById('splash').style.display='none',600);loadAll();},2500);
+// Splash se ferme TOUJOURS après 2.5s, indépendamment de l'API Oracle
+setTimeout(()=>{
+  document.getElementById('splash').classList.add('hide');
+  setTimeout(()=>document.getElementById('splash').style.display='none',600);
+  // loadAll avec timeout individuel pour ne jamais bloquer l'UI
+  loadAll().catch(()=>{});
+  // Init Paper Trading immédiatement
+  ptUpdateNet();ptBuildList();ptBuildMemeList();ptRefreshAll();ptRendLearn();
+},2500);
 function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else loadAll();}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
 function drawGauge(id,val){const c=document.getElementById(id);if(!c)return;c.width=200;c.height=110;const ctx=c.getContext('2d'),cx=100,cy=96,r=76;ctx.clearRect(0,0,200,110);[['#F6465D',Math.PI,Math.PI*1.2],['#F79009',Math.PI*1.2,Math.PI*1.4],['#F0B90B',Math.PI*1.4,Math.PI*1.6],['#12B76A',Math.PI*1.6,Math.PI*1.8],['#0ECB81',Math.PI*1.8,Math.PI*2]].forEach(([col,s,e])=>{ctx.beginPath();ctx.arc(cx,cy,r,s,e);ctx.lineWidth=14;ctx.strokeStyle=col;ctx.lineCap='butt';ctx.stroke();});const angle=Math.PI+(Math.min(Math.max(val,0),100)/100)*Math.PI;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-20)*Math.cos(angle),cy+(r-20)*Math.sin(angle));ctx.lineWidth=2;ctx.strokeStyle='#EAECEF';ctx.lineCap='round';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle='#EAECEF';ctx.fill();}
 let pci=null;
 function initPriceChart(sym){const ctx=document.getElementById('priceChart');if(!ctx)return;if(pci){pci.destroy();pci=null;}const labels=[],data=[];let price=1.0;for(let i=30;i>=0;i--){const d=new Date();d.setHours(d.getHours()-i);labels.push(d.getHours()+'h');price+=(Math.random()-.47)*.03;data.push(+price.toFixed(4));}pci=new Chart(ctx,{type:'line',data:{labels,datasets:[{data,borderColor:'#F0B90B',borderWidth:1.5,pointRadius:0,tension:0.3,fill:true,backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,180);g.addColorStop(0,'rgba(240,185,11,0.2)');g.addColorStop(1,'rgba(240,185,11,0)');return g;}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5E6673',font:{size:10},maxTicksLimit:5}},y:{position:'right',grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5E6673',font:{size:10}}}}}});}
-async function api(e){try{const r=await fetch(API+e,{headers:HEADERS});if(!r.ok)return null;return await r.json();}catch(e){return null;}}
+async function api(e){try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),3000);const r=await fetch(API+e,{headers:HEADERS,signal:ctrl.signal});clearTimeout(t);if(!r.ok)return null;return await r.json();}catch(e){return null;}}
 function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
 function setClass(id,cls){const el=document.getElementById(id);if(el)el.className=cls;}
 function setStyle(id,prop,val){const el=document.getElementById(id);if(el)el.style[prop]=val;}
@@ -1848,7 +1856,7 @@ setInterval(ptUpdateNet,30000);
 if(Date.now()-ptST.memeLastUpdate>86400000)setTimeout(ptRefreshMeme,4000);
 
 // ══ INIT ══
-ptUpdateNet();ptBuildList();ptBuildMemeList();ptRefreshAll();ptRendLearn();
+// (ptUpdateNet/ptBuildList/etc. déjà appelés dans le setTimeout du splash)
 </script>
 </body>
 </html>
