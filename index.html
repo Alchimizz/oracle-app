@@ -699,9 +699,9 @@ if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.We
 setTimeout(()=>{
   document.getElementById('splash').classList.add('hide');
   setTimeout(()=>document.getElementById('splash').style.display='none',600);
-  // loadAll avec timeout individuel pour ne jamais bloquer l'UI
+  // loadAll Oracle en arrière-plan (timeout 3s par appel)
   loadAll().catch(()=>{});
-  // Init Paper Trading immédiatement
+  // Init Paper Trading immédiatement — pas besoin d'attendre les prix
   ptUpdateNet();ptBuildList();ptBuildMemeList();ptRefreshAll();ptRendLearn();
 },2500);
 function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else loadAll();}
@@ -1010,7 +1010,8 @@ async function ptFetchPrices(){
   const now=Date.now();if(now-ptLastFetch<50000)return;ptLastFetch=now;
   try{
     const ids=[...new Set(Object.values(PT_GID))].join(',');
-    const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`,{headers:{Accept:'application/json'}});
+    const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),5000);
+    const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`,{headers:{Accept:'application/json'},signal:ctrl.signal});
     if(!r.ok)throw new Error(r.status);
     const data=await r.json();
     PT_TOP10.forEach(tok=>{
@@ -1842,7 +1843,7 @@ function ptBuildCurrencyModal(){
 }
 
 // ══ BOUCLES ══
-ptFetchPrices();
+setTimeout(ptFetchPrices,3000);// délai 3s pour laisser l'app s'initialiser
 setInterval(ptFetchPrices,60000);
 setInterval(()=>{
   // Drift live des memes
