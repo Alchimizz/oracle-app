@@ -24,7 +24,8 @@ html{-webkit-font-smoothing:antialiased}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom) + 8px)}
 
 /* ── SPLASH PREMIUM ── */
-#splash{position:fixed;inset:0;z-index:1000;background:radial-gradient(ellipse at 50% 0%,#0F1A2A 0%,#080B0F 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s ease}
+#splash{position:fixed;inset:0;z-index:1000;background:radial-gradient(ellipse at 50% 0%,#0F1A2A 0%,#080B0F 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:splashOut 0.6s ease 2.5s forwards}
+@keyframes splashOut{0%{opacity:1;pointer-events:auto}100%{opacity:0;pointer-events:none;visibility:hidden}}
 #splash.hide{opacity:0;pointer-events:none}
 .s-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .s-ring{position:absolute;border-radius:50%;border:1px solid;animation:ringPulse 3s ease-in-out infinite}
@@ -695,15 +696,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 const API="https://triform-dollie-sonic.ngrok-free.dev";
 const HEADERS={"ngrok-skip-browser-warning":"true"};
 if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#0B0E11');Telegram.WebApp.setBackgroundColor('#0B0E11');}
-// Splash se ferme TOUJOURS après 2.5s, indépendamment de l'API Oracle
-setTimeout(()=>{
-  document.getElementById('splash').classList.add('hide');
-  setTimeout(()=>document.getElementById('splash').style.display='none',600);
-  // loadAll Oracle en arrière-plan (timeout 3s par appel)
-  loadAll().catch(()=>{});
-  // Init Paper Trading immédiatement — pas besoin d'attendre les prix
-  ptUpdateNet();ptBuildList();ptBuildMemeList();ptRefreshAll();ptRendLearn();
-},2500); // splash fix
+// Le CSS gère la disparition du splash (animation 2.5s)
+// On init l'app immédiatement
+try{ptUpdateNet();ptBuildList();ptBuildMemeList();ptRefreshAll();ptRendLearn();}catch(e){console.error('Init PT:',e);}
+loadAll().catch(()=>{});
+// Sécurité : forcer la disparition du splash après 3s via JS aussi
+setTimeout(()=>{const s=document.getElementById('splash');if(s)s.style.display='none';},3100);
 function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else loadAll();}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
@@ -893,10 +891,37 @@ const PT_STRATS_ALL=[
 ];
 
 // ── Persistance localStorage v6 ──
+// ── Système multi-devise ──
+const PT_CURRENCIES={
+  EUR:{sym:'€',name:'Euro',flag:'🇪🇺',locale:'fr-FR',rate:1,decimals:2},
+  USD:{sym:'$',name:'Dollar US',flag:'🇺🇸',locale:'en-US',rate:1.08,decimals:2},
+  GBP:{sym:'£',name:'Livre Sterling',flag:'🇬🇧',locale:'en-GB',rate:0.86,decimals:2},
+  CHF:{sym:'₣',name:'Franc Suisse',flag:'🇨🇭',locale:'de-CH',rate:0.98,decimals:2},
+  JPY:{sym:'¥',name:'Yen Japonais',flag:'🇯🇵',locale:'ja-JP',rate:162,decimals:0},
+  BTC:{sym:'₿',name:'Bitcoin',flag:'₿',locale:'en-US',rate:0.0000124,decimals:6},
+  SOL:{sym:'◎',name:'Solana',flag:'◎',locale:'en-US',rate:0.0076,decimals:4},
+};
+let ptCurCurrency=PT_CURRENCIES[localStorage.getItem('oracle_currency')||'EUR']||PT_CURRENCIES.EUR;
+function ptSetCurrency(code){
+  ptCurCurrency=PT_CURRENCIES[code]||PT_CURRENCIES.EUR;
+  localStorage.setItem('oracle_currency',code);
+  ptRefreshAll();if(ptCurSym){ptRendPosCard();ptBuildIndic();}
+  ptBuildCurrencyModal();
+}
+function ptConvert(v){return(v||0)*ptCurCurrency.rate;}
+function ptFmt$(v,showSymbol=true){
+  const c=ptCurCurrency,val=ptConvert(v||0);
+  const fmt=new Intl.NumberFormat(c.locale,{minimumFractionDigits:c.decimals,maximumFractionDigits:c.decimals}).format(val);
+  return showSymbol?fmt+' '+c.sym:fmt;
+}
+// Alias ptEuro redirigé vers ptFmt$ pour compatibilité
+function ptEuro(v){return ptFmt$(v);}
+
 const PT_LS='oracle_pt_v7';
 function ptSave(){try{localStorage.setItem(PT_LS,JSON.stringify({wallet:ptST.wallet,positions:ptST.positions,trades:ptST.trades,memeLastUpdate:ptST.memeLastUpdate,currency:ptCurCurrency?Object.keys(PT_CURRENCIES).find(k=>PT_CURRENCIES[k]===ptCurCurrency):'EUR'}));}catch(e){}}
-function ptLoad(){try{const d=JSON.parse(localStorage.getItem(PT_LS))||{};if(d.currency&&PT_CURRENCIES[d.currency])ptCurCurrency=PT_CURRENCIES[d.currency];return d;}catch(e){return{};}}
+function ptLoad(){try{return JSON.parse(localStorage.getItem(PT_LS))||{};}catch(e){return{};}}
 const _sv=ptLoad();
+if(_sv.currency&&PT_CURRENCIES[_sv.currency])ptCurCurrency=PT_CURRENCIES[_sv.currency];
 const ptST={wallet:_sv.wallet??1000,positions:_sv.positions??[],trades:_sv.trades??[],memeLastUpdate:_sv.memeLastUpdate??0};
 
 // Génération des 200 memes au démarrage (seed du jour pour cohérence)
@@ -978,31 +1003,6 @@ function ptFundingCost(pos){const hourlyRate=0.0001*(1+ptNet.cong*0.5);const h=(
 function ptDur(ms){if(!ms||ms<0)return'—';if(ms<60000)return Math.round(ms/1000)+'s';if(ms<3600000)return Math.round(ms/60000)+'min';if(ms<86400000)return(ms/3600000).toFixed(1)+'h';return(ms/86400000).toFixed(1)+'j';}
 function ptFmt(v){if(!v||isNaN(v))return'—';if(v<0.000001)return v.toFixed(10);if(v<0.0001)return v.toFixed(8);if(v<0.01)return v.toFixed(6);if(v<1)return v.toFixed(4);if(v<1000)return v.toFixed(2);return Math.round(v).toLocaleString('fr-FR');}
 function ptFmtM(v){if(!v)return'—';if(v>=1e9)return(v/1e9).toFixed(1)+'B';if(v>=1e6)return(v/1e6).toFixed(1)+'M';if(v>=1e3)return(v/1e3).toFixed(0)+'K';return Math.round(v);}
-// ── Système multi-devise ──
-const PT_CURRENCIES={
-  EUR:{sym:'€',name:'Euro',flag:'🇪🇺',locale:'fr-FR',rate:1,decimals:2},
-  USD:{sym:'$',name:'Dollar US',flag:'🇺🇸',locale:'en-US',rate:1.08,decimals:2},
-  GBP:{sym:'£',name:'Livre Sterling',flag:'🇬🇧',locale:'en-GB',rate:0.86,decimals:2},
-  CHF:{sym:'₣',name:'Franc Suisse',flag:'🇨🇭',locale:'de-CH',rate:0.98,decimals:2},
-  JPY:{sym:'¥',name:'Yen Japonais',flag:'🇯🇵',locale:'ja-JP',rate:162,decimals:0},
-  BTC:{sym:'₿',name:'Bitcoin',flag:'₿',locale:'en-US',rate:0.0000124,decimals:6},
-  SOL:{sym:'◎',name:'Solana',flag:'◎',locale:'en-US',rate:0.0076,decimals:4},
-};
-let ptCurCurrency=PT_CURRENCIES[localStorage.getItem('oracle_currency')||'EUR'];
-function ptSetCurrency(code){
-  ptCurCurrency=PT_CURRENCIES[code]||PT_CURRENCIES.EUR;
-  localStorage.setItem('oracle_currency',code);
-  ptRefreshAll();if(ptCurSym){ptRendPosCard();ptBuildIndic();}
-  ptBuildCurrencyModal();
-}
-function ptConvert(v){return(v||0)*ptCurCurrency.rate;}
-function ptFmt$(v,showSymbol=true){
-  const c=ptCurCurrency,val=ptConvert(v||0);
-  const fmt=new Intl.NumberFormat(c.locale,{minimumFractionDigits:c.decimals,maximumFractionDigits:c.decimals}).format(val);
-  return showSymbol?fmt+' '+c.sym:fmt;
-}
-// Alias ptEuro redirigé vers ptFmt$ pour compatibilité
-function ptEuro(v){return ptFmt$(v);}
 
 // ══ FETCH PRIX COINGECKO ══
 let ptLastFetch=0;
@@ -1183,8 +1183,7 @@ function ptRendPosDetail(sym){
   // Heure d'ouverture
   const openTime=new Date(pos.openTs).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   el.innerHTML=`
-    <!-- P&L central -->
-    <div style="text-align:center;padding:20px;background:${isPos?'rgba(14,203,129,0.05)':'rgba(246,70,93,0.05)'};border:1px solid ${isPos?'rgba(14,203,129,0.2)':'rgba(246,70,93,0.2)'};border-radius:14px;margin-bottom:14px">
+<div style="text-align:center;padding:20px;background:${isPos?'rgba(14,203,129,0.05)':'rgba(246,70,93,0.05)'};border:1px solid ${isPos?'rgba(14,203,129,0.2)':'rgba(246,70,93,0.2)'};border-radius:14px;margin-bottom:14px">
       <div style="font-size:10px;color:var(--txt3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px"><span class="live-dot"></span>P&L non réalisé · temps réel</div>
       <div style="font-size:38px;font-weight:800;font-family:monospace;color:${isPos?'var(--green)':'var(--red)'};line-height:1">${isPos?'+':''}${pnl.toFixed(2)} €</div>
       <div style="font-size:18px;font-weight:600;color:${isPos?'var(--green)':'var(--red)'};margin-top:4px">${isPos?'+':''}${pct.toFixed(3)}%${pos.lev>1?' (levier ×'+pos.lev+')':''}</div>
@@ -1193,9 +1192,7 @@ function ptRendPosDetail(sym){
       </div>
       <div style="font-size:11px;color:var(--txt3);margin-top:4px">Net frais + funding estimé: <strong style="color:${pnlNetFeesEst>=0?'var(--green)':'var(--red)'}">${pnlNetFeesEst>=0?'+':''}${pnlNetFeesEst.toFixed(2)} €</strong></div>
     </div>
-
-    <!-- Stats position -->
-    <div class="grid2" style="margin-bottom:10px">
+<div class="grid2" style="margin-bottom:10px">
       <div class="mcard">
         <div class="mlabel">Prix d'entrée</div>
         <div class="mval" style="font-size:14px">$${ptFmt(pos.execPx)}</div>
@@ -1236,9 +1233,7 @@ function ptRendPosDetail(sym){
         <div class="mch neu">${pos.lev>1?'~0.01%/h×'+pos.lev:'Spot·gratuit'}</div>
       </div>
     </div>
-
-    <!-- Niveaux TP/SL avec distances en temps réel -->
-    <div class="card" style="padding:12px;margin-bottom:10px">
+<div class="card" style="padding:12px;margin-bottom:10px">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:10px">📊 Niveaux TP / SL · Distances au prix actuel</div>
       ${s.tp3?`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600;color:#FFD700">🏆 TP3 (+${s.tp3}%)</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx*(1+s.tp3/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:#FFD700">+${((pos.execPx*(1+s.tp3/100)-mark)/mark*100).toFixed(1)}% restant</div></div></div>`:''}
       <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600;color:var(--green)">✅ TP2 (+${s.tp2}%)</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx*(1+s.tp2/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--green)">+${distTp2}% restant</div></div></div>
@@ -1247,9 +1242,7 @@ function ptRendPosDetail(sym){
       <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0${pos.lev>1?';border-bottom:1px solid var(--border)':''}"><div><div style="font-size:12px;font-weight:600;color:var(--red)">🛑 SL (${s.sl}%)</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(pos.execPx*(1+s.sl/100))}</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--red)">${distSl}% restant</div></div></div>
       ${pos.lev>1?`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0"><div><div style="font-size:12px;font-weight:700;color:var(--red);animation:pulse 2s infinite">💥 LIQUIDATION</div><div style="font-size:10px;color:var(--txt3)">$${ptFmt(liqPx)} · -${(100/pos.lev*0.9).toFixed(1)}% mouvement</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:700;color:var(--red)">${((liqPx-mark)/mark*100).toFixed(1)}% restant</div></div></div>`:''}
     </div>
-
-    <!-- Métriques exécution -->
-    <div class="card" style="padding:12px;margin-bottom:10px">
+<div class="card" style="padding:12px;margin-bottom:10px">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:10px">⚡ Métriques d'exécution réelles</div>
       <div class="row" style="font-size:11px"><span class="row-label">Stratégie Oracle</span><span class="row-val">${s.emoji} ${s.name}</span></div>
       <div class="row" style="font-size:11px"><span class="row-label">Score Oracle au trade</span><span class="row-val" style="color:${pos.oScore>=80?'var(--green)':pos.oScore>=ptOracleMinScore?'var(--gold)':'var(--red)'}">${pos.oScore}/100</span></div>
@@ -1259,15 +1252,11 @@ function ptRendPosDetail(sym){
       <div class="row" style="font-size:11px"><span class="row-label">Slippage entrée</span><span class="row-val" style="color:var(--red)">-${pos.slipPct?.toFixed(3)||'—'}%</span></div>
       ${pos.dcaCount>1?`<div class="row" style="font-size:11px"><span class="row-label">DCA</span><span class="row-val" style="color:var(--gold)">×${pos.dcaCount} renforcements</span></div>`:''}
     </div>
-
-    <!-- Scénarios P&L -->
-    <div class="card" style="padding:12px;margin-bottom:14px">
+<div class="card" style="padding:12px;margin-bottom:14px">
       <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:10px">🎯 Scénarios P&L estimés (net frais)</div>
       ${[{l:'TP3 🏆',p:s.tp3,col:'#FFD700'},{l:'TP2 ✅',p:s.tp2,col:'var(--green)'},{l:'TP1 🎯',p:s.tp1,col:'var(--green)'},{l:'SL 🛑',p:s.sl,col:'var(--red)'}].filter(x=>x.p!=null).map(x=>{const grossPnl=pos.sizeEur*x.p*pos.lev/100;const exitF=ptFees(sym,Math.abs(x.p)>100?pos.sizeEur*s.tp1sz:pos.sizeEur,'sell');const net=grossPnl-exitF.total;return`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(43,49,57,0.5)"><span style="font-size:11px;color:var(--txt2)">${x.l} (${x.p>=0?'+':''}${x.p}%)</span><div style="text-align:right"><div style="font-size:12px;font-weight:700;font-family:monospace;color:${x.col}">${net>=0?'+':''}${ptEuro(net)}</div><div style="font-size:10px;color:var(--txt3)">brut ${grossPnl>=0?'+':''}${ptEuro(grossPnl)}</div></div></div>`;}).join('')}
     </div>
-
-    <!-- Boutons action -->
-    <button onclick="ptCloseAll('${sym}')" style="width:100%;padding:14px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:var(--red);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Clôturer ${sym}×${pos.lev} au prix marché</button>
+<button onclick="ptCloseAll('${sym}')" style="width:100%;padding:14px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:var(--red);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Clôturer ${sym}×${pos.lev} au prix marché</button>
     <button onclick="ptClosePosDetail()" style="width:100%;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--txt2);font-weight:600;font-size:13px;cursor:pointer;font-family:inherit">← Retour au Paper Trading</button>
   `;
 }
