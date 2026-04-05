@@ -907,15 +907,123 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
 <!-- ══ PAGE SIGNAUX ORACLE ══ -->
 <div class="page" id="page-signals">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <div>
-      <div style="font-size:15px;font-weight:700">Signaux Oracle</div>
-      <div style="font-size:10px;color:var(--txt3);margin-top:2px" id="sigLastUpdate">Jamais synchronisé</div>
+
+  <!-- MODAL WALLET SIGNAUX -->
+  <div id="swModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:flex-end;justify-content:center">
+    <div style="background:rgba(15,22,32,0.98);border-radius:18px 18px 0 0;padding:24px;width:100%;max-width:480px;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 20px"></div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:6px">Capital Signaux Oracle</div>
+      <p style="font-size:12px;color:#64748B;margin-bottom:18px;line-height:1.5">Capital dédié aux signaux détectés par Oracle. Indépendant du Paper Trading.</p>
+      <div style="display:flex;gap:10px">
+        <input type="number" id="swNewAmt" placeholder="Ex: 1000" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#E8EAED;padding:12px 14px;font-family:SF Mono,monospace;font-size:16px;outline:none">
+        <button onclick="swSetWallet()" style="padding:12px 24px;background:linear-gradient(135deg,#F0B90B,#C99400);border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;color:#000;font-family:inherit">OK</button>
+      </div>
+      <div onclick="document.getElementById('swModal').style.display='none'" style="margin-top:16px;text-align:center;font-size:12px;color:#64748B;cursor:pointer;padding:8px">Annuler</div>
     </div>
-    <button onclick="sigRefresh()" id="sigRefreshBtn" style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--blue);font-family:inherit">
-      <span id="sigRefreshIcon">↻</span> Sync
+  </div>
+
+  <!-- MODAL RESET SIGNAUX -->
+  <div id="swResetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;padding:20px">
+    <div style="background:rgba(15,22,32,0.98);border-radius:18px;padding:24px;width:100%;max-width:360px;border:1px solid rgba(239,68,68,0.3)">
+      <div style="font-size:32px;text-align:center;margin-bottom:12px">🔄</div>
+      <div style="font-size:16px;font-weight:700;text-align:center;margin-bottom:8px">Reset Wallet Signaux</div>
+      <div style="font-size:12px;color:#64748B;text-align:center;line-height:1.6;margin-bottom:20px">Toutes les positions et trades du wallet Signaux seront effacés.</div>
+      <button onclick="swDoReset(false)" style="width:100%;padding:13px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:#EF4444;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Réinitialiser (capital 1 000)</button>
+      <button onclick="swDoReset(true)" style="width:100%;padding:13px;background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.2);border-radius:10px;color:#F0B90B;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Garder le capital actuel</button>
+      <div onclick="document.getElementById('swResetModal').style.display='none'" style="text-align:center;font-size:12px;color:#64748B;cursor:pointer;padding:8px">Annuler</div>
+    </div>
+  </div>
+
+  <!-- MODAL TRADE SIGNAL -->
+  <div id="swTradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:500;align-items:flex-end;justify-content:center">
+    <div style="background:rgba(13,17,23,0.99);border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 16px"></div>
+      <div id="swTradeContent"></div>
+    </div>
+  </div>
+
+  <!-- HEADER WALLET -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div>
+      <div style="font-size:15px;font-weight:800;color:#F1F5F9;display:flex;align-items:center;gap:8px">
+        🔮 Signaux Oracle
+        <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(14,203,129,0.12);color:#0ECB81;border:1px solid rgba(14,203,129,0.2)">LIVE</span>
+      </div>
+      <div style="font-size:10px;color:#64748B;margin-top:2px" id="swLastUpdate">Jamais synchronisé</div>
+    </div>
+    <button onclick="swRefresh()" id="swRefreshBtn" style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#3B82F6;font-family:inherit">
+      <span id="swRefreshIcon">↻</span> Sync
     </button>
   </div>
+
+  <!-- WALLET CARD -->
+  <div style="background:linear-gradient(135deg,#0F1E35 0%,#0D2040 50%,#0A1828 100%);border:1px solid rgba(240,185,11,0.3);border-radius:18px;padding:18px;margin-bottom:10px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.07),transparent 65%);pointer-events:none"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1">
+      <div>
+        <div style="font-size:9px;font-weight:700;color:rgba(240,185,11,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">ORACLE SIGNAL WALLET</div>
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <span style="font-size:30px;font-weight:800;font-family:SF Mono,monospace;color:#F0B90B" id="swWDisp">1 000,00</span>
+          <span style="font-size:16px;font-weight:700;color:rgba(240,185,11,0.6)">€</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button onclick="document.getElementById('swModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.04);font-family:inherit">✏️</button>
+        <button onclick="document.getElementById('swResetModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(246,70,93,0.2);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(246,70,93,0.6);background:rgba(246,70,93,0.05);font-family:inherit">↺</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
+      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">P&L réalisé</div>
+        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swPnlReal" style="color:#10B981">+0,00 €</div>
+      </div>
+      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Non réalisé</div>
+        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace;color:rgba(255,255,255,0.35)" id="swPnlUnreal">0,00 €</div>
+      </div>
+      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Win Rate</div>
+        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swWinRate">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUT ORACLE -->
+  <div id="swOracleStatus" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);margin-bottom:10px;font-size:11px">
+    <span id="swOracleDot" style="width:7px;height:7px;border-radius:50%;background:#EF4444;flex-shrink:0"></span>
+    <span id="swOracleText" style="color:#64748B">Oracle hors ligne — données locales</span>
+  </div>
+
+  <!-- POSITIONS OUVERTES -->
+  <div id="swOpenPosCard" style="display:none;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:10px">
+    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+      Positions ouvertes <span style="background:rgba(59,130,246,0.15);color:#3B82F6;border:1px solid rgba(59,130,246,0.2);padding:2px 8px;border-radius:10px;font-size:10px" id="swOpenCount">0</span>
+    </div>
+    <div id="swOpenPosList"></div>
+  </div>
+
+  <!-- FILTRES -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="swFilters">
+    <div onclick="swFilter('all')"    data-swf="all"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(240,185,11,0.15);color:#F0B90B;border:1px solid rgba(240,185,11,0.3)">Tous</div>
+    <div onclick="swFilter('hot')"    data-swf="hot"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🔥 80+</div>
+    <div onclick="swFilter('above')"  data-swf="above"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">✅ Seuil</div>
+    <div onclick="swFilter('recent')" data-swf="recent" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🕐 1h</div>
+  </div>
+
+  <!-- LISTE SIGNAUX -->
+  <div id="swSignalList">
+    <div style="text-align:center;padding:40px 16px;color:#64748B;font-size:13px">
+      🔮 Lance Oracle et clique Sync
+    </div>
+  </div>
+
+  <!-- HISTORIQUE -->
+  <div style="background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-top:10px" id="swHistCard" style="display:none">
+    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Historique trades Signaux</div>
+    <div id="swHistList"><div style="text-align:center;padding:16px;color:#64748B;font-size:12px">Aucun trade</div></div>
+  </div>
+
+</div>
 
   <!-- Statut Oracle -->
   <div id="sigOracleStatus" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.1);margin-bottom:12px;font-size:11px">
@@ -957,7 +1065,7 @@ const API="https://triform-dollie-sonic.ngrok-free.dev";
 const HEADERS={"ngrok-skip-browser-warning":"true"};
 if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#0B0E11');Telegram.WebApp.setBackgroundColor('#0B0E11');}
 // Init déplacé en fin de script
-function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else if(tab==='signals'){sigRefresh();if(sigIntervalId)clearInterval(sigIntervalId);sigIntervalId=setInterval(sigRefresh,30000);}else{if(sigIntervalId){clearInterval(sigIntervalId);sigIntervalId=null;}loadAll();}}
+function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else if(tab==='signals'){swRefresh();if(swIntervalId)clearInterval(swIntervalId);swIntervalId=setInterval(swRefresh,30000);}else{if(swIntervalId){clearInterval(swIntervalId);swIntervalId=null;}loadAll();}}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
 function drawGauge(id,val){const c=document.getElementById(id);if(!c)return;c.width=200;c.height=110;const ctx=c.getContext('2d'),cx=100,cy=96,r=76;ctx.clearRect(0,0,200,110);[['#F6465D',Math.PI,Math.PI*1.2],['#F79009',Math.PI*1.2,Math.PI*1.4],['#F0B90B',Math.PI*1.4,Math.PI*1.6],['#12B76A',Math.PI*1.6,Math.PI*1.8],['#0ECB81',Math.PI*1.8,Math.PI*2]].forEach(([col,s,e])=>{ctx.beginPath();ctx.arc(cx,cy,r,s,e);ctx.lineWidth=14;ctx.strokeStyle=col;ctx.lineCap='butt';ctx.stroke();});const angle=Math.PI+(Math.min(Math.max(val,0),100)/100)*Math.PI;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-20)*Math.cos(angle),cy+(r-20)*Math.sin(angle));ctx.lineWidth=2;ctx.strokeStyle='#EAECEF';ctx.lineCap='round';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle='#EAECEF';ctx.fill();}
@@ -2913,7 +3021,7 @@ function ptTickerLive(){
   loadAll().catch(function(){});
 
   // TICKER LIVE 2s — prix et P&L positions en temps réel
-  setInterval(ptTickerLive, 1000);
+  setInterval(function(){ ptTickerLive(); swTickerLive(); }, 1000);
 
   // Sync prix toutes les 60s
   setTimeout(function(){
@@ -2935,27 +3043,102 @@ function ptTickerLive(){
 })();
 
 
+
 // ════════════════════════════════════════════════════════════════════
-// ONGLET SIGNAUX ORACLE
-// Source : /api/signals (Oracle Python)
-// Fallback : /api/stats quand Oracle hors ligne
+// ONGLET SIGNAUX ORACLE — Wallet dédié + Oracle auto-décide
 // ════════════════════════════════════════════════════════════════════
 
-var sigCurrentFilter = 'all';
-var sigData = [];
-var sigOracleOnline = false;
-var sigIntervalId = null;
+// ── Persistance wallet Signaux ──
+var SW_LS = 'oracle_sw_v1';
+function swSave() {
+  try { localStorage.setItem(SW_LS, JSON.stringify({wallet:swST.wallet, positions:swST.positions, trades:swST.trades})); } catch(e){}
+}
+function swLoad() { try { return JSON.parse(localStorage.getItem(SW_LS))||{}; } catch(e){ return {}; } }
+var _swv = swLoad();
+var swST = { wallet: _swv.wallet||1000, positions: _swv.positions||[], trades: _swv.trades||[] };
 
-async function sigRefresh() {
-  var btn = document.getElementById('sigRefreshBtn');
-  var icon = document.getElementById('sigRefreshIcon');
+// ── État UI ──
+var swData = [];
+var swOracleOnline = false;
+var swCurrentFilter = 'all';
+var swIntervalId = null;
+
+// ── Oracle choisit la stratégie optimale pour un token ──
+function swOracleChooseStrat(tok) {
+  var sc = tok.score || 65;
+  var rsi = tok.rsi || 55;
+  var isMeme = tok.type === 'MEME';
+  var regime = ptOracleRegime;
+
+  // Filtrer les strats applicables
+  var applicable = PT_STRATS_ALL.filter(function(s) {
+    return s.regimes.indexOf(regime) >= 0 && sc >= s.minScore && !(s.memeOnly && !isMeme);
+  });
+
+  // Si aucune applicable, prendre la plus permissive
+  if(!applicable.length) {
+    applicable = PT_STRATS_ALL.filter(function(s){ return !(s.memeOnly && !isMeme); });
+  }
+
+  // Score Oracle pour chaque strat : score token + bonus régime + RSI
+  var scored = applicable.map(function(s) {
+    var bonus = 0;
+    if(sc >= 85) bonus += (s.id === 'momentum' || s.id === 'degen') ? 20 : 0;
+    if(sc >= 80 && sc < 85) bonus += s.id === 'momentum' ? 15 : s.id === 'swing' ? 10 : 0;
+    if(rsi < 35) bonus += (s.id === 'scalp' || s.id === 'sniper') ? 15 : 0;
+    if(isMeme) bonus += s.id === 'meme_pump' ? 25 : s.id === 'degen' ? 15 : 0;
+    if(regime === 'BULL') bonus += s.id === 'momentum' ? 10 : s.id === 'breakout' ? 8 : 0;
+    if(regime === 'SIDEWAYS' || regime === 'SIDEWAYS_BULL') bonus += s.id === 'scalp' ? 10 : 0;
+    return { strat: s, score: bonus };
+  });
+
+  scored.sort(function(a,b){ return b.score - a.score; });
+  return scored[0].strat;
+}
+
+// ── Oracle choisit le levier optimal ──
+function swOracleChooseLev(tok, strat) {
+  var sc = tok.score || 65;
+  var rsi = tok.rsi || 55;
+  var regime = ptOracleRegime;
+  var isMeme = tok.type === 'MEME';
+
+  // Base: pas de levier par défaut sauf signal très fort
+  if(sc < 75 || isMeme) return 1;
+  if(regime === 'BEAR' || regime === 'VOLATILE') return 1;
+  if(sc >= 85 && rsi < 65 && (regime === 'BULL' || regime === 'SIDEWAYS_BULL')) {
+    if(strat.id === 'degen') return 3;
+    if(strat.id === 'momentum') return 2;
+  }
+  if(sc >= 80 && rsi < 60) return 2;
+  return 1;
+}
+
+// ── Oracle choisit le montant (% du wallet selon conviction) ──
+function swOracleChooseAmt(tok, strat) {
+  var sc = tok.score || 65;
+  var wallet = swST.wallet;
+  var pct;
+  if(sc >= 88) pct = 0.25;       // 25% — signal exceptionnel
+  else if(sc >= 82) pct = 0.15;  // 15% — signal fort
+  else if(sc >= 75) pct = 0.10;  // 10% — signal valide
+  else pct = 0.05;               // 5%  — signal faible
+  // Réduire si meme ou régime adverse
+  if(tok.type === 'MEME') pct *= 0.6;
+  if(ptOracleRegime === 'BEAR') pct *= 0.5;
+  return Math.max(1, +(wallet * pct).toFixed(2));
+}
+
+// ── Refresh signaux ──
+async function swRefresh() {
+  var btn = document.getElementById('swRefreshBtn');
+  var icon = document.getElementById('swRefreshIcon');
   if(btn) btn.disabled = true;
-  if(icon) { icon.textContent = '↻'; icon.style.display = 'inline-block'; icon.classList.add('spinning'); }
+  if(icon) { icon.textContent = '↻'; icon.classList.add('spinning'); }
 
   var online = false;
   var signals = [];
 
-  // Essayer /api/signals d'abord
   try {
     var ctrl = new AbortController();
     setTimeout(function(){ ctrl.abort(); }, 3000);
@@ -2963,15 +3146,13 @@ async function sigRefresh() {
     if(r.ok) {
       var d = await r.json();
       if(d && Array.isArray(d.signals)) {
-        signals = d.signals;
-        online = true;
+        signals = d.signals; online = true;
         ptOracleMinScore = d.min_score || ptOracleMinScore;
         ptOracleRegime = d.regime || ptOracleRegime;
       }
     }
   } catch(e) {}
 
-  // Fallback /api/stats si pas de /api/signals
   if(!online) {
     try {
       var ctrl2 = new AbortController();
@@ -2981,37 +3162,10 @@ async function sigRefresh() {
         var d2 = await r2.json();
         if(d2 && d2.best_symbol) {
           online = true;
-          // Construire un signal factice depuis /api/stats
-          var fakeSig = {
-            symbol: d2.best_symbol,
-            score: d2.best_score || 0,
-            price_usd: ptLP[d2.best_symbol] ? ptLP[d2.best_symbol].price : 0,
-            change_24h: ptLP[d2.best_symbol] ? ptLP[d2.best_symbol].change24h : 0,
-            volume_24h: ptLP[d2.best_symbol] ? ptLP[d2.best_symbol].vol24h : 0,
-            above_threshold: (d2.best_score || 0) >= ptOracleMinScore,
-            traded: false,
-            timestamp: new Date().toISOString(),
-            ts: Date.now(),
-            regime: ptOracleRegime
-          };
-          // Ajouter les autres tokens connus si disponibles
-          signals = [fakeSig];
+          signals = [{ symbol:d2.best_symbol, score:d2.best_score||0, price_usd:0, change_24h:0, volume_24h:0, above_threshold:(d2.best_score||0)>=ptOracleMinScore, traded:false, timestamp:new Date().toISOString(), ts:Date.now(), regime:ptOracleRegime }];
           if(Array.isArray(d2.tokens)) {
             d2.tokens.forEach(function(tk) {
-              if(tk.symbol !== d2.best_symbol) {
-                signals.push({
-                  symbol: tk.symbol,
-                  score: tk.score || 0,
-                  price_usd: ptLP[tk.symbol] ? ptLP[tk.symbol].price : 0,
-                  change_24h: ptLP[tk.symbol] ? ptLP[tk.symbol].change24h : 0,
-                  volume_24h: 0,
-                  above_threshold: (tk.score || 0) >= ptOracleMinScore,
-                  traded: false,
-                  timestamp: new Date().toISOString(),
-                  ts: Date.now(),
-                  regime: ptOracleRegime
-                });
-              }
+              if(tk.symbol !== d2.best_symbol) signals.push({ symbol:tk.symbol, score:tk.score||0, price_usd:0, change_24h:0, volume_24h:0, above_threshold:(tk.score||0)>=ptOracleMinScore, traded:false, timestamp:new Date().toISOString(), ts:Date.now(), regime:ptOracleRegime });
             });
           }
         }
@@ -3019,155 +3173,438 @@ async function sigRefresh() {
     } catch(e2) {}
   }
 
-  // Si toujours offline, utiliser les données PT_TOP10
   if(!online) {
     signals = PT_TOP10.map(function(tok) {
-      return {
-        symbol: tok.sym,
-        score: tok.score,
-        price_usd: ptLP[tok.sym] ? ptLP[tok.sym].price : 0,
-        change_24h: ptLP[tok.sym] ? ptLP[tok.sym].change24h : 0,
-        volume_24h: ptLP[tok.sym] ? ptLP[tok.sym].vol24h : 0,
-        above_threshold: tok.score >= ptOracleMinScore,
-        traded: false,
-        timestamp: new Date().toISOString(),
-        ts: Date.now() - Math.random() * 3600000,
-        regime: ptOracleRegime
-      };
+      return { symbol:tok.sym, score:tok.score, price_usd:ptLP[tok.sym]?ptLP[tok.sym].price:0, change_24h:ptLP[tok.sym]?ptLP[tok.sym].change24h:0, volume_24h:0, above_threshold:tok.score>=ptOracleMinScore, traded:false, timestamp:new Date().toISOString(), ts:Date.now()-Math.random()*3600000, regime:ptOracleRegime };
     });
   }
 
-  sigData = signals;
-  sigOracleOnline = online;
+  swData = signals;
+  swOracleOnline = online;
 
-  // Mettre à jour le statut
-  var dot = document.getElementById('sigOracleDot');
-  var txt = document.getElementById('sigOracleText');
+  var dot = document.getElementById('swOracleDot');
+  var txt = document.getElementById('swOracleText');
   if(dot) dot.style.background = online ? '#0ECB81' : '#EF4444';
-  if(txt) txt.textContent = online
-    ? 'Oracle en ligne · Régime ' + ptOracleRegime + ' · Seuil ' + ptOracleMinScore + '/100'
-    : 'Oracle hors ligne · Données Paper Trading (Top 10)';
+  if(txt) txt.textContent = online ? ('Oracle en ligne · ' + ptOracleRegime + ' · Seuil ' + ptOracleMinScore + '/100') : ('Oracle hors ligne · Top 10 local');
 
-  // Heure de sync
-  var upd = document.getElementById('sigLastUpdate');
-  if(upd) upd.textContent = 'Sync ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  var upd = document.getElementById('swLastUpdate');
+  if(upd) upd.textContent = 'Sync ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 
-  sigBuildList();
+  swBuildSignalList();
+  swRefreshUI();
 
   if(btn) btn.disabled = false;
   if(icon) { icon.classList.remove('spinning'); icon.textContent = online ? '✓' : '↻'; }
   if(online) setTimeout(function(){ if(icon) icon.textContent = '↻'; }, 2000);
 }
 
-function sigFilter(f) {
-  sigCurrentFilter = f;
-  document.querySelectorAll('#sigFilters [data-sf]').forEach(function(el) {
-    var on = el.dataset.sf === f;
+function swFilter(f) {
+  swCurrentFilter = f;
+  document.querySelectorAll('#swFilters [data-swf]').forEach(function(el) {
+    var on = el.dataset.swf === f;
     el.style.background = on ? 'rgba(240,185,11,0.15)' : 'rgba(255,255,255,0.07)';
-    el.style.color = on ? 'var(--gold)' : '#94A3B8';
+    el.style.color = on ? '#F0B90B' : '#94A3B8';
     el.style.borderColor = on ? 'rgba(240,185,11,0.3)' : 'rgba(255,255,255,0.12)';
   });
-  sigBuildList();
+  swBuildSignalList();
 }
 
-function sigFilteredData() {
-  var d = sigData.slice();
-  if(sigCurrentFilter === 'hot')    d = d.filter(function(s){ return s.score >= 80; });
-  if(sigCurrentFilter === 'above')  d = d.filter(function(s){ return s.above_threshold; });
-  if(sigCurrentFilter === 'recent') d = d.filter(function(s){ return (Date.now() - s.ts) < 3600000; });
-  return d.sort(function(a,b){ return b.score - a.score; });
+function swFilteredData() {
+  var d = swData.slice();
+  if(swCurrentFilter === 'hot')    d = d.filter(function(s){ return s.score >= 80; });
+  if(swCurrentFilter === 'above')  d = d.filter(function(s){ return s.above_threshold; });
+  if(swCurrentFilter === 'recent') d = d.filter(function(s){ return (Date.now()-s.ts) < 3600000; });
+  return d.sort(function(a,b){ return b.score-a.score; });
 }
 
-function sigAgo(ts) {
-  var ms = Date.now() - ts;
-  if(ms < 60000) return Math.round(ms/1000) + 's';
-  if(ms < 3600000) return Math.round(ms/60000) + 'min';
-  return Math.round(ms/3600000) + 'h';
+function swAgo(ts) {
+  var ms = Date.now()-ts;
+  if(ms<60000) return Math.round(ms/1000)+'s';
+  if(ms<3600000) return Math.round(ms/60000)+'min';
+  return Math.round(ms/3600000)+'h';
 }
 
-function sigBuildList() {
-  var el = document.getElementById('sigList');
+// ── Construire la liste des signaux ──
+function swBuildSignalList() {
+  var el = document.getElementById('swSignalList');
   if(!el) return;
-  var data = sigFilteredData();
+  var data = swFilteredData();
   if(!data.length) {
-    el.innerHTML = '<div class="empty" style="padding:30px;text-align:center;color:#94A3B8;font-size:12px">Aucun signal dans ce filtre</div>';
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:#64748B;font-size:12px">Aucun signal dans ce filtre</div>';
     return;
   }
-  var html = '';
+
+  el.innerHTML = '';
   data.forEach(function(sig) {
     var sc = sig.score;
-    var scCol = sc >= 85 ? 'var(--green)' : sc >= ptOracleMinScore ? 'var(--gold)' : 'var(--txt3)';
-    var scBg  = sc >= ptOracleMinScore ? 'rgba(240,185,11,0.1)' : 'rgba(255,255,255,0.04)';
+    var scCol = sc >= 85 ? '#10B981' : sc >= ptOracleMinScore ? '#F0B90B' : '#94A3B8';
     var ch = sig.change_24h || 0;
     var chPos = ch >= 0;
     var lp = ptLP[sig.symbol];
     var px = (lp && lp.loaded) ? ('$' + ptFmt(lp.price)) : (sig.price_usd ? ('$' + ptFmt(sig.price_usd)) : '...');
-    var hasPos = ptST.positions.find(function(p){ return p.sym === sig.symbol; });
-    var ago = sigAgo(sig.ts);
-    var regime = sig.regime || ptOracleRegime;
-    var borderCol = sig.above_threshold ? 'rgba(240,185,11,0.2)' : 'rgba(255,255,255,0.08)';
-    var chColor = chPos ? 'var(--green)' : 'var(--red)';
-    var chStr = (chPos ? '+' : '') + ch.toFixed(2) + '% 24h';
+    var hasPos = swST.positions.find(function(p){ return p.sym === sig.symbol; });
+    var ago = swAgo(sig.ts);
 
-    var badge = '';
-    if(sig.traded)            badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(139,92,246,0.15);color:var(--purple);border:1px solid rgba(139,92,246,0.2)">TRADE</span> ';
-    else if(sig.above_threshold) badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(14,203,129,0.12);color:var(--green);border:1px solid rgba(14,203,129,0.2)">SIGNAL</span> ';
-    else                      badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--txt3);border:1px solid rgba(255,255,255,0.1)">SCAN</span> ';
-    if(hasPos) badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(240,185,11,0.12);color:var(--gold);border:1px solid rgba(240,185,11,0.2)">OPEN</span>';
+    // Token info pour Oracle
+    var tok = PT_ALL.find(function(t){ return t.sym===sig.symbol; }) || ptMeme200.find(function(t){ return t.sym===sig.symbol; }) || {sym:sig.symbol, score:sc, rsi:55, type:'MEME'};
+    var strat = swOracleChooseStrat(tok);
+    var lev = swOracleChooseLev(tok, strat);
+    var amt = swOracleChooseAmt(tok, strat);
 
-    var logoHtml = tokLogoHTML(sig.symbol, 40);
+    var card = document.createElement('div');
+    card.style.cssText = 'background:rgba(20,28,40,0.9);border:1px solid ' + (sig.above_threshold?'rgba(240,185,11,0.25)':'rgba(255,255,255,0.08)') + ';border-radius:14px;padding:14px;margin-bottom:8px';
 
-    var div = document.createElement('div');
-    div.style.cssText = 'background:rgba(20,28,40,0.9);border:1px solid ' + borderCol + ';border-radius:12px;padding:12px;margin-bottom:8px';
+    // Ligne 1: logo + nom + score
+    var row1 = document.createElement('div');
+    row1.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px';
+    row1.innerHTML = tokLogoHTML(sig.symbol, 40)
+      + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:14px;font-weight:800;color:#F1F5F9">' + sig.symbol
+          + (hasPos ? ' <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(240,185,11,0.12);color:#F0B90B;border:1px solid rgba(240,185,11,0.2)">OPEN</span>' : '')
+        + '</div>'
+        + '<div style="font-size:10px;color:#64748B;margin-top:2px">' + (sig.regime||ptOracleRegime) + ' · ' + ago + '</div>'
+      + '</div>'
+      + '<div style="text-align:right">'
+        + '<div style="font-size:20px;font-weight:900;font-family:monospace;color:' + scCol + ';background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:8px">' + sc + '</div>'
+        + '<div style="font-size:9px;color:#64748B;text-align:center">/100</div>'
+      + '</div>';
 
-    div.innerHTML = [
-      '<div style="display:flex;align-items:center;gap:10px">',
-        logoHtml,
-        '<div style="flex:1;min-width:0">',
-          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">',
-            '<span style="font-size:14px;font-weight:800;color:#F1F5F9">' + sig.symbol + '</span>',
-            badge,
-          '</div>',
-          '<div style="font-size:10px;color:#64748B">' + regime + ' · Il y a ' + ago + '</div>',
-        '</div>',
-        '<div style="text-align:right;flex-shrink:0">',
-          '<div style="font-size:18px;font-weight:900;font-family:monospace;color:' + scCol + ';background:' + scBg + ';padding:4px 8px;border-radius:8px">' + sc + '</div>',
-          '<div style="font-size:10px;color:#64748B;margin-top:2px">/100</div>',
-        '</div>',
-      '</div>',
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">',
-        '<div style="font-size:12px;font-family:monospace;font-weight:600;color:#F1F5F9">' + px + '</div>',
-        '<div style="font-size:11px;color:' + chColor + ';font-weight:600">' + chStr + '</div>',
-        '<button style="padding:6px 14px;background:linear-gradient(135deg,rgba(240,185,11,0.15),rgba(240,185,11,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--gold);font-family:inherit">Trader</button>',
-      '</div>'
-    ].join('');
+    // Ligne 2: prix + change
+    var row2 = document.createElement('div');
+    row2.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:10px';
+    row2.innerHTML = '<div style="font-size:12px;font-family:monospace;font-weight:600;color:#F1F5F9">' + px + '</div>'
+      + '<div style="font-size:11px;color:' + (chPos?'#10B981':'#EF4444') + ';font-weight:600">' + (chPos?'+':'') + ch.toFixed(2) + '% 24h</div>'
+      + '<div style="font-size:10px;color:#64748B">' + strat.emoji + ' ' + strat.name + (lev>1?' ×'+lev:'') + '</div>';
 
-    // Attacher l'event sur le bouton sans inline onclick
-    var btn = div.querySelector('button');
-    btn.addEventListener('click', (function(s){ return function(){ sigOpenPT(s); }; })(sig.symbol));
+    // Ligne 3: Oracle decision + bouton
+    var row3 = document.createElement('div');
+    row3.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px';
+    var decisionColor = sc >= ptOracleMinScore ? '#10B981' : '#F0B90B';
+    row3.innerHTML = '<div style="flex:1;font-size:10px;color:#64748B;line-height:1.4">'
+      + '<span style="color:' + decisionColor + ';font-weight:700">Oracle</span> → '
+      + amt.toFixed(0) + ' € · ' + strat.name + (lev>1?' ×'+lev:'') + '<br>'
+      + 'SL ' + strat.sl + '% · TP1 +' + strat.tp1 + '% · TP2 +' + strat.tp2 + '%'
+      + '</div>';
 
-    el.appendChild(div);
+    var tradeBtn = document.createElement('button');
+    tradeBtn.style.cssText = 'padding:10px 18px;background:linear-gradient(135deg,#F0B90B,#C99400);border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;color:#000;font-family:inherit;flex-shrink:0;box-shadow:0 4px 12px rgba(240,185,11,0.25)';
+    tradeBtn.textContent = '▲ Trader';
+    tradeBtn.addEventListener('click', (function(s, tk, st, lv, am){
+      return function() { swOpenTradeModal(s, tk, st, lv, am); };
+    })(sig.symbol, tok, strat, lev, amt));
+
+    row3.appendChild(tradeBtn);
+
+    card.appendChild(row1);
+    card.appendChild(row2);
+    card.appendChild(row3);
+    el.appendChild(card);
   });
 }
 
-function sigOpenPT(symOrEl) { var sym = typeof symOrEl === 'string' ? symOrEl : symOrEl.dataset.sym;
-  // Naviguer vers l'onglet Paper et ouvrir le trade
-  var paperBtn = document.querySelector('[onclick*=paper]') || document.querySelector('button.tab:last-child');
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
-  var paperPage = document.getElementById('page-paper');
-  if(paperPage) paperPage.classList.add('on');
-  // Marquer le bon onglet nav
-  document.querySelectorAll('.tab').forEach(function(t){
-    if(t.getAttribute('onclick') && t.getAttribute('onclick').indexOf("'paper'") >= 0) t.classList.add('on');
-  });
-  ptOnTabOpen();
-  // Ouvrir directement le trade
-  setTimeout(function(){ ptOpenChart(sym, 'classic'); }, 100);
-  notif('🎯 Signal ' + sym + ' chargé dans le Paper Trading');
+// ── Modal de confirmation trade ──
+function swOpenTradeModal(sym, tok, strat, lev, amt) {
+  var modal = document.getElementById('swTradeModal');
+  var content = document.getElementById('swTradeContent');
+  if(!modal || !content) return;
+
+  var lp = ptLP[sym];
+  var px = (lp && lp.loaded) ? lp.price : 0;
+  var fees = ptFees(sym, amt, 'buy');
+  var netAmt = amt - fees.total;
+  var s = strat;
+
+  content.innerHTML = '';
+
+  // Header
+  var hdr = document.createElement('div');
+  hdr.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:16px';
+  hdr.innerHTML = tokLogoHTML(sym, 44)
+    + '<div style="flex:1">'
+      + '<div style="font-size:16px;font-weight:800;color:#F1F5F9">' + sym + ' / USD</div>'
+      + '<div style="font-size:11px;color:#64748B">' + tok.name + ' · Score ' + tok.score + '/100</div>'
+    + '</div>'
+    + '<div style="text-align:right">'
+      + '<div style="font-size:18px;font-weight:800;font-family:monospace;color:#F1F5F9">' + (px ? '$'+ptFmt(px) : '...') + '</div>'
+    + '</div>';
+  content.appendChild(hdr);
+
+  // Oracle decision card
+  var dec = document.createElement('div');
+  dec.style.cssText = 'background:rgba(240,185,11,0.06);border:1px solid rgba(240,185,11,0.2);border-radius:12px;padding:12px;margin-bottom:14px;font-size:11px;line-height:1.8';
+  dec.innerHTML = '<div style="font-size:12px;font-weight:700;color:#F0B90B;margin-bottom:6px">🔮 Décision Oracle</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'
+      + '<div style="color:#94A3B8">Stratégie</div><div style="color:#F1F5F9;font-weight:600">' + s.emoji + ' ' + s.name + '</div>'
+      + '<div style="color:#94A3B8">Levier</div><div style="color:' + (lev>1?'#F0B90B':'#F1F5F9') + ';font-weight:600">×' + lev + '</div>'
+      + '<div style="color:#94A3B8">Montant</div><div style="color:#F1F5F9;font-weight:600">' + amt.toFixed(2) + ' €</div>'
+      + '<div style="color:#94A3B8">Net frais</div><div style="color:#F1F5F9;font-weight:600">' + netAmt.toFixed(2) + ' €</div>'
+      + '<div style="color:#EF4444">Stop Loss</div><div style="color:#EF4444;font-weight:600">' + s.sl + '%</div>'
+      + '<div style="color:#10B981">TP1</div><div style="color:#10B981;font-weight:600">+' + s.tp1 + '% (' + Math.round(s.tp1sz*100) + '% pos)</div>'
+      + '<div style="color:#10B981">TP2</div><div style="color:#10B981;font-weight:600">+' + s.tp2 + '%</div>'
+      + (s.tp3 ? '<div style="color:#FFD700">TP3</div><div style="color:#FFD700;font-weight:600">+' + s.tp3 + '%</div>' : '')
+      + '<div style="color:#94A3B8">Régime</div><div style="color:#F1F5F9;font-weight:600">' + ptOracleRegime + '</div>'
+    + '</div>';
+  content.appendChild(dec);
+
+  // Wallet dispo
+  var walletInfo = document.createElement('div');
+  walletInfo.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;margin-bottom:14px;font-size:12px';
+  walletInfo.innerHTML = '<span style="color:#64748B">Wallet Signaux disponible</span><span style="font-weight:700;color:#F0B90B;font-family:monospace">' + swST.wallet.toFixed(2) + ' €</span>';
+  content.appendChild(walletInfo);
+
+  // Boutons
+  var btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:8px';
+
+  var confirmBtn = document.createElement('button');
+  confirmBtn.style.cssText = 'flex:1;padding:14px;background:linear-gradient(135deg,#10B981,#059669);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(16,185,129,0.25)';
+  confirmBtn.textContent = '▲ Confirmer le trade';
+  confirmBtn.addEventListener('click', (function(s2, tk2, st2, lv2, am2){
+    return function() { swExecTrade(s2, tk2, st2, lv2, am2); };
+  })(sym, tok, strat, lev, amt));
+
+  var cancelBtn = document.createElement('button');
+  cancelBtn.style.cssText = 'padding:14px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#94A3B8;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit';
+  cancelBtn.textContent = 'Annuler';
+  cancelBtn.addEventListener('click', function(){ document.getElementById('swTradeModal').style.display='none'; });
+
+  btnRow.appendChild(confirmBtn);
+  btnRow.appendChild(cancelBtn);
+  content.appendChild(btnRow);
+
+  modal.style.display = 'flex';
 }
 
+// ── Exécuter le trade ──
+function swExecTrade(sym, tok, strat, lev, amt) {
+  document.getElementById('swTradeModal').style.display = 'none';
 
-</script>
-</body>
-</html>
+  var lp = ptLP[sym];
+  if(!lp || lp.price <= 0) {
+    var mt = ptMeme200.find(function(t){ return t.sym===sym; });
+    if(mt && mt._price) { ptLP[sym] = {price:mt._price, open24h:mt._price, change24h:mt.ch24||0, vol24h:0, loaded:true, ts:Date.now()}; lp = ptLP[sym]; }
+    else { notif('Prix non disponible — sync Oracle'); return; }
+  }
+
+  if(amt > swST.wallet) { notif('Fonds insuffisants — ' + swST.wallet.toFixed(2) + ' €'); return; }
+
+  var fees = ptFees(sym, amt, 'buy');
+  var latMs = ptLatency();
+  var execPx = ptExecPx(sym, lp.price, 'buy', latMs);
+  var netAmt = amt - fees.total;
+
+  swST.wallet -= amt;
+  swST.wallet = +swST.wallet.toFixed(4);
+
+  // Vérifier position existante (DCA)
+  var existing = swST.positions.find(function(p){ return p.sym===sym && p.stratId===strat.id && p.lev===lev; });
+  if(existing) {
+    var tot = existing.sizeEur + netAmt;
+    existing.execPx = (existing.execPx*existing.sizeEur + execPx*netAmt)/tot;
+    existing.sizeEur = +tot.toFixed(4);
+    existing.feesIn += fees.total;
+    existing.dcaCount = (existing.dcaCount||1)+1;
+  } else {
+    swST.positions.push({
+      id:Date.now(), sym:sym, tokType:tok.type||'MEME',
+      stratId:strat.id, strat:strat, oScore:tok.score||65,
+      regime:ptOracleRegime, sizeEur:+netAmt.toFixed(4), lev:lev,
+      execPx:+execPx.toFixed(8), quotePx:+lp.price.toFixed(8),
+      feesIn:+fees.total.toFixed(4), slipPct:+fees.pct.toFixed(4),
+      latMs:latMs, tp1Hit:false, tp2Hit:false, tp3Hit:false,
+      openTs:Date.now(), dcaCount:1
+    });
+  }
+
+  swST.trades.unshift({
+    id:Date.now()+0.1, sym:sym, tokType:tok.type||'MEME', side:'buy',
+    sizeEur:+netAmt.toFixed(4), sizeGross:+amt.toFixed(4), lev:lev,
+    execPx:+execPx.toFixed(8), quotePx:+lp.price.toFixed(8),
+    stratId:strat.id, stratName:strat.name, oScore:tok.score||65,
+    regime:ptOracleRegime, feesIn:fees, latMs:latMs, ts:Date.now(), exitReason:'OPEN', netPnl:null
+  });
+
+  swSave();
+  swRefreshUI();
+  swBuildSignalList();
+  notif('✅ Oracle LONG×' + lev + ' ' + sym + ' ' + netAmt.toFixed(2) + ' €');
+}
+
+// ── Clôturer une position ──
+function swClosePos(sym) {
+  var pos = swST.positions.find(function(p){ return p.sym===sym; });
+  if(!pos) return;
+  var lp = ptLP[sym];
+  var mark = (lp&&lp.price>0) ? lp.price : pos.execPx;
+  var exitFees = ptFees(sym, pos.sizeEur, 'sell');
+  var latMs = ptLatency();
+  var exitPx = ptExecPx(sym, mark, 'sell', latMs);
+  var rawPct = (exitPx-pos.execPx)/pos.execPx*100;
+  var levPct = rawPct*pos.lev;
+  var funding = ptFundingCost(pos);
+  var grossPnl = pos.sizeEur*levPct/100;
+  var netPnl = grossPnl - exitFees.total - funding;
+  var recovered = Math.max(0, pos.sizeEur + netPnl);
+  swST.wallet = +(swST.wallet + recovered).toFixed(4);
+  swST.trades.unshift({
+    id:Date.now(), sym:sym, side:'sell', sizeEur:+pos.sizeEur.toFixed(4),
+    lev:pos.lev, execPx:+exitPx.toFixed(8), entryPx:pos.execPx,
+    pctBrut:+levPct.toFixed(4), grossPnl:+grossPnl.toFixed(4),
+    feesOut:exitFees, netPnl:+netPnl.toFixed(4),
+    stratName:pos.strat.name, oScore:pos.oScore, regime:pos.regime,
+    exitReason:'MANUAL', latMs:latMs, openTs:pos.openTs,
+    closeTs:Date.now(), holdMs:Date.now()-pos.openTs
+  });
+  swST.positions = swST.positions.filter(function(p){ return p.sym!==sym; });
+  swSave();
+  swRefreshUI();
+  swBuildSignalList();
+  notif((netPnl>=0?'✅':'❌') + ' Clôture ' + sym + ' net ' + netPnl.toFixed(2) + ' €');
+}
+
+// ── Vérifier TP/SL auto ──
+function swCheckAutoClose() {
+  var changed = false;
+  swST.positions = swST.positions.filter(function(pos) {
+    var lp = ptLP[pos.sym];
+    if(!lp || lp.price<=0) return true;
+    var rawPct = (lp.price-pos.execPx)/pos.execPx*100;
+    var levPct = rawPct*pos.lev;
+    var s = pos.strat;
+    var funding = ptFundingCost(pos);
+    if(pos.lev>1 && lp.price<=ptLiqPrice(pos)) {
+      var liqPnl = -(pos.sizeEur*0.95);
+      swST.wallet += pos.sizeEur*0.05;
+      swST.trades.unshift({id:Date.now()+Math.random(),sym:pos.sym,side:'sell',sizeEur:+pos.sizeEur.toFixed(4),lev:pos.lev,execPx:+lp.price.toFixed(8),entryPx:pos.execPx,pctBrut:+levPct.toFixed(2),grossPnl:+liqPnl.toFixed(4),netPnl:+liqPnl.toFixed(4),exitReason:'LIQUIDATION',openTs:pos.openTs,closeTs:Date.now(),holdMs:Date.now()-pos.openTs,stratName:pos.strat.name,oScore:pos.oScore,regime:pos.regime});
+      notif('💥 LIQ Signaux ' + pos.sym + ' ×' + pos.lev);
+      changed=true; return false;
+    }
+    var trigger = null;
+    var netPct = levPct - (funding/pos.sizeEur*100);
+    if(netPct<=s.sl) trigger={r:'SL',tp:0};
+    else if(s.tp3&&levPct>=s.tp3&&!pos.tp3Hit) trigger={r:'TP3',tp:3};
+    else if(levPct>=s.tp2&&!pos.tp2Hit) trigger={r:'TP2',tp:2};
+    else if(levPct>=s.tp1&&!pos.tp1Hit) trigger={r:'TP1',tp:1};
+    if(!trigger) return true;
+    var closeSize = trigger.tp===1 ? pos.sizeEur*s.tp1sz : pos.sizeEur;
+    var exitFees = ptFees(pos.sym, closeSize, 'sell');
+    var latMs = ptLatency();
+    var exitPx = ptExecPx(pos.sym, lp.price, 'sell', latMs);
+    var realPct = (exitPx-pos.execPx)/pos.execPx*100*pos.lev;
+    var grossPnl = closeSize*realPct/100;
+    var netPnl = grossPnl - exitFees.total - funding*(closeSize/pos.sizeEur);
+    swST.trades.unshift({id:Date.now()+Math.random(),sym:pos.sym,side:'sell',sizeEur:+closeSize.toFixed(4),lev:pos.lev,execPx:+exitPx.toFixed(8),entryPx:pos.execPx,pctBrut:+realPct.toFixed(4),grossPnl:+grossPnl.toFixed(4),feesOut:exitFees,netPnl:+netPnl.toFixed(4),exitReason:trigger.r,latMs:latMs,openTs:pos.openTs,closeTs:Date.now(),holdMs:Date.now()-pos.openTs,stratName:pos.strat.name,oScore:pos.oScore,regime:pos.regime});
+    swST.wallet = +(swST.wallet+Math.max(0,closeSize+netPnl)).toFixed(4);
+    changed=true;
+    if(trigger.tp===1){pos.sizeEur-=closeSize;pos.tp1Hit=true;notif('🎯 TP1 Signaux ' + pos.sym + ' +' + realPct.toFixed(1) + '%');return true;}
+    if(trigger.r==='SL') notif('🛑 SL Signaux ' + pos.sym + ' ' + realPct.toFixed(1) + '%');
+    else notif('🏆 ' + trigger.r + ' Signaux ' + pos.sym + ' +' + realPct.toFixed(1) + '%');
+    return false;
+  });
+  if(changed){swSave();swRefreshUI();}
+}
+
+// ── Refresh UI wallet ──
+function swRefreshUI() {
+  var wEl = document.getElementById('swWDisp');
+  if(wEl) wEl.textContent = new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(swST.wallet);
+
+  var sells = swST.trades.filter(function(t){ return t.side==='sell' && t.netPnl!=null; });
+  var wins = sells.filter(function(t){ return t.netPnl>0; }).length;
+  var realPnl = sells.reduce(function(s,t){ return s+t.netPnl; }, 0);
+  var wr = sells.length ? (wins/sells.length*100).toFixed(1) : '—';
+  var unreal = 0;
+  swST.positions.forEach(function(p){ unreal += ptUnreal(p).pnl; });
+
+  var pnrEl = document.getElementById('swPnlReal');
+  if(pnrEl){ pnrEl.textContent=(realPnl>=0?'+':'')+realPnl.toFixed(2)+' €'; pnrEl.style.color=realPnl>=0?'#10B981':'#EF4444'; }
+  var pnuEl = document.getElementById('swPnlUnreal');
+  if(pnuEl){ pnuEl.textContent=(unreal>=0?'+':'')+unreal.toFixed(2)+' €'; pnuEl.style.color=unreal>0?'#10B981':unreal<0?'#EF4444':'rgba(255,255,255,0.35)'; }
+  var wrEl = document.getElementById('swWinRate');
+  if(wrEl){ wrEl.textContent=wr==='—'?'—':wr+'%'; wrEl.style.color=wr!=='—'?(parseFloat(wr)>=50?'#10B981':'#EF4444'):'#94A3B8'; }
+
+  // Positions ouvertes
+  var posCard = document.getElementById('swOpenPosCard');
+  var posList = document.getElementById('swOpenPosList');
+  if(posCard && posList) {
+    if(!swST.positions.length) {
+      posCard.style.display = 'none';
+    } else {
+      posCard.style.display = 'block';
+      var oc = document.getElementById('swOpenCount');
+      if(oc) oc.textContent = swST.positions.length;
+      posList.innerHTML = '';
+      swST.positions.forEach(function(pos) {
+        var u = ptUnreal(pos);
+        var isPos = u.pnl >= 0;
+        var dur = ptDur(Date.now()-pos.openTs);
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)';
+        row.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(240,185,11,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;color:#F0B90B">'
+          + pos.sym[0] + '</div>'
+          + '<div style="flex:1;min-width:0">'
+            + '<div style="font-size:12px;font-weight:700;color:#F1F5F9">' + pos.sym + ' <span style="color:#F0B90B;font-size:10px">×' + pos.lev + '</span> · ' + pos.strat.name + '</div>'
+            + '<div style="font-size:10px;color:#64748B">' + pos.sizeEur.toFixed(2) + ' € · ' + dur + '</div>'
+          + '</div>'
+          + '<div style="text-align:right;margin-right:4px">'
+            + '<div style="font-size:13px;font-weight:700;font-family:monospace;color:' + (isPos?'#10B981':'#EF4444') + '">' + (isPos?'+':'') + u.pnl.toFixed(2) + ' €</div>'
+            + '<div style="font-size:10px;color:' + (isPos?'#10B981':'#EF4444') + '">' + (isPos?'+':'') + u.pct.toFixed(2) + '%</div>'
+          + '</div>';
+        var closeBtn = document.createElement('button');
+        closeBtn.style.cssText = 'padding:5px 8px;background:rgba(246,70,93,0.1);border:1px solid rgba(246,70,93,0.3);border-radius:5px;font-size:10px;cursor:pointer;color:#EF4444;font-family:inherit;flex-shrink:0';
+        closeBtn.textContent = '✕';
+        closeBtn.addEventListener('click', (function(s){ return function(){ swClosePos(s); }; })(pos.sym));
+        row.appendChild(closeBtn);
+        posList.appendChild(row);
+      });
+    }
+  }
+
+  // Historique
+  var histCard = document.getElementById('swHistCard');
+  var histList = document.getElementById('swHistList');
+  if(histCard && histList) {
+    var sellTrades = swST.trades.filter(function(t){ return t.side==='sell'; });
+    if(sellTrades.length) {
+      histCard.style.display = 'block';
+      histList.innerHTML = '';
+      sellTrades.slice(0,15).forEach(function(t) {
+        var isWin = t.netPnl > 0;
+        var dur = t.holdMs ? ptDur(t.holdMs) : '—';
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:11px';
+        row.innerHTML = '<span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:' + (isWin?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.15)') + '">' + (isWin?'✅':'❌') + '</span>'
+          + '<div style="flex:1;min-width:0">'
+            + '<div style="font-weight:600;color:#F1F5F9">' + t.sym + (t.lev>1?' ×'+t.lev:'') + ' · ' + (t.stratName||'—') + '</div>'
+            + '<div style="color:#64748B">' + (t.sizeEur||0).toFixed(2) + ' € · ' + t.exitReason + ' · ' + dur + '</div>'
+          + '</div>'
+          + '<div style="text-align:right;flex-shrink:0;font-weight:700;font-family:monospace;color:' + (isWin?'#10B981':'#EF4444') + '">' + (isWin?'+':'') + (t.netPnl||0).toFixed(2) + ' €</div>';
+        histList.appendChild(row);
+      });
+    }
+  }
+}
+
+// ── Wallet ──
+function swSetWallet() {
+  var v = parseFloat(document.getElementById('swNewAmt').value);
+  if(v > 0){ swST.wallet = v; swSave(); swRefreshUI(); }
+  document.getElementById('swModal').style.display = 'none';
+}
+function swDoReset(keepWallet) {
+  var w = keepWallet ? swST.wallet : 1000;
+  swST.wallet = w; swST.positions = []; swST.trades = [];
+  try{ localStorage.removeItem(SW_LS); }catch(e){}
+  swSave(); swRefreshUI(); swBuildSignalList();
+  document.getElementById('swResetModal').style.display = 'none';
+  notif('🔄 Wallet Signaux réinitialisé');
+}
+
+// ── Ticker live pour positions Signaux ──
+function swTickerLive() {
+  if(!swST.positions.length) return;
+  swCheckAutoClose();
+  swRefreshUI();
+}
+
+>
