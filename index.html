@@ -3093,49 +3093,61 @@ function sigBuildList() {
     el.innerHTML = '<div class="empty" style="padding:30px;text-align:center;color:#94A3B8;font-size:12px">Aucun signal dans ce filtre</div>';
     return;
   }
-
-  el.innerHTML = data.map(function(sig) {
+  var html = '';
+  data.forEach(function(sig) {
     var sc = sig.score;
     var scCol = sc >= 85 ? 'var(--green)' : sc >= ptOracleMinScore ? 'var(--gold)' : 'var(--txt3)';
-    var scBg = sc >= ptOracleMinScore ? 'rgba(240,185,11,0.1)' : 'rgba(255,255,255,0.04)';
+    var scBg  = sc >= ptOracleMinScore ? 'rgba(240,185,11,0.1)' : 'rgba(255,255,255,0.04)';
     var ch = sig.change_24h || 0;
     var chPos = ch >= 0;
     var lp = ptLP[sig.symbol];
-    var px = lp && lp.loaded ? '$' + ptFmt(lp.price) : (sig.price_usd ? '$' + ptFmt(sig.price_usd) : '…');
+    var px = (lp && lp.loaded) ? ('$' + ptFmt(lp.price)) : (sig.price_usd ? ('$' + ptFmt(sig.price_usd)) : '...');
     var hasPos = ptST.positions.find(function(p){ return p.sym === sig.symbol; });
     var ago = sigAgo(sig.ts);
     var regime = sig.regime || ptOracleRegime;
+    var borderCol = sig.above_threshold ? 'rgba(240,185,11,0.2)' : 'rgba(255,255,255,0.08)';
+    var chColor = chPos ? 'var(--green)' : 'var(--red)';
+    var chStr = (chPos ? '+' : '') + ch.toFixed(2) + '% 24h';
 
-    // Badge statut
     var badge = '';
-    if(sig.traded) badge = '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(139,92,246,0.15);color:var(--purple);border:1px solid rgba(139,92,246,0.2)">TRADÉ</span>';
-    else if(sig.above_threshold) badge = '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(14,203,129,0.12);color:var(--green);border:1px solid rgba(14,203,129,0.2)">✅ SIGNAL</span>';
-    else badge = '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--txt3);border:1px solid rgba(255,255,255,0.1)">SCAN</span>';
+    if(sig.traded)            badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(139,92,246,0.15);color:var(--purple);border:1px solid rgba(139,92,246,0.2)">TRADE</span> ';
+    else if(sig.above_threshold) badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(14,203,129,0.12);color:var(--green);border:1px solid rgba(14,203,129,0.2)">SIGNAL</span> ';
+    else                      badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--txt3);border:1px solid rgba(255,255,255,0.1)">SCAN</span> ';
+    if(hasPos) badge += '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(240,185,11,0.12);color:var(--gold);border:1px solid rgba(240,185,11,0.2)">OPEN</span>';
 
-    if(hasPos) badge += ' <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(240,185,11,0.12);color:var(--gold);border:1px solid rgba(240,185,11,0.2)">OPEN</span>';
+    var logoHtml = tokLogoHTML(sig.symbol, 40);
 
-    return '<div style="background:rgba(20,28,40,0.9);border:1px solid ' + (sig.above_threshold ? 'rgba(240,185,11,0.2)' : 'rgba(255,255,255,0.08)') + ';border-radius:12px;padding:12px;margin-bottom:8px">'
-      + '<div style="display:flex;align-items:center;gap:10px">'
-        + tokLogoHTML(sig.symbol, 40)
-        + '<div style="flex:1;min-width:0">'
-          + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">'
-            + '<span style="font-size:14px;font-weight:800;color:#F1F5F9">' + sig.symbol + '</span>'
-            + badge
-          + '</div>'
-          + '<div style="font-size:10px;color:#64748B">' + regime + ' · Il y a ' + ago + '</div>'
-        + '</div>'
-        + '<div style="text-align:right;flex-shrink:0">'
-          + '<div style="font-size:18px;font-weight:900;font-family:SF Mono,monospace;color:' + scCol + ';background:' + scBg + ';padding:4px 8px;border-radius:8px">' + sc + '</div>'
-          + '<div style="font-size:10px;color:#64748B;margin-top:2px">/100</div>'
-        + '</div>'
-      + '</div>'
-      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">'
-        + '<div style="font-size:12px;font-family:SF Mono,monospace;font-weight:600;color:#F1F5F9">' + px + '</div>'
-        + '<div style="font-size:11px;color:' + (chPos ? 'var(--green)' : 'var(--red)') + ';font-weight:600">' + (chPos ? '+' : '') + ch.toFixed(2) + '% 24h</div>'
-        + '<button onclick="sigOpenPT(this.dataset.sym)" data-sym="' + sig.symbol + '" style="padding:6px 14px;background:linear-gradient(135deg,rgba(240,185,11,0.15),rgba(240,185,11,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--gold);font-family:inherit">▲ Trader</button>'
-      + '</div>'
-    + '</div>';
-  }).join('');
+    var div = document.createElement('div');
+    div.style.cssText = 'background:rgba(20,28,40,0.9);border:1px solid ' + borderCol + ';border-radius:12px;padding:12px;margin-bottom:8px';
+
+    div.innerHTML = [
+      '<div style="display:flex;align-items:center;gap:10px">',
+        logoHtml,
+        '<div style="flex:1;min-width:0">',
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">',
+            '<span style="font-size:14px;font-weight:800;color:#F1F5F9">' + sig.symbol + '</span>',
+            badge,
+          '</div>',
+          '<div style="font-size:10px;color:#64748B">' + regime + ' · Il y a ' + ago + '</div>',
+        '</div>',
+        '<div style="text-align:right;flex-shrink:0">',
+          '<div style="font-size:18px;font-weight:900;font-family:monospace;color:' + scCol + ';background:' + scBg + ';padding:4px 8px;border-radius:8px">' + sc + '</div>',
+          '<div style="font-size:10px;color:#64748B;margin-top:2px">/100</div>',
+        '</div>',
+      '</div>',
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">',
+        '<div style="font-size:12px;font-family:monospace;font-weight:600;color:#F1F5F9">' + px + '</div>',
+        '<div style="font-size:11px;color:' + chColor + ';font-weight:600">' + chStr + '</div>',
+        '<button style="padding:6px 14px;background:linear-gradient(135deg,rgba(240,185,11,0.15),rgba(240,185,11,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--gold);font-family:inherit">Trader</button>',
+      '</div>'
+    ].join('');
+
+    // Attacher l'event sur le bouton sans inline onclick
+    var btn = div.querySelector('button');
+    btn.addEventListener('click', (function(s){ return function(){ sigOpenPT(s); }; })(sig.symbol));
+
+    el.appendChild(div);
+  });
 }
 
 function sigOpenPT(symOrEl) { var sym = typeof symOrEl === 'string' ? symOrEl : symOrEl.dataset.sym;
