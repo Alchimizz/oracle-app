@@ -907,6 +907,41 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   </div><!-- /ptTradeScr -->
 
 </div><!-- /page-paper -->
+
+<!-- ══ PAGE SIGNAUX ORACLE ══ -->
+<div class="page" id="page-signals">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div>
+      <div style="font-size:15px;font-weight:700">Signaux Oracle</div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:2px" id="sigLastUpdate">Jamais synchronisé</div>
+    </div>
+    <button onclick="sigRefresh()" id="sigRefreshBtn" style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--blue);font-family:inherit">
+      <span id="sigRefreshIcon">↻</span> Sync
+    </button>
+  </div>
+
+  <!-- Statut Oracle -->
+  <div id="sigOracleStatus" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.1);margin-bottom:12px;font-size:11px">
+    <span id="sigOracleDot" style="width:8px;height:8px;border-radius:50%;background:#EF4444;flex-shrink:0"></span>
+    <span id="sigOracleText" style="color:var(--txt3)">Oracle hors ligne — derniers signaux connus</span>
+  </div>
+
+  <!-- Filtres -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="sigFilters">
+    <div onclick="sigFilter('all')"   data-sf="all"   style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(240,185,11,0.15);color:var(--gold);border:1px solid rgba(240,185,11,0.3)">Tous</div>
+    <div onclick="sigFilter('hot')"   data-sf="hot"   style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🔥 Score 80+</div>
+    <div onclick="sigFilter('above')" data-sf="above" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">✅ Au-dessus seuil</div>
+    <div onclick="sigFilter('recent')" data-sf="recent" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🕐 Récents</div>
+  </div>
+
+  <!-- Liste signaux -->
+  <div id="sigList">
+    <div class="empty" style="padding:40px 16px;text-align:center;color:#94A3B8;font-size:13px">
+      🔮 Lance Oracle et clique sur Sync<br>pour voir les signaux détectés
+    </div>
+  </div>
+</div>
+
 <nav>
   <button class="tab on" onclick="goTab('home',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Accueil</span></button>
   <button class="tab" onclick="goTab('trading',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg><span>Trading</span></button>
@@ -914,6 +949,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   <button class="tab" onclick="goTab('portfolio',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg><span>Portfolio</span></button>
   <button class="tab" onclick="goTab('ia',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 011 1v3a1 1 0 01-1 1h-1v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1H2a1 1 0 01-1-1v-3a1 1 0 011-1h1a7 7 0 017-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2M7.5 13A2.5 2.5 0 005 15.5 2.5 2.5 0 007.5 18a2.5 2.5 0 002.5-2.5A2.5 2.5 0 007.5 13m9 0a2.5 2.5 0 00-2.5 2.5 2.5 2.5 0 002.5 2.5 2.5 2.5 0 002.5-2.5A2.5 2.5 0 0016.5 13z"/></svg><span>IA</span></button>
   <button class="tab" onclick="goTab('config',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span>Config</span></button>
+  <button class="tab" onclick="goTab('signals',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg><span>Signaux</span></button>
   <button class="tab" onclick="goTab('paper',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg><span>Paper</span></button>
 </nav>
 
@@ -924,7 +960,7 @@ const API="https://triform-dollie-sonic.ngrok-free.dev";
 const HEADERS={"ngrok-skip-browser-warning":"true"};
 if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#0B0E11');Telegram.WebApp.setBackgroundColor('#0B0E11');}
 // Init déplacé en fin de script
-function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else loadAll();}
+function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else if(tab==='signals'){sigRefresh();if(sigIntervalId)clearInterval(sigIntervalId);sigIntervalId=setInterval(sigRefresh,30000);}else{if(sigIntervalId){clearInterval(sigIntervalId);sigIntervalId=null;}loadAll();}}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
 function drawGauge(id,val){const c=document.getElementById(id);if(!c)return;c.width=200;c.height=110;const ctx=c.getContext('2d'),cx=100,cy=96,r=76;ctx.clearRect(0,0,200,110);[['#F6465D',Math.PI,Math.PI*1.2],['#F79009',Math.PI*1.2,Math.PI*1.4],['#F0B90B',Math.PI*1.4,Math.PI*1.6],['#12B76A',Math.PI*1.6,Math.PI*1.8],['#0ECB81',Math.PI*1.8,Math.PI*2]].forEach(([col,s,e])=>{ctx.beginPath();ctx.arc(cx,cy,r,s,e);ctx.lineWidth=14;ctx.strokeStyle=col;ctx.lineCap='butt';ctx.stroke();});const angle=Math.PI+(Math.min(Math.max(val,0),100)/100)*Math.PI;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-20)*Math.cos(angle),cy+(r-20)*Math.sin(angle));ctx.lineWidth=2;ctx.strokeStyle='#EAECEF';ctx.lineCap='round';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle='#EAECEF';ctx.fill();}
@@ -2900,6 +2936,229 @@ function ptTickerLive(){
   }, 20000);
   setInterval(function(){try{ptUpdateNet();}catch(e){}}, 30000);
 })();
+
+
+// ════════════════════════════════════════════════════════════════════
+// ONGLET SIGNAUX ORACLE
+// Source : /api/signals (Oracle Python)
+// Fallback : /api/stats quand Oracle hors ligne
+// ════════════════════════════════════════════════════════════════════
+
+var sigCurrentFilter = 'all';
+var sigData = [];
+var sigOracleOnline = false;
+var sigIntervalId = null;
+
+async function sigRefresh() {
+  var btn = document.getElementById('sigRefreshBtn');
+  var icon = document.getElementById('sigRefreshIcon');
+  if(btn) btn.disabled = true;
+  if(icon) { icon.textContent = '↻'; icon.style.display = 'inline-block'; icon.classList.add('spinning'); }
+
+  var online = false;
+  var signals = [];
+
+  // Essayer /api/signals d'abord
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 3000);
+    var r = await fetch(API + '/api/signals', { headers: HEADERS, signal: ctrl.signal });
+    if(r.ok) {
+      var d = await r.json();
+      if(d && Array.isArray(d.signals)) {
+        signals = d.signals;
+        online = true;
+        ptOracleMinScore = d.min_score || ptOracleMinScore;
+        ptOracleRegime = d.regime || ptOracleRegime;
+      }
+    }
+  } catch(e) {}
+
+  // Fallback /api/stats si pas de /api/signals
+  if(!online) {
+    try {
+      var ctrl2 = new AbortController();
+      setTimeout(function(){ ctrl2.abort(); }, 3000);
+      var r2 = await fetch(API + '/api/stats', { headers: HEADERS, signal: ctrl2.signal });
+      if(r2.ok) {
+        var d2 = await r2.json();
+        if(d2 && d2.best_symbol) {
+          online = true;
+          // Construire un signal factice depuis /api/stats
+          var fakeSig = {
+            symbol: d2.best_symbol,
+            score: d2.best_score || 0,
+            price_usd: ptLP[d2.best_symbol] ? ptLP[d2.best_symbol].price : 0,
+            change_24h: ptLP[d2.best_symbol] ? ptLP[d2.best_symbol].change24h : 0,
+            volume_24h: ptLP[d2.best_symbol] ? ptLP[d2.best_symbol].vol24h : 0,
+            above_threshold: (d2.best_score || 0) >= ptOracleMinScore,
+            traded: false,
+            timestamp: new Date().toISOString(),
+            ts: Date.now(),
+            regime: ptOracleRegime
+          };
+          // Ajouter les autres tokens connus si disponibles
+          signals = [fakeSig];
+          if(Array.isArray(d2.tokens)) {
+            d2.tokens.forEach(function(tk) {
+              if(tk.symbol !== d2.best_symbol) {
+                signals.push({
+                  symbol: tk.symbol,
+                  score: tk.score || 0,
+                  price_usd: ptLP[tk.symbol] ? ptLP[tk.symbol].price : 0,
+                  change_24h: ptLP[tk.symbol] ? ptLP[tk.symbol].change24h : 0,
+                  volume_24h: 0,
+                  above_threshold: (tk.score || 0) >= ptOracleMinScore,
+                  traded: false,
+                  timestamp: new Date().toISOString(),
+                  ts: Date.now(),
+                  regime: ptOracleRegime
+                });
+              }
+            });
+          }
+        }
+      }
+    } catch(e2) {}
+  }
+
+  // Si toujours offline, utiliser les données PT_TOP10
+  if(!online) {
+    signals = PT_TOP10.map(function(tok) {
+      return {
+        symbol: tok.sym,
+        score: tok.score,
+        price_usd: ptLP[tok.sym] ? ptLP[tok.sym].price : 0,
+        change_24h: ptLP[tok.sym] ? ptLP[tok.sym].change24h : 0,
+        volume_24h: ptLP[tok.sym] ? ptLP[tok.sym].vol24h : 0,
+        above_threshold: tok.score >= ptOracleMinScore,
+        traded: false,
+        timestamp: new Date().toISOString(),
+        ts: Date.now() - Math.random() * 3600000,
+        regime: ptOracleRegime
+      };
+    });
+  }
+
+  sigData = signals;
+  sigOracleOnline = online;
+
+  // Mettre à jour le statut
+  var dot = document.getElementById('sigOracleDot');
+  var txt = document.getElementById('sigOracleText');
+  if(dot) dot.style.background = online ? '#0ECB81' : '#EF4444';
+  if(txt) txt.textContent = online
+    ? 'Oracle en ligne · Régime ' + ptOracleRegime + ' · Seuil ' + ptOracleMinScore + '/100'
+    : 'Oracle hors ligne · Données Paper Trading (Top 10)';
+
+  // Heure de sync
+  var upd = document.getElementById('sigLastUpdate');
+  if(upd) upd.textContent = 'Sync ' + new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+
+  sigBuildList();
+
+  if(btn) btn.disabled = false;
+  if(icon) { icon.classList.remove('spinning'); icon.textContent = online ? '✓' : '↻'; }
+  if(online) setTimeout(function(){ if(icon) icon.textContent = '↻'; }, 2000);
+}
+
+function sigFilter(f) {
+  sigCurrentFilter = f;
+  document.querySelectorAll('#sigFilters [data-sf]').forEach(function(el) {
+    var on = el.dataset.sf === f;
+    el.style.background = on ? 'rgba(240,185,11,0.15)' : 'rgba(255,255,255,0.07)';
+    el.style.color = on ? 'var(--gold)' : '#94A3B8';
+    el.style.borderColor = on ? 'rgba(240,185,11,0.3)' : 'rgba(255,255,255,0.12)';
+  });
+  sigBuildList();
+}
+
+function sigFilteredData() {
+  var d = sigData.slice();
+  if(sigCurrentFilter === 'hot')    d = d.filter(function(s){ return s.score >= 80; });
+  if(sigCurrentFilter === 'above')  d = d.filter(function(s){ return s.above_threshold; });
+  if(sigCurrentFilter === 'recent') d = d.filter(function(s){ return (Date.now() - s.ts) < 3600000; });
+  return d.sort(function(a,b){ return b.score - a.score; });
+}
+
+function sigAgo(ts) {
+  var ms = Date.now() - ts;
+  if(ms < 60000) return Math.round(ms/1000) + 's';
+  if(ms < 3600000) return Math.round(ms/60000) + 'min';
+  return Math.round(ms/3600000) + 'h';
+}
+
+function sigBuildList() {
+  var el = document.getElementById('sigList');
+  if(!el) return;
+  var data = sigFilteredData();
+  if(!data.length) {
+    el.innerHTML = '<div class="empty" style="padding:30px;text-align:center;color:#94A3B8;font-size:12px">Aucun signal dans ce filtre</div>';
+    return;
+  }
+
+  el.innerHTML = data.map(function(sig) {
+    var sc = sig.score;
+    var scCol = sc >= 85 ? 'var(--green)' : sc >= ptOracleMinScore ? 'var(--gold)' : 'var(--txt3)';
+    var scBg = sc >= ptOracleMinScore ? 'rgba(240,185,11,0.1)' : 'rgba(255,255,255,0.04)';
+    var ch = sig.change_24h || 0;
+    var chPos = ch >= 0;
+    var lp = ptLP[sig.symbol];
+    var px = lp && lp.loaded ? '$' + ptFmt(lp.price) : (sig.price_usd ? '$' + ptFmt(sig.price_usd) : '…');
+    var hasPos = ptST.positions.find(function(p){ return p.sym === sig.symbol; });
+    var ago = sigAgo(sig.ts);
+    var regime = sig.regime || ptOracleRegime;
+
+    // Badge statut
+    var badge = '';
+    if(sig.traded) badge = '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(139,92,246,0.15);color:var(--purple);border:1px solid rgba(139,92,246,0.2)">TRADÉ</span>';
+    else if(sig.above_threshold) badge = '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(14,203,129,0.12);color:var(--green);border:1px solid rgba(14,203,129,0.2)">✅ SIGNAL</span>';
+    else badge = '<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--txt3);border:1px solid rgba(255,255,255,0.1)">SCAN</span>';
+
+    if(hasPos) badge += ' <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(240,185,11,0.12);color:var(--gold);border:1px solid rgba(240,185,11,0.2)">OPEN</span>';
+
+    return '<div style="background:rgba(20,28,40,0.9);border:1px solid ' + (sig.above_threshold ? 'rgba(240,185,11,0.2)' : 'rgba(255,255,255,0.08)') + ';border-radius:12px;padding:12px;margin-bottom:8px">'
+      + '<div style="display:flex;align-items:center;gap:10px">'
+        + tokLogoHTML(sig.symbol, 40)
+        + '<div style="flex:1;min-width:0">'
+          + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">'
+            + '<span style="font-size:14px;font-weight:800;color:#F1F5F9">' + sig.symbol + '</span>'
+            + badge
+          + '</div>'
+          + '<div style="font-size:10px;color:#64748B">' + regime + ' · Il y a ' + ago + '</div>'
+        + '</div>'
+        + '<div style="text-align:right;flex-shrink:0">'
+          + '<div style="font-size:18px;font-weight:900;font-family:'SF Mono',monospace;color:' + scCol + ';background:' + scBg + ';padding:4px 8px;border-radius:8px">' + sc + '</div>'
+          + '<div style="font-size:10px;color:#64748B;margin-top:2px">/100</div>'
+        + '</div>'
+      + '</div>'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">'
+        + '<div style="font-size:12px;font-family:'SF Mono',monospace;font-weight:600;color:#F1F5F9">' + px + '</div>'
+        + '<div style="font-size:11px;color:' + (chPos ? 'var(--green)' : 'var(--red)') + ';font-weight:600">' + (chPos ? '+' : '') + ch.toFixed(2) + '% 24h</div>'
+        + '<button onclick="sigOpenPT('' + sig.symbol + '')" style="padding:6px 14px;background:linear-gradient(135deg,rgba(240,185,11,0.15),rgba(240,185,11,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--gold);font-family:inherit">▲ Trader</button>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+}
+
+function sigOpenPT(sym) {
+  // Naviguer vers l'onglet Paper et ouvrir le trade
+  var paperBtn = document.querySelector('[onclick*="goTab('paper'"]') || document.querySelector('button.tab:last-child');
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  var paperPage = document.getElementById('page-paper');
+  if(paperPage) paperPage.classList.add('on');
+  // Marquer le bon onglet nav
+  document.querySelectorAll('.tab').forEach(function(t){
+    if(t.getAttribute('onclick') && t.getAttribute('onclick').indexOf("'paper'") >= 0) t.classList.add('on');
+  });
+  ptOnTabOpen();
+  // Ouvrir directement le trade
+  setTimeout(function(){ ptOpenChart(sym, 'classic'); }, 100);
+  notif('🎯 Signal ' + sym + ' chargé dans le Paper Trading');
+}
+
+
 </script>
 </body>
 </html>
