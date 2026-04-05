@@ -82,31 +82,31 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(13,17,23,
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
 .mcard{background:rgba(20,28,40,0.85);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px}
 .mlabel{font-size:10px;font-weight:700;color:#94A3B8;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px}
-.mval{font-size:18px;font-weight:700;font-family:'SF Mono',monospace}
-.mch{font-size:11px;margin-top:2px;font-family:'SF Mono',monospace}
+.mval{font-size:18px;font-weight:700;font-family:monospace}
+.mch{font-size:11px;margin-top:2px;font-family:monospace}
 .up{color:var(--green)}.down{color:var(--red)}.neu{color:var(--txt2)}
 
 /* ── BAL CARD ── */
 .bal-card{background:linear-gradient(135deg,rgba(20,28,40,0.9) 0%,rgba(15,22,32,0.95) 100%);border:1px solid var(--border2);border-radius:var(--radius);padding:18px;margin-bottom:10px;position:relative;overflow:hidden}
 .bal-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.08),transparent 70%);pointer-events:none}
-.bal-main{font-size:30px;font-weight:800;font-family:'SF Mono',monospace;margin-bottom:2px;letter-spacing:-0.5px}
-.bal-usd{font-size:12px;color:var(--txt3);font-family:'SF Mono',monospace;margin-bottom:16px}
+.bal-main{font-size:30px;font-weight:800;font-family:monospace;margin-bottom:2px;letter-spacing:-0.5px}
+.bal-usd{font-size:12px;color:var(--txt3);font-family:monospace;margin-bottom:16px}
 .bal-stats{display:flex;gap:8px}
 .bal-stat{flex:1;text-align:center;padding:10px 6px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px}
 .bal-stat-label{font-size:8px;color:var(--txt3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.8px;font-weight:600}
-.bal-stat-val{font-size:14px;font-weight:700;font-family:'SF Mono',monospace}
+.bal-stat-val{font-size:14px;font-weight:700;font-family:monospace}
 
 /* ── INDICATEURS / ROWS ── */
 .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0}
-.gauge-num{font-family:'SF Mono',monospace;font-size:32px;font-weight:800;margin-top:-8px}
+.gauge-num{font-family:monospace;font-size:32px;font-weight:800;margin-top:-8px}
 .gauge-lbl{font-size:11px;color:var(--txt2);margin-top:2px}
 .row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px}
-.row:last-child{border:none}.row-label{color:var(--txt2)}.row-val{font-family:'SF Mono',monospace;font-weight:500}
+.row:last-child{border:none}.row-label{color:var(--txt2)}.row-val{font-family:monospace;font-weight:500}
 .srow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .slabel{font-size:10px;color:var(--txt3);width:52px;font-weight:600;text-transform:uppercase}
 .strack{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
 .sfill{height:100%;border-radius:2px;transition:width .8s ease}
-.spct{font-size:10px;color:var(--txt3);width:34px;text-align:right;font-family:'SF Mono',monospace}
+.spct{font-size:10px;color:var(--txt3);width:34px;text-align:right;font-family:monospace}
 
 /* ── PILLS / BADGES ── */
 .pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:0.3px}
@@ -143,7 +143,7 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(13,17,23,
 .slider-wrap{margin-bottom:16px}
 .slider-head{display:flex;justify-content:space-between;margin-bottom:6px}
 .slider-label{font-size:12px;color:var(--txt2);font-weight:500}
-.slider-val{font-size:12px;font-weight:700;color:var(--gold);font-family:'SF Mono',monospace}
+.slider-val{font-size:12px;font-weight:700;color:var(--gold);font-family:monospace}
 input[type=range]{width:100%;height:4px;-webkit-appearance:none;background:rgba(255,255,255,0.15);border-radius:2px;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 0 8px rgba(240,185,11,0.4)}
 
@@ -156,7 +156,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .wrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .wrow:last-child{border:none}
 .wico{width:36px;height:36px;border-radius:10px;background:rgba(240,185,11,.08);border:1px solid rgba(240,185,11,.12);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.wname{font-size:13px;font-weight:600}.wdetail{font-size:11px;color:var(--txt3);font-family:'SF Mono',monospace}
+.wname{font-size:13px;font-weight:600}.wdetail{font-size:11px;color:var(--txt3);font-family:monospace}
 
 /* ══ TOKEN LOGOS ══ */
 .tok-logo{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:11px;overflow:hidden;position:relative}
@@ -169,7 +169,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .pt-sc.on{border-color:#D4A017;background:rgba(212,160,23,0.06);box-shadow:0 0 0 1px rgba(240,185,11,0.1)}
 .pt-sc.rec{border-color:var(--green)!important;box-shadow:0 0 12px rgba(14,203,129,0.15)!important}
 .pt-fi label{font-size:10px;color:var(--txt3);display:block;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-.pt-fi input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#E8EAED;padding:8px 10px;font-family:'SF Mono',monospace;font-size:11px;outline:none;transition:border-color .2s}
+.pt-fi input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#E8EAED;padding:8px 10px;font-family:monospace;font-size:11px;outline:none;transition:border-color .2s}
 .pt-fi input:focus{border-color:rgba(240,185,11,0.4)}
 .pt-mode-tab{flex:1;padding:12px 6px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:var(--txt3);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:0.3px}
 .pt-mode-tab.on{color:var(--gold);border-color:var(--gold)}
@@ -212,11 +212,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .wallet-card{background:linear-gradient(135deg,#1A2D45 0%,#1E3352 40%,#152338 100%);border:1px solid rgba(240,185,11,0.25);border-radius:20px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.04)}
 .wallet-card::before{content:'';position:absolute;top:-80px;right:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.08),transparent 65%);pointer-events:none}
 .wallet-card::after{content:'';position:absolute;bottom:-60px;left:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(14,203,129,0.06),transparent 65%);pointer-events:none}
-.wallet-card .wc-amount{font-size:34px;font-weight:800;font-family:'SF Mono',monospace;letter-spacing:-1.5px;line-height:1;color:#F0B90B;-webkit-text-fill-color:#F0B90B;}
+.wallet-card .wc-amount{font-size:34px;font-weight:800;font-family:monospace;letter-spacing:-1.5px;line-height:1;color:#F0B90B;-webkit-text-fill-color:#F0B90B;}
 .wallet-card .wc-sym{font-size:20px;font-weight:700;color:rgba(240,185,11,0.6);margin-left:4px}
 .wc-stat{padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.2);}
 .wc-stat-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
-.wc-stat-val{font-size:15px;font-weight:700;font-family:'SF Mono',monospace;line-height:1;color:#FFFFFF}
+.wc-stat-val{font-size:15px;font-weight:700;font-family:monospace;line-height:1;color:#FFFFFF}
 
 /* ── CURRENCY BADGE ── */
 .curr-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);cursor:pointer;transition:all .2s}
@@ -638,7 +638,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       <div style="font-size:16px;font-weight:700;margin-bottom:6px">Modifier le capital</div>
       <p style="font-size:12px;color:var(--txt3);margin-bottom:18px;line-height:1.5">Capital fictif · Valeur en euros de base. La devise sélectionnée s'applique automatiquement.</p>
       <div style="display:flex;gap:10px">
-        <input type="number" id="ptNewAmt" placeholder="Ex: 1000" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#E8EAED;padding:12px 14px;font-family:'SF Mono',monospace;font-size:16px;outline:none">
+        <input type="number" id="ptNewAmt" placeholder="Ex: 1000" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#E8EAED;padding:12px 14px;font-family:monospace;font-size:16px;outline:none">
         <button onclick="ptSetWallet()" style="padding:12px 24px;background:linear-gradient(135deg,#F0B90B,#C99400);border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;color:#000;font-family:inherit">OK</button>
       </div>
       <div onclick="document.getElementById('ptModal').style.display='none'" style="margin-top:16px;text-align:center;font-size:12px;color:var(--txt3);cursor:pointer;padding:8px">Annuler</div>
@@ -738,7 +738,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
         <div style="width:36px;height:36px;border-radius:10px;background:rgba(246,70,93,0.1);border:1px solid rgba(246,70,93,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">💸</div>
         <div>
           <div style="font-size:9px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">Frais payés</div>
-          <div style="font-size:15px;font-weight:700;font-family:'SF Mono',monospace;color:var(--red)" id="ptFeesTotal">0,00 €</div>
+          <div style="font-size:15px;font-weight:700;font-family:monospace;color:var(--red)" id="ptFeesTotal">0,00 €</div>
           <div style="font-size:10px;color:#6B7280" id="ptWinDetail">0 trades</div>
         </div>
       </div>
@@ -853,7 +853,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
         <div style="font-size:10px;color:var(--txt3);margin-top:2px" id="ptTSub">—</div>
       </div>
       <div style="text-align:right;flex-shrink:0">
-        <div style="font-size:22px;font-weight:800;font-family:'SF Mono',monospace" id="ptTPBig">…</div>
+        <div style="font-size:22px;font-weight:800;font-family:monospace" id="ptTPBig">…</div>
         <div style="font-size:11px;font-weight:600" id="ptTPCh"></div>
       </div>
     </div>
@@ -888,7 +888,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
           <span>Montant <span id="ptLevAmtLabel" style="color:var(--gold);text-transform:none"></span></span>
           <span style="color:var(--gold);cursor:pointer;text-transform:none" onclick="ptMax()">MAX →</span>
         </div>
-        <input type="number" id="ptAmt" placeholder="Ex: 100" oninput="ptPreview()" style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#E8EAED;padding:12px 14px;font-family:'SF Mono',monospace;font-size:16px;outline:none">
+        <input type="number" id="ptAmt" placeholder="Ex: 100" oninput="ptPreview()" style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#E8EAED;padding:12px 14px;font-family:monospace;font-size:16px;outline:none">
         <div style="display:flex;gap:6px;margin-top:8px">
           <div onclick="ptPct(25)" style="flex:1;padding:7px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#94A3B8">25%</div>
           <div onclick="ptPct(50)" style="flex:1;padding:7px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:#94A3B8">50%</div>
@@ -921,6 +921,109 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
       <div onclick="document.getElementById('swModal').style.display='none'" style="margin-top:16px;text-align:center;font-size:12px;color:#64748B;cursor:pointer;padding:8px">Annuler</div>
     </div>
   </div>
+
+  <!-- MODAL RESET SIGNAUX -->
+  <div id="swResetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;padding:20px">
+    <div style="background:rgba(15,22,32,0.98);border-radius:18px;padding:24px;width:100%;max-width:360px;border:1px solid rgba(239,68,68,0.3)">
+      <div style="font-size:32px;text-align:center;margin-bottom:12px">🔄</div>
+      <div style="font-size:16px;font-weight:700;text-align:center;margin-bottom:8px">Reset Wallet Signaux</div>
+      <div style="font-size:12px;color:#64748B;text-align:center;line-height:1.6;margin-bottom:20px">Toutes les positions et trades du wallet Signaux seront effacés.</div>
+      <button onclick="swDoReset(false)" style="width:100%;padding:13px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:#EF4444;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Réinitialiser (capital 1 000)</button>
+      <button onclick="swDoReset(true)" style="width:100%;padding:13px;background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.2);border-radius:10px;color:#F0B90B;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Garder le capital actuel</button>
+      <div onclick="document.getElementById('swResetModal').style.display='none'" style="text-align:center;font-size:12px;color:#64748B;cursor:pointer;padding:8px">Annuler</div>
+    </div>
+  </div>
+
+  <!-- MODAL TRADE SIGNAL -->
+  <div id="swTradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:500;align-items:flex-end;justify-content:center">
+    <div style="background:rgba(13,17,23,0.99);border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.12)">
+      <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 16px"></div>
+      <div id="swTradeContent"></div>
+    </div>
+  </div>
+
+  <!-- HEADER WALLET -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div>
+      <div style="font-size:15px;font-weight:800;color:#F1F5F9;display:flex;align-items:center;gap:8px">
+        🔮 Signaux Oracle
+        <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(14,203,129,0.12);color:#0ECB81;border:1px solid rgba(14,203,129,0.2)">LIVE</span>
+      </div>
+      <div style="font-size:10px;color:#64748B;margin-top:2px" id="swLastUpdate">Jamais synchronisé</div>
+    </div>
+    <button onclick="swRefresh()" id="swRefreshBtn" style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#3B82F6;font-family:inherit">
+      <span id="swRefreshIcon">↻</span> Sync
+    </button>
+  </div>
+
+  <!-- WALLET CARD -->
+  <div style="background:linear-gradient(135deg,#0F1E35 0%,#0D2040 50%,#0A1828 100%);border:1px solid rgba(240,185,11,0.3);border-radius:18px;padding:18px;margin-bottom:10px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.07),transparent 65%);pointer-events:none"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1">
+      <div>
+        <div style="font-size:9px;font-weight:700;color:rgba(240,185,11,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">ORACLE SIGNAL WALLET</div>
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <span style="font-size:30px;font-weight:800;font-family:SF Mono,monospace;color:#F0B90B" id="swWDisp">1 000,00</span>
+          <span style="font-size:16px;font-weight:700;color:rgba(240,185,11,0.6)">€</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button onclick="document.getElementById('swModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.04);font-family:inherit">✏️</button>
+        <button onclick="document.getElementById('swResetModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(246,70,93,0.2);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(246,70,93,0.6);background:rgba(246,70,93,0.05);font-family:inherit">↺</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
+      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">P&L réalisé</div>
+        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swPnlReal" style="color:#10B981">+0,00 €</div>
+      </div>
+      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Non réalisé</div>
+        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace;color:rgba(255,255,255,0.35)" id="swPnlUnreal">0,00 €</div>
+      </div>
+      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Win Rate</div>
+        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swWinRate">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUT ORACLE -->
+  <div id="swOracleStatus" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);margin-bottom:10px;font-size:11px">
+    <span id="swOracleDot" style="width:7px;height:7px;border-radius:50%;background:#EF4444;flex-shrink:0"></span>
+    <span id="swOracleText" style="color:#64748B">Oracle hors ligne — données locales</span>
+  </div>
+
+  <!-- POSITIONS OUVERTES -->
+  <div id="swOpenPosCard" style="display:none;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:10px">
+    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+      Positions ouvertes <span style="background:rgba(59,130,246,0.15);color:#3B82F6;border:1px solid rgba(59,130,246,0.2);padding:2px 8px;border-radius:10px;font-size:10px" id="swOpenCount">0</span>
+    </div>
+    <div id="swOpenPosList"></div>
+  </div>
+
+  <!-- FILTRES -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="swFilters">
+    <div onclick="swFilter('all')"    data-swf="all"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(240,185,11,0.15);color:#F0B90B;border:1px solid rgba(240,185,11,0.3)">Tous</div>
+    <div onclick="swFilter('hot')"    data-swf="hot"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🔥 80+</div>
+    <div onclick="swFilter('above')"  data-swf="above"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">✅ Seuil</div>
+    <div onclick="swFilter('recent')" data-swf="recent" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🕐 1h</div>
+  </div>
+
+  <!-- LISTE SIGNAUX -->
+  <div id="swSignalList">
+    <div style="text-align:center;padding:40px 16px;color:#64748B;font-size:13px">
+      🔮 Lance Oracle et clique Sync
+    </div>
+  </div>
+
+  <!-- HISTORIQUE -->
+  <div style="background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-top:10px" id="swHistCard" style="display:none">
+    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Historique trades Signaux</div>
+    <div id="swHistList"><div style="text-align:center;padding:16px;color:#64748B;font-size:12px">Aucun trade</div></div>
+  </div>
+
+</div>
 
   <!-- MODAL RESET SIGNAUX -->
   <div id="swResetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;padding:20px">
@@ -1779,10 +1882,10 @@ function ptBuildList(){
         <div style="font-size:10px;color:#64748B;margin-top:1px">${tok.name}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;margin-right:4px">
-        <div style="font-size:13px;font-weight:700;font-family:'SF Mono',monospace;color:#F1F5F9">${pStr}</div>
+        <div style="font-size:13px;font-weight:700;font-family:monospace;color:#F1F5F9">${pStr}</div>
         <div style="font-size:11px;font-weight:600;color:${cCol}">${cStr}</div>
       </div>
-      <div style="font-size:14px;font-weight:800;font-family:'SF Mono',monospace;color:${scCol};width:26px;text-align:center;background:${sc>=ptOracleMinScore?'rgba(240,185,11,0.12)':'rgba(255,255,255,0.05)'};border-radius:6px;padding:3px 0;flex-shrink:0">${sc}</div>
+      <div style="font-size:14px;font-weight:800;font-family:monospace;color:${scCol};width:26px;text-align:center;background:${sc>=ptOracleMinScore?'rgba(240,185,11,0.12)':'rgba(255,255,255,0.05)'};border-radius:6px;padding:3px 0;flex-shrink:0">${sc}</div>
     </div>`;
   }).join('');
 }
@@ -3041,6 +3144,7 @@ function ptTickerLive(){
   }, 20000);
   setInterval(function(){try{ptUpdateNet();}catch(e){}}, 30000);
 })();
+
 
 
 
