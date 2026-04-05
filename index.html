@@ -1341,7 +1341,7 @@ function ptCheckAutoClose(){
     const grossPnl=closeSize*realPct/100;
     const netPnl=grossPnl-exitFees.total-fundingCost*(closeSize/pos.sizeEur);
     ptST.trades.unshift({id:Date.now()+Math.random(),sym:pos.sym,tokType:pos.tokType,stratId:s.id,stratName:s.name,oScore:pos.oScore,regime:pos.regime,side:'sell',sizeEur:+closeSize.toFixed(4),lev:pos.lev,entryPx:pos.execPx,execPx:+exitPx.toFixed(8),markPx:+lp.price.toFixed(8),pctBrut:+realPct.toFixed(4),grossPnl:+grossPnl.toFixed(4),feesOut:exitFees,netPnl:+netPnl.toFixed(4),exitReason:trigger.r,auto:true,latMs,tps:Math.round(ptNet.tps),openTs:pos.openTs,closeTs:Date.now(),holdMs:Date.now()-pos.openTs});
-    ptST.wallet+=closeSize+netPnl;changed=true;
+    ptST.wallet=+(ptST.wallet+Math.max(0,closeSize+netPnl)).toFixed(4);changed=true;
     if(trigger.tp===1){pos.sizeEur-=closeSize;pos.tp1Hit=true;notif(`🎯 TP1 ${pos.sym} +${realPct.toFixed(1)}%`);return true;}
     if(trigger.r==='SL')notif(`🛑 SL ${pos.sym} ${realPct.toFixed(1)}%`);
     else notif(`🏆 ${trigger.r} ${pos.sym} +${realPct.toFixed(1)}%`);
@@ -1359,7 +1359,13 @@ function ptExec(){
   if(amt<=0){notif('⚠️ Saisis un montant');return;}
   const fees=ptFees(ptCurSym,amt,ptSide);const latMs=ptLatency();
   if(ptSide==='buy'){
-    if(amt>ptST.wallet){notif(`⚠️ Insuffisant — ${ptEuro(ptST.wallet)}`);return;}
+    const walletAvail=+ptST.wallet.toFixed(4);
+    if(amt>walletAvail){
+      notif(`⚠️ Fonds insuffisants — Disponible: ${ptEuro(walletAvail)}`);
+      // Debug: forcer refresh du wallet affiché
+      const wEl=document.getElementById('ptWDisp');if(wEl)wEl.textContent=ptFmt$(walletAvail,false);
+      return;
+    }
     if(Math.random()<ptNet.failRate){ptST.wallet-=fees.gas;ptSave();ptRefreshAll();notif(`❌ TX FAILED — gas: ${ptEuro(fees.gas)}`);return;}
     const execPx=ptExecPx(ptCurSym,lp.price,'buy',latMs);const netAmt=amt-fees.total;
     if(netAmt<=0){notif('⚠️ Montant trop petit');return;}
@@ -1377,7 +1383,7 @@ function ptExec(){
     const rawPct=(exitPx-pos.execPx)/pos.execPx*100;const levPct=rawPct*pos.lev;
     const grossPnl=closeAmt*levPct/100;const funding=ptFundingCost(pos)*(closeAmt/pos.sizeEur);
     const netPnl=grossPnl-exitFees.total-funding;
-    ptST.wallet+=closeAmt+netPnl;
+    ptST.wallet=+(ptST.wallet+Math.max(0,closeAmt+netPnl)).toFixed(4);
     ptST.trades.unshift({id:Date.now(),sym:ptCurSym,tokType:pos.tokType,side:'sell',sizeEur:+closeAmt.toFixed(4),lev:pos.lev,execPx:+exitPx.toFixed(8),quotePx:+lp.price.toFixed(8),entryPx:pos.execPx,pctBrut:+levPct.toFixed(4),grossPnl:+grossPnl.toFixed(4),feesOut:exitFees,netPnl:+netPnl.toFixed(4),stratId:pos.stratId,stratName:pos.strat.name,oScore:pos.oScore,regime:pos.regime,exitReason:'MANUAL',auto:false,latMs,tps:Math.round(ptNet.tps),openTs:pos.openTs,closeTs:Date.now(),holdMs:Date.now()-pos.openTs});
     pos.sizeEur-=closeAmt;if(pos.sizeEur<0.01)ptST.positions=ptST.positions.filter(p=>p.sym!==ptCurSym);
     notif(`${netPnl>=0?'✅':'❌'} ${ptCurSym}×${pos.lev} net ${ptEuro(netPnl)}`);
@@ -1392,11 +1398,17 @@ function ptCloseAll(sym){
   const exitPx=ptExecPx(sym,mark,'sell',latMs);
   const rawPct=(exitPx-pos.execPx)/pos.execPx*100;const levPct=rawPct*pos.lev;
   const grossPnl=pos.sizeEur*levPct/100;const funding=ptFundingCost(pos);const netPnl=grossPnl-exitFees.total-funding;
-  ptST.wallet+=pos.sizeEur+netPnl;
+  // Capital récupéré = sizeEur + P&L (minimum 0 pour éviter wallet négatif)
+  const recovered=Math.max(0, pos.sizeEur+netPnl);
+  ptST.wallet=+(ptST.wallet+recovered).toFixed(4);
   ptST.trades.unshift({id:Date.now(),sym,tokType:pos.tokType,side:'sell',sizeEur:+pos.sizeEur.toFixed(4),lev:pos.lev,execPx:+exitPx.toFixed(8),quotePx:+mark.toFixed(8),entryPx:pos.execPx,pctBrut:+levPct.toFixed(4),grossPnl:+grossPnl.toFixed(4),feesOut:exitFees,netPnl:+netPnl.toFixed(4),stratId:pos.stratId,stratName:pos.strat.name,oScore:pos.oScore,regime:pos.regime,exitReason:'MANUAL_CLOSE',auto:false,latMs,tps:Math.round(ptNet.tps),openTs:pos.openTs,closeTs:Date.now(),holdMs:Date.now()-pos.openTs});
   ptST.positions=ptST.positions.filter(p=>p.sym!==sym);
   notif(`${netPnl>=0?'✅':'❌'} Clôture ${sym}×${pos.lev} — net ${ptEuro(netPnl)}`);
-  ptSave();ptRefreshAll();ptRendHist();ptRendLearn();
+  ptSave();
+  // Forcer refresh immédiat du wallet affiché
+  const wDisp=document.getElementById('ptWDisp');
+  if(wDisp)wDisp.textContent=ptFmt$(ptST.wallet,false);
+  ptRefreshAll();ptRendHist();ptRendLearn();
   if(ptCurSym===sym)ptDrawCandles();
   // Fermer l'écran détail si ouvert
   if(document.getElementById('ptPosDetailScr').style.display!=='none')ptClosePosDetail();
