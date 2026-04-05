@@ -1128,27 +1128,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 
 </div>
 
-  <!-- Statut Oracle -->
-  <div id="sigOracleStatus" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.1);margin-bottom:12px;font-size:11px">
-    <span id="sigOracleDot" style="width:8px;height:8px;border-radius:50%;background:#EF4444;flex-shrink:0"></span>
-    <span id="sigOracleText" style="color:var(--txt3)">Oracle hors ligne — derniers signaux connus</span>
-  </div>
+  
 
-  <!-- Filtres -->
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="sigFilters">
-    <div onclick="sigFilter('all')"   data-sf="all"   style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(240,185,11,0.15);color:var(--gold);border:1px solid rgba(240,185,11,0.3)">Tous</div>
-    <div onclick="sigFilter('hot')"   data-sf="hot"   style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🔥 Score 80+</div>
-    <div onclick="sigFilter('above')" data-sf="above" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">✅ Au-dessus seuil</div>
-    <div onclick="sigFilter('recent')" data-sf="recent" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🕐 Récents</div>
-  </div>
-
-  <!-- Liste signaux -->
-  <div id="sigList">
-    <div class="empty" style="padding:40px 16px;text-align:center;color:#94A3B8;font-size:13px">
-      🔮 Lance Oracle et clique sur Sync<br>pour voir les signaux détectés
-    </div>
-  </div>
-</div>
 
 <nav>
   <button class="tab on" onclick="goTab('home',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Accueil</span></button>
@@ -3711,4 +3692,6 @@ function swTickerLive() {
   swRefreshUI();
 }
 
-><br>
+</script>
+</body>
+</html>
