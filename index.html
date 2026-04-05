@@ -3132,13 +3132,13 @@ function sigBuildList() {
       + '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">'
         + '<div style="font-size:12px;font-family:SF Mono,monospace;font-weight:600;color:#F1F5F9">' + px + '</div>'
         + '<div style="font-size:11px;color:' + (chPos ? 'var(--green)' : 'var(--red)') + ';font-weight:600">' + (chPos ? '+' : '') + ch.toFixed(2) + '% 24h</div>'
-        + '<button onclick="sigOpenPT(\'' + sig.symbol + '\')" style="padding:6px 14px;background:linear-gradient(135deg,rgba(240,185,11,0.15),rgba(240,185,11,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--gold);font-family:inherit">▲ Trader</button>'
+        + '<button onclick="sigOpenPT(this.dataset.sym)" data-sym="' + sig.symbol + '" style="padding:6px 14px;background:linear-gradient(135deg,rgba(240,185,11,0.15),rgba(240,185,11,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--gold);font-family:inherit">▲ Trader</button>'
       + '</div>'
     + '</div>';
   }).join('');
 }
 
-function sigOpenPT(sym) {
+function sigOpenPT(symOrEl) { var sym = typeof symOrEl === 'string' ? symOrEl : symOrEl.dataset.sym;
   // Naviguer vers l'onglet Paper et ouvrir le trade
   var paperBtn = document.querySelector('[onclick*="goTab('paper'"]') || document.querySelector('button.tab:last-child');
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
