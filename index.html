@@ -3152,7 +3152,7 @@ function sigBuildList() {
 
 function sigOpenPT(symOrEl) { var sym = typeof symOrEl === 'string' ? symOrEl : symOrEl.dataset.sym;
   // Naviguer vers l'onglet Paper et ouvrir le trade
-  var paperBtn = document.querySelector('[onclick*="goTab('paper'"]') || document.querySelector('button.tab:last-child');
+  var paperBtn = document.querySelector('[onclick*=paper]') || document.querySelector('button.tab:last-child');
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
   var paperPage = document.getElementById('page-paper');
