@@ -940,7 +940,19 @@ function applyPortfolio(d){if(!d)return;set('hBal',d.balance_sol);set('hBalUsd',
 function applyStats(d){if(!d)return;set('hDetected',d.total_detected);set('hBest',d.best_symbol+' | '+d.best_score+'/100');set('iTotal',d.total_analyzed);[['ib0','ib0v',d.pct_0_40],['ib40','ib40v',d.pct_40_60],['ib60','ib60v',d.pct_60_75],['ib75','ib75v',d.pct_75_85],['ib85','ib85v',d.pct_85_100]].forEach(([b,v,p])=>{setStyle(b,'width',p+'%');set(v,p+'%');});setStyle('sglobal','width',d.best_score+'%');set('sglobalv',d.best_score);set('dScore',d.best_score);const minScore=parseFloat(document.getElementById('dThreshold').textContent)||75;const ok=d.best_score>=minScore;const dEl=document.getElementById('dDecision');if(dEl){dEl.textContent=ok?'✅ SIGNAL DÉTECTÉ — PRÊT À TRADER':'❌ SCORE INSUFFISANT';dEl.style.background=ok?'rgba(14,203,129,0.1)':'rgba(246,70,93,0.1)';dEl.style.color=ok?'#0ECB81':'#F6465D';}set('tSymbol',d.best_symbol);set('tScore',d.best_score+'/100');initPriceChart(d.best_symbol);if(Array.isArray(d.tokens)){d.tokens.forEach(tk=>{const pt=PT_ALL.find(t=>t.sym===tk.symbol);if(pt){if(tk.score!==undefined)pt.score=tk.score;if(tk.rsi!==undefined)pt.rsi=tk.rsi;}});}}
 function applyTrades(d){if(!d)return;set('iWr',d.win_rate+'%');setClass('iWr','mval '+(d.win_rate>=50?'up':'down'));set('iRec',d.recommendation);set('iAvgP','+'+d.avg_profit+'%');set('iAvgL',d.avg_loss+'%');set('iBest','+'+d.best_trade+'%');set('iWorst',d.worst_trade+'%');const tp=d.total_profit_sol;set('iTotalPnl',(tp>=0?'+':'')+tp.toFixed(4)+' SOL');setClass('iTotalPnl','row-val '+(tp>=0?'up':'down'));if(d.trades&&d.trades.length>0){document.getElementById('pHistory').innerHTML=d.trades.slice(0,10).map(t=>{const w=t.profit_pct>0;return`<div class="trow"><div class="tico ${w?'twin':'tloss'}">${w?'✅':'❌'}</div><div style="flex:1"><div style="font-size:13px;font-weight:500">${t.symbol}</div><div style="font-size:11px;color:#6B7280">${t.exit_reason} · Score ${t.score}</div></div><div class="${w?'up':'down'}" style="font-family:monospace;font-size:13px">${w?'+':''}${t.profit_pct}%</div></div>`;}).join('');}}
 function applyStrategy(d){if(!d)return;set('mStratName',d.name);set('mStratDesc',d.description);set('mMaxPos',d.position_sol+' SOL');setStyle('stech','width','54%');set('stechv','54');setStyle('sdev','width','50%');set('sdevv','50');set('tRsi','57');set('tRsiL','Neutre');set('tWinProb','42%');}
-async function loadAll(){const[status,market,portfolio,stats,trades,strategy]=await Promise.all([api('/api/status'),api('/api/market'),api('/api/portfolio'),api('/api/stats'),api('/api/trades'),api('/api/strategy')]);applyStatus(status);applyMarket(market);applyPortfolio(portfolio);applyStats(stats);applyTrades(trades);applyStrategy(strategy);if(market){const btcBase=84000*(1+market.btc_change_24h/100),solBase=129*(1+market.sol_change_24h/100);set('hBtcP','$'+Math.round(btcBase).toLocaleString());set('hSolP','$'+solBase.toFixed(1));}const now=new Date();set('hRefresh','Màj: '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0'));}
+async function loadAll(){const[status,market,portfolio,stats,trades,strategy]=await Promise.all([api('/api/status'),api('/api/market'),api('/api/portfolio'),api('/api/stats'),api('/api/trades'),api('/api/strategy')]);applyStatus(status);applyMarket(market);applyPortfolio(portfolio);applyStats(stats);applyTrades(trades);applyStrategy(strategy);if(market){const btcBase=84000*(1+market.btc_change_24h/100),solBase=129*(1+market.sol_change_24h/100);set('hBtcP','$'+Math.round(btcBase).toLocaleString());set('hSolP','$'+solBase.toFixed(1));}const now=new Date();set('hRefresh','Màj: '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0'));
+  // ── SYNC ORACLE → PAPER TRADING à chaque loadAll() ──
+  // Régime, seuil min, scores et RSI réels injectés automatiquement dans le PT
+  if(status){ptOracleRegime=status.regime||ptOracleRegime;ptOracleMinScore=status.min_score||ptOracleMinScore;}
+  if(stats){
+    if(Array.isArray(stats.tokens)){stats.tokens.forEach(tk=>{const pt=PT_ALL.find(t=>t.sym===tk.symbol);if(pt){if(tk.score!==undefined)pt.score=tk.score;if(tk.rsi!==undefined)pt.rsi=tk.rsi;}});}
+    else if(stats.best_symbol&&stats.best_score){const pt=PT_ALL.find(t=>t.sym===stats.best_symbol);if(pt)pt.score=stats.best_score;}
+  }
+  // Re-tri Top10 par score Oracle décroissant après sync
+  PT_TOP10.sort((a,b)=>b.score-a.score);PT_TOP10.forEach((t,i)=>t.rank=i+1);
+  // Refresh liste PT si l'onglet Paper est actif
+  if(document.getElementById('page-paper')?.classList.contains('on')){ptBuildList();ptRefreshAll();}
+}
 async function pauseOracle(){await fetch(API+'/api/pause',{method:'POST',headers:HEADERS});notif('⏸ Oracle mis en pause');loadAll();}
 async function resumeOracle(){await fetch(API+'/api/resume',{method:'POST',headers:HEADERS});notif('▶️ Oracle repris');loadAll();}
 async function saveConfig(){const score=document.getElementById('cScore').value,pos=document.getElementById('cPos').value/1000,sl=document.getElementById('cSl').value;await fetch(API+'/api/config',{method:'POST',headers:{...HEADERS,'Content-Type':'application/json'},body:JSON.stringify({min_score:parseFloat(score),max_position_sol:pos,stop_loss_pct:parseFloat(sl)})});notif('✅ Configuration sauvegardée');}
@@ -1281,7 +1293,8 @@ async function ptFetchPrices(){
     const ls=document.getElementById('ptLastSync');if(ls)ls.textContent='Prix mis à jour à '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     ptCheckAutoClose();ptRefreshAll();ptBuildList();
   }catch(e){
-    PT_ALL.forEach(t=>{const lp=ptLP[t.sym];if(!lp.loaded)return;lp.price=Math.max(lp.price*0.001,lp.price*(1+(Math.random()-0.49)*0.003));});
+    // Fallback: CoinGecko indisponible — micro-drift cosmétique ±0.05% max (pas aléatoire brutal)
+    PT_ALL.forEach(t=>{const lp=ptLP[t.sym];if(!lp.loaded)return;lp.price=Math.max(lp.price*0.001,lp.price*(1+(Math.random()-0.5)*0.0005));});
     ptCheckAutoClose();ptRefreshAll();
   }
 }
@@ -1290,11 +1303,13 @@ async function ptFetchPrices(){
 async function ptManualRefresh(){
   const btn=document.getElementById('ptRefreshBtn'),icon=document.getElementById('ptRefreshIcon');
   if(btn)btn.disabled=true;if(icon){icon.textContent='↻';icon.style.display='inline-block';icon.classList.add('spinning');}
-  ptLastFetch=0;await ptFetchPrices();
-  try{const[st,stats]=await Promise.all([api('/api/status'),api('/api/stats')]);if(st){ptOracleRegime=st.regime||ptOracleRegime;ptOracleMinScore=st.min_score||ptOracleMinScore;}if(stats?.tokens)stats.tokens.forEach(tk=>{const pt=PT_ALL.find(t=>t.sym===tk.symbol);if(pt){if(tk.score!==undefined)pt.score=tk.score;if(tk.rsi!==undefined)pt.rsi=tk.rsi;}});}catch(e){}
-  ptBuildList();if(btn)btn.disabled=false;if(icon){icon.classList.remove('spinning');icon.textContent='✓';}
+  // Prix CoinGecko + sync Oracle via loadAll() en parallèle
+  ptLastFetch=0;
+  await Promise.all([ptFetchPrices(), loadAll()]);
+  ptBuildList();ptBuildMemeList();
+  if(btn)btn.disabled=false;if(icon){icon.classList.remove('spinning');icon.textContent='✓';}
   setTimeout(()=>{if(icon)icon.textContent='↻';},2000);
-  notif('✅ Données rafraîchies — Oracle synchronisé');
+  notif('✅ Prix CoinGecko + Oracle synchronisés');
 }
 
 // ══ REFRESH MEME ══
@@ -2771,8 +2786,10 @@ function ptTickerLive(){
   // S'assurer que tous les prix sont initialisés
   ptInitPrices();
 
-  // ── DRIFT UNIVERSEL — tous les tokens sans exception ──
-  const VOL_BY_TYPE={'L1':0.0012,'DEX':0.0018,'INFRA':0.0015,'MEME':0.005,'DEFAULT':0.003};
+  // ── MICRO-DRIFT COSMÉTIQUE — CoinGecko toutes les 60s est la vraie référence ──
+  // Entre deux fetches : drift minimal juste pour que l'UI "vive" — pas de simulation de marché
+  // L1: ±0.04% · DEX: ±0.06% · MEME: ±0.10% par tick
+  const VOL_BY_TYPE={'L1':0.0004,'DEX':0.0006,'INFRA':0.0005,'MEME':0.001,'DEFAULT':0.0005};
 
   function applyDrift(sym, type){
     const vol=VOL_BY_TYPE[type]||VOL_BY_TYPE.DEFAULT;
