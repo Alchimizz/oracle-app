@@ -908,33 +908,33 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <!-- ══ PAGE SIGNAUX ORACLE ══ -->
 <div class="page" id="page-signals">
 
-  <!-- MODAL WALLET SIGNAUX -->
+  <!-- MODAL WALLET -->
   <div id="swModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:flex-end;justify-content:center">
     <div style="background:rgba(15,22,32,0.98);border-radius:18px 18px 0 0;padding:24px;width:100%;max-width:480px;border-top:1px solid rgba(255,255,255,0.12)">
       <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 20px"></div>
-      <div style="font-size:16px;font-weight:700;margin-bottom:6px">Capital Signaux Oracle</div>
-      <p style="font-size:12px;color:#64748B;margin-bottom:18px;line-height:1.5">Capital dédié aux signaux détectés par Oracle. Indépendant du Paper Trading.</p>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px">Capital Signaux Oracle</div>
+      <p style="font-size:12px;color:#64748B;margin-bottom:18px;line-height:1.5">Wallet dédié aux vrais signaux Oracle. Indépendant du Paper Trading.</p>
       <div style="display:flex;gap:10px">
-        <input type="number" id="swNewAmt" placeholder="Ex: 1000" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#E8EAED;padding:12px 14px;font-family:SF Mono,monospace;font-size:16px;outline:none">
+        <input type="number" id="swNewAmt" placeholder="Ex: 1000" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#E8EAED;padding:12px 14px;font-family:monospace;font-size:16px;outline:none">
         <button onclick="swSetWallet()" style="padding:12px 24px;background:linear-gradient(135deg,#F0B90B,#C99400);border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;color:#000;font-family:inherit">OK</button>
       </div>
       <div onclick="document.getElementById('swModal').style.display='none'" style="margin-top:16px;text-align:center;font-size:12px;color:#64748B;cursor:pointer;padding:8px">Annuler</div>
     </div>
   </div>
 
-  <!-- MODAL RESET SIGNAUX -->
+  <!-- MODAL RESET -->
   <div id="swResetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;padding:20px">
     <div style="background:rgba(15,22,32,0.98);border-radius:18px;padding:24px;width:100%;max-width:360px;border:1px solid rgba(239,68,68,0.3)">
-      <div style="font-size:32px;text-align:center;margin-bottom:12px">🔄</div>
-      <div style="font-size:16px;font-weight:700;text-align:center;margin-bottom:8px">Reset Wallet Signaux</div>
-      <div style="font-size:12px;color:#64748B;text-align:center;line-height:1.6;margin-bottom:20px">Toutes les positions et trades du wallet Signaux seront effacés.</div>
-      <button onclick="swDoReset(false)" style="width:100%;padding:13px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:#EF4444;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Réinitialiser (capital 1 000)</button>
-      <button onclick="swDoReset(true)" style="width:100%;padding:13px;background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.2);border-radius:10px;color:#F0B90B;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Garder le capital actuel</button>
+      <div style="font-size:28px;text-align:center;margin-bottom:10px">🔄</div>
+      <div style="font-size:15px;font-weight:700;text-align:center;margin-bottom:8px">Reset Wallet Signaux</div>
+      <div style="font-size:12px;color:#64748B;text-align:center;line-height:1.6;margin-bottom:20px">Toutes les positions et trades seront effacés.</div>
+      <button onclick="swDoReset(false)" style="width:100%;padding:13px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:#EF4444;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:8px">Réinitialiser (1 000 €)</button>
+      <button onclick="swDoReset(true)" style="width:100%;padding:13px;background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.2);border-radius:10px;color:#F0B90B;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:8px">Garder le capital</button>
       <div onclick="document.getElementById('swResetModal').style.display='none'" style="text-align:center;font-size:12px;color:#64748B;cursor:pointer;padding:8px">Annuler</div>
     </div>
   </div>
 
-  <!-- MODAL TRADE SIGNAL -->
+  <!-- MODAL TRADE -->
   <div id="swTradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:500;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)">
     <div style="background:rgba(13,17,23,0.99);border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;max-height:75vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.12);padding-bottom:calc(20px + 70px)">
       <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 16px"></div>
@@ -942,72 +942,73 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
     </div>
   </div>
 
-  <!-- HEADER WALLET -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+  <!-- HEADER -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
     <div>
-      <div style="font-size:15px;font-weight:800;color:#F1F5F9;display:flex;align-items:center;gap:8px">
+      <div style="font-size:16px;font-weight:800;color:#F1F5F9;display:flex;align-items:center;gap:8px">
         🔮 Signaux Oracle
         <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(14,203,129,0.12);color:#0ECB81;border:1px solid rgba(14,203,129,0.2)">LIVE</span>
       </div>
       <div style="font-size:10px;color:#64748B;margin-top:2px" id="swLastUpdate">Jamais synchronisé</div>
     </div>
-    <button onclick="swRefresh()" id="swRefreshBtn" style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#3B82F6;font-family:inherit">
+    <button onclick="swRefresh()" id="swRefreshBtn" style="display:flex;align-items:center;gap:5px;padding:8px 16px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;color:#3B82F6;font-family:inherit">
       <span id="swRefreshIcon">↻</span> Sync
     </button>
   </div>
 
   <!-- WALLET CARD -->
-  <div style="background:linear-gradient(135deg,#0F1E35 0%,#0D2040 50%,#0A1828 100%);border:1px solid rgba(240,185,11,0.3);border-radius:18px;padding:18px;margin-bottom:10px;position:relative;overflow:hidden">
-    <div style="position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.07),transparent 65%);pointer-events:none"></div>
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1">
+  <div style="background:linear-gradient(135deg,#0F1E35 0%,#0D2040 50%,#0A1828 100%);border:1px solid rgba(240,185,11,0.25);border-radius:16px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.06),transparent 65%);pointer-events:none"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;position:relative;z-index:1">
       <div>
-        <div style="font-size:9px;font-weight:700;color:rgba(240,185,11,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">ORACLE SIGNAL WALLET</div>
+        <div style="font-size:9px;font-weight:700;color:rgba(240,185,11,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">ORACLE SIGNAL WALLET</div>
         <div style="display:flex;align-items:baseline;gap:4px">
-          <span style="font-size:30px;font-weight:800;font-family:SF Mono,monospace;color:#F0B90B" id="swWDisp">1 000,00</span>
-          <span style="font-size:16px;font-weight:700;color:rgba(240,185,11,0.6)">€</span>
+          <span style="font-size:28px;font-weight:800;font-family:monospace;color:#F0B90B" id="swWDisp">1 000,00</span>
+          <span style="font-size:14px;font-weight:700;color:rgba(240,185,11,0.5)">€</span>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <button onclick="document.getElementById('swModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.04);font-family:inherit">✏️</button>
-        <button onclick="document.getElementById('swResetModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(246,70,93,0.2);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(246,70,93,0.6);background:rgba(246,70,93,0.05);font-family:inherit">↺</button>
+      <div style="display:flex;gap:6px">
+        <button onclick="document.getElementById('swModal').style.display='flex'" style="padding:6px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:11px;cursor:pointer;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.04);font-family:inherit">✏️</button>
+        <button onclick="document.getElementById('swResetModal').style.display='flex'" style="padding:6px 10px;border:1px solid rgba(246,70,93,0.2);border-radius:8px;font-size:11px;cursor:pointer;color:rgba(246,70,93,0.5);background:rgba(246,70,93,0.04);font-family:inherit">↺</button>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
-      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
-        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">P&L réalisé</div>
-        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swPnlReal" style="color:#10B981">+0,00 €</div>
+      <div style="padding:8px 10px;background:rgba(255,255,255,0.07);border-radius:10px">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">P&L réalisé</div>
+        <div style="font-size:13px;font-weight:700;font-family:monospace;color:#10B981" id="swPnlReal">+0,00 €</div>
       </div>
-      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
-        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Non réalisé</div>
-        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace;color:rgba(255,255,255,0.35)" id="swPnlUnreal">0,00 €</div>
+      <div style="padding:8px 10px;background:rgba(255,255,255,0.07);border-radius:10px">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Non réalisé</div>
+        <div style="font-size:13px;font-weight:700;font-family:monospace;color:rgba(255,255,255,0.3)" id="swPnlUnreal">0,00 €</div>
       </div>
-      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
-        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Win Rate</div>
-        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swWinRate">—</div>
+      <div style="padding:8px 10px;background:rgba(255,255,255,0.07);border-radius:10px">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Win Rate</div>
+        <div style="font-size:13px;font-weight:700;font-family:monospace" id="swWinRate">—</div>
       </div>
     </div>
   </div>
 
   <!-- STATUT ORACLE -->
-  <div id="swOracleStatus" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);margin-bottom:10px;font-size:11px">
-    <span id="swOracleDot" style="width:7px;height:7px;border-radius:50%;background:#EF4444;flex-shrink:0"></span>
+  <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.07);margin-bottom:10px;font-size:11px">
+    <span id="swOracleDot" style="width:7px;height:7px;border-radius:50%;background:#EF4444;flex-shrink:0;animation:pulse 2s infinite"></span>
     <span id="swOracleText" style="color:#64748B">Oracle hors ligne — données locales</span>
   </div>
 
   <!-- POSITIONS OUVERTES -->
-  <div id="swOpenPosCard" style="display:none;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:10px">
-    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
-      Positions ouvertes <span style="background:rgba(59,130,246,0.15);color:#3B82F6;border:1px solid rgba(59,130,246,0.2);padding:2px 8px;border-radius:10px;font-size:10px" id="swOpenCount">0</span>
+  <div id="swOpenPosCard" style="display:none;background:rgba(20,28,40,0.9);border:1px solid rgba(14,203,129,0.2);border-radius:12px;padding:12px;margin-bottom:10px">
+    <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+      Positions ouvertes
+      <span style="background:rgba(59,130,246,0.15);color:#3B82F6;border:1px solid rgba(59,130,246,0.2);padding:2px 8px;border-radius:10px;font-size:10px" id="swOpenCount">0</span>
     </div>
     <div id="swOpenPosList"></div>
   </div>
 
   <!-- FILTRES -->
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="swFilters">
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
     <div onclick="swFilter('all')"    data-swf="all"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(240,185,11,0.15);color:#F0B90B;border:1px solid rgba(240,185,11,0.3)">Tous</div>
-    <div onclick="swFilter('hot')"    data-swf="hot"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🔥 80+</div>
-    <div onclick="swFilter('above')"  data-swf="above"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">✅ Seuil</div>
-    <div onclick="swFilter('recent')" data-swf="recent" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🕐 1h</div>
+    <div onclick="swFilter('hot')"    data-swf="hot"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.06);color:#94A3B8;border:1px solid rgba(255,255,255,0.1)">🔥 80+</div>
+    <div onclick="swFilter('above')"  data-swf="above"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.06);color:#94A3B8;border:1px solid rgba(255,255,255,0.1)">✅ Seuil</div>
+    <div onclick="swFilter('recent')" data-swf="recent" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.06);color:#94A3B8;border:1px solid rgba(255,255,255,0.1)">🕐 1h</div>
   </div>
 
   <!-- LISTE SIGNAUX -->
@@ -1018,118 +1019,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
   </div>
 
   <!-- HISTORIQUE -->
-  <div style="background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-top:10px" id="swHistCard" style="display:none">
-    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Historique trades Signaux</div>
-    <div id="swHistList"><div style="text-align:center;padding:16px;color:#64748B;font-size:12px">Aucun trade</div></div>
+  <div id="swHistCard" style="display:none;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;margin-top:10px">
+    <div style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Historique trades Signaux</div>
+    <div id="swHistList"><div style="text-align:center;padding:12px;color:#64748B;font-size:12px">Aucun trade</div></div>
   </div>
 
 </div>
-
-  <!-- MODAL RESET SIGNAUX -->
-  <div id="swResetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;padding:20px">
-    <div style="background:rgba(15,22,32,0.98);border-radius:18px;padding:24px;width:100%;max-width:360px;border:1px solid rgba(239,68,68,0.3)">
-      <div style="font-size:32px;text-align:center;margin-bottom:12px">🔄</div>
-      <div style="font-size:16px;font-weight:700;text-align:center;margin-bottom:8px">Reset Wallet Signaux</div>
-      <div style="font-size:12px;color:#64748B;text-align:center;line-height:1.6;margin-bottom:20px">Toutes les positions et trades du wallet Signaux seront effacés.</div>
-      <button onclick="swDoReset(false)" style="width:100%;padding:13px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);border-radius:10px;color:#EF4444;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Réinitialiser (capital 1 000)</button>
-      <button onclick="swDoReset(true)" style="width:100%;padding:13px;background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.2);border-radius:10px;color:#F0B90B;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">Garder le capital actuel</button>
-      <div onclick="document.getElementById('swResetModal').style.display='none'" style="text-align:center;font-size:12px;color:#64748B;cursor:pointer;padding:8px">Annuler</div>
-    </div>
-  </div>
-
-  <!-- MODAL TRADE SIGNAL -->
-  <div id="swTradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:500;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)">
-    <div style="background:rgba(13,17,23,0.99);border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:480px;max-height:75vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.12);padding-bottom:calc(20px + 70px)">
-      <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 16px"></div>
-      <div id="swTradeContent"></div>
-    </div>
-  </div>
-
-  <!-- HEADER WALLET -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <div>
-      <div style="font-size:15px;font-weight:800;color:#F1F5F9;display:flex;align-items:center;gap:8px">
-        🔮 Signaux Oracle
-        <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(14,203,129,0.12);color:#0ECB81;border:1px solid rgba(14,203,129,0.2)">LIVE</span>
-      </div>
-      <div style="font-size:10px;color:#64748B;margin-top:2px" id="swLastUpdate">Jamais synchronisé</div>
-    </div>
-    <button onclick="swRefresh()" id="swRefreshBtn" style="display:flex;align-items:center;gap:5px;padding:7px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;color:#3B82F6;font-family:inherit">
-      <span id="swRefreshIcon">↻</span> Sync
-    </button>
-  </div>
-
-  <!-- WALLET CARD -->
-  <div style="background:linear-gradient(135deg,#0F1E35 0%,#0D2040 50%,#0A1828 100%);border:1px solid rgba(240,185,11,0.3);border-radius:18px;padding:18px;margin-bottom:10px;position:relative;overflow:hidden">
-    <div style="position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(240,185,11,0.07),transparent 65%);pointer-events:none"></div>
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1">
-      <div>
-        <div style="font-size:9px;font-weight:700;color:rgba(240,185,11,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">ORACLE SIGNAL WALLET</div>
-        <div style="display:flex;align-items:baseline;gap:4px">
-          <span style="font-size:30px;font-weight:800;font-family:SF Mono,monospace;color:#F0B90B" id="swWDisp">1 000,00</span>
-          <span style="font-size:16px;font-weight:700;color:rgba(240,185,11,0.6)">€</span>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <button onclick="document.getElementById('swModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.04);font-family:inherit">✏️</button>
-        <button onclick="document.getElementById('swResetModal').style.display='flex'" style="padding:6px 11px;border:1px solid rgba(246,70,93,0.2);border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;color:rgba(246,70,93,0.6);background:rgba(246,70,93,0.05);font-family:inherit">↺</button>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1">
-      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
-        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">P&L réalisé</div>
-        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swPnlReal" style="color:#10B981">+0,00 €</div>
-      </div>
-      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
-        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Non réalisé</div>
-        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace;color:rgba(255,255,255,0.35)" id="swPnlUnreal">0,00 €</div>
-      </div>
-      <div style="padding:10px 12px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12)">
-        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Win Rate</div>
-        <div style="font-size:14px;font-weight:700;font-family:SF Mono,monospace" id="swWinRate">—</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STATUT ORACLE -->
-  <div id="swOracleStatus" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);margin-bottom:10px;font-size:11px">
-    <span id="swOracleDot" style="width:7px;height:7px;border-radius:50%;background:#EF4444;flex-shrink:0"></span>
-    <span id="swOracleText" style="color:#64748B">Oracle hors ligne — données locales</span>
-  </div>
-
-  <!-- POSITIONS OUVERTES -->
-  <div id="swOpenPosCard" style="display:none;background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:10px">
-    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
-      Positions ouvertes <span style="background:rgba(59,130,246,0.15);color:#3B82F6;border:1px solid rgba(59,130,246,0.2);padding:2px 8px;border-radius:10px;font-size:10px" id="swOpenCount">0</span>
-    </div>
-    <div id="swOpenPosList"></div>
-  </div>
-
-  <!-- FILTRES -->
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="swFilters">
-    <div onclick="swFilter('all')"    data-swf="all"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(240,185,11,0.15);color:#F0B90B;border:1px solid rgba(240,185,11,0.3)">Tous</div>
-    <div onclick="swFilter('hot')"    data-swf="hot"    style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🔥 80+</div>
-    <div onclick="swFilter('above')"  data-swf="above"  style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">✅ Seuil</div>
-    <div onclick="swFilter('recent')" data-swf="recent" style="padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#94A3B8;border:1px solid rgba(255,255,255,0.12)">🕐 1h</div>
-  </div>
-
-  <!-- LISTE SIGNAUX -->
-  <div id="swSignalList">
-    <div style="text-align:center;padding:40px 16px;color:#64748B;font-size:13px">
-      🔮 Lance Oracle et clique Sync
-    </div>
-  </div>
-
-  <!-- HISTORIQUE -->
-  <div style="background:rgba(20,28,40,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-top:10px" id="swHistCard" style="display:none">
-    <div style="font-size:11px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Historique trades Signaux</div>
-    <div id="swHistList"><div style="text-align:center;padding:16px;color:#64748B;font-size:12px">Aucun trade</div></div>
-  </div>
-
-</div>
-
-  
-
 
 <nav>
   <button class="tab on" onclick="goTab('home',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Accueil</span></button>
@@ -3467,8 +3362,23 @@ function swExecTrade(sym, tok, strat, lev, amt) {
   var lp = ptLP[sym];
   if(!lp || lp.price <= 0) {
     var mt = ptMeme200.find(function(t){ return t.sym===sym; });
-    if(mt && mt._price) { ptLP[sym] = {price:mt._price, open24h:mt._price, change24h:mt.ch24||0, vol24h:0, loaded:true, ts:Date.now()}; lp = ptLP[sym]; }
-    else { notif('Prix non disponible — sync Oracle'); return; }
+    if(mt && mt._price) {
+      ptLP[sym] = {price:mt._price, open24h:mt._price, change24h:mt.ch24||0, vol24h:0, loaded:true, ts:Date.now()};
+      lp = ptLP[sym];
+    } else {
+      // Utiliser le prix du signal Oracle si disponible
+      var sigPx = 0;
+      swData.forEach(function(s){ if(s.symbol===sym && s.price_usd > 0) sigPx = s.price_usd; });
+      if(sigPx > 0) {
+        ptLP[sym] = {price:sigPx, open24h:sigPx, change24h:0, vol24h:0, loaded:true, ts:Date.now()};
+        lp = ptLP[sym];
+      } else {
+        // Prix de base pour tokens connus
+        var basePx = PT_BASE_PRICES[sym] || 0.001;
+        ptLP[sym] = {price:basePx, open24h:basePx, change24h:0, vol24h:0, loaded:true, ts:Date.now()};
+        lp = ptLP[sym];
+      }
+    }
   }
 
   if(amt > swST.wallet) { notif('Fonds insuffisants — ' + swST.wallet.toFixed(2) + ' €'); return; }
