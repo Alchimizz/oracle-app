@@ -3176,6 +3176,7 @@ async function swRefresh() {
     });
   }
 
+  // Remplacer complètement (pas accumuler)
   swData = signals;
   swOracleOnline = online;
 
@@ -3207,7 +3208,14 @@ function swFilter(f) {
 }
 
 function swFilteredData() {
-  var d = swData.slice();
+  // Dédupliquer : garder uniquement le meilleur signal par symbole
+  var best = {};
+  swData.forEach(function(s) {
+    if(!best[s.symbol] || s.score > best[s.symbol].score) {
+      best[s.symbol] = s;
+    }
+  });
+  var d = Object.values(best);
   if(swCurrentFilter === 'hot')    d = d.filter(function(s){ return s.score >= 80; });
   if(swCurrentFilter === 'above')  d = d.filter(function(s){ return s.above_threshold; });
   if(swCurrentFilter === 'recent') d = d.filter(function(s){ return (Date.now()-s.ts) < 3600000; });
@@ -3467,6 +3475,9 @@ async function swClosePos(sym) {
 function swCheckAutoClose() {
   var changed = false;
   swST.positions = swST.positions.filter(function(pos) {
+    if(!pos.strat) {
+      pos.strat = {id:pos.stratId||'scalp',name:pos.stratName||'Scalp Oracle',emoji:pos.stratEmoji||'⚡',sl:pos.sl||-15,tp1:pos.tp1||30,tp2:pos.tp2||60,tp3:pos.tp3||null,tp1sz:pos.tp1sz||0.5};
+    }
     var lp = ptLP[pos.sym];
     if(!lp || lp.price<=0) return true;
     var rawPct = (lp.price-pos.execPx)/pos.execPx*100;
@@ -3515,7 +3526,22 @@ function swRefreshUI() {
   var realPnl = sells.reduce(function(s,t){ return s+t.netPnl; }, 0);
   var wr = sells.length ? (wins/sells.length*100).toFixed(1) : '—';
   var unreal = 0;
-  swST.positions.forEach(function(p){ unreal += ptUnreal(p).pnl; });
+  swST.positions.forEach(function(p){
+    // Reconstruire l'objet strat si absent (positions venant de l'API)
+    if(!p.strat) {
+      p.strat = {
+        id: p.stratId || 'scalp',
+        name: p.stratName || 'Scalp Oracle',
+        emoji: p.stratEmoji || '⚡',
+        sl: p.sl || -15,
+        tp1: p.tp1 || 30,
+        tp2: p.tp2 || 60,
+        tp3: p.tp3 || null,
+        tp1sz: p.tp1sz || 0.5,
+      };
+    }
+    unreal += ptUnreal(p).pnl;
+  });
 
   var pnrEl = document.getElementById('swPnlReal');
   if(pnrEl){ pnrEl.textContent=(realPnl>=0?'+':'')+realPnl.toFixed(2)+' €'; pnrEl.style.color=realPnl>=0?'#10B981':'#EF4444'; }
