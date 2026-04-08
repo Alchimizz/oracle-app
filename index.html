@@ -1044,7 +1044,7 @@ const API="https://triform-dollie-sonic.ngrok-free.dev";
 const HEADERS={"ngrok-skip-browser-warning":"true"};
 if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.expand();Telegram.WebApp.setHeaderColor('#0B0E11');Telegram.WebApp.setBackgroundColor('#0B0E11');}
 // Init déplacé en fin de script
-function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else if(tab==='signals'){swRefresh();if(swIntervalId)clearInterval(swIntervalId);swIntervalId=setInterval(swRefresh,30000);}else{if(swIntervalId){clearInterval(swIntervalId);swIntervalId=null;}loadAll();}}
+function goTab(tab,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('page-'+tab).classList.add('on');btn.classList.add('on');if(tab==='paper')ptOnTabOpen();else if(tab==='signals'){swLoadFromOracle().then(function(){ swRefresh(); });if(swIntervalId)clearInterval(swIntervalId);swIntervalId=setInterval(swRefresh,30000);}else{if(swIntervalId){clearInterval(swIntervalId);swIntervalId=null;}loadAll();}}
 function notif(msg,dur=3000){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),dur);}
 function togSwitch(el){el.classList.toggle('on');}
 function drawGauge(id,val){const c=document.getElementById(id);if(!c)return;c.width=200;c.height=110;const ctx=c.getContext('2d'),cx=100,cy=96,r=76;ctx.clearRect(0,0,200,110);[['#F6465D',Math.PI,Math.PI*1.2],['#F79009',Math.PI*1.2,Math.PI*1.4],['#F0B90B',Math.PI*1.4,Math.PI*1.6],['#12B76A',Math.PI*1.6,Math.PI*1.8],['#0ECB81',Math.PI*1.8,Math.PI*2]].forEach(([col,s,e])=>{ctx.beginPath();ctx.arc(cx,cy,r,s,e);ctx.lineWidth=14;ctx.strokeStyle=col;ctx.lineCap='butt';ctx.stroke();});const angle=Math.PI+(Math.min(Math.max(val,0),100)/100)*Math.PI;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-20)*Math.cos(angle),cy+(r-20)*Math.sin(angle));ctx.lineWidth=2;ctx.strokeStyle='#EAECEF';ctx.lineCap='round';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle='#EAECEF';ctx.fill();}
@@ -3028,14 +3028,31 @@ function ptTickerLive(){
 // ONGLET SIGNAUX ORACLE — Wallet dédié + Oracle auto-décide
 // ════════════════════════════════════════════════════════════════════
 
-// ── Persistance wallet Signaux ──
-var SW_LS = 'oracle_sw_v1';
-function swSave() {
-  try { localStorage.setItem(SW_LS, JSON.stringify({wallet:swST.wallet, positions:swST.positions, trades:swST.trades})); } catch(e){}
+// ── Wallet Signaux — stocké côté Oracle (commun à tous les appareils) ──
+var swST = { wallet: 1000, positions: [], trades: [] };
+var swSyncing = false;
+
+async function swLoadFromOracle() {
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 4000);
+    var r = await fetch(API + '/api/sw/wallet', { headers: HEADERS, signal: ctrl.signal });
+    if(r.ok) {
+      var d = await r.json();
+      swST.wallet    = d.wallet    || 1000;
+      swST.positions = d.positions || [];
+      swST.trades    = d.trades    || [];
+      if(d.min_score) ptOracleMinScore = d.min_score;
+      if(d.regime)    ptOracleRegime   = d.regime;
+      swRefreshUI();
+      return true;
+    }
+  } catch(e) {}
+  return false;
 }
-function swLoad() { try { return JSON.parse(localStorage.getItem(SW_LS))||{}; } catch(e){ return {}; } }
-var _swv = swLoad();
-var swST = { wallet: _swv.wallet||1000, positions: _swv.positions||[], trades: _swv.trades||[] };
+
+// swSave ne fait rien — tout est géré par les endpoints Oracle
+function swSave() {}
 
 // ── État UI ──
 var swData = [];
@@ -3355,106 +3372,95 @@ function swOpenTradeModal(sym, tok, strat, lev, amt) {
   modal.style.display = 'flex';
 }
 
-// ── Exécuter le trade ──
-function swExecTrade(sym, tok, strat, lev, amt) {
+// ── Exécuter le trade via API Oracle ──
+async function swExecTrade(sym, tok, strat, lev, amt) {
   document.getElementById('swTradeModal').style.display = 'none';
 
   var lp = ptLP[sym];
   if(!lp || lp.price <= 0) {
+    var sigPx = 0;
+    swData.forEach(function(s){ if(s.symbol===sym && s.price_usd > 0) sigPx = s.price_usd; });
     var mt = ptMeme200.find(function(t){ return t.sym===sym; });
-    if(mt && mt._price) {
-      ptLP[sym] = {price:mt._price, open24h:mt._price, change24h:mt.ch24||0, vol24h:0, loaded:true, ts:Date.now()};
-      lp = ptLP[sym];
-    } else {
-      // Utiliser le prix du signal Oracle si disponible
-      var sigPx = 0;
-      swData.forEach(function(s){ if(s.symbol===sym && s.price_usd > 0) sigPx = s.price_usd; });
-      if(sigPx > 0) {
-        ptLP[sym] = {price:sigPx, open24h:sigPx, change24h:0, vol24h:0, loaded:true, ts:Date.now()};
-        lp = ptLP[sym];
-      } else {
-        // Prix de base pour tokens connus
-        var basePx = PT_BASE_PRICES[sym] || 0.001;
-        ptLP[sym] = {price:basePx, open24h:basePx, change24h:0, vol24h:0, loaded:true, ts:Date.now()};
-        lp = ptLP[sym];
-      }
-    }
+    var basePx = sigPx > 0 ? sigPx : (mt && mt._price ? mt._price : (PT_BASE_PRICES[sym] || 0.001));
+    ptLP[sym] = {price:basePx, open24h:basePx, change24h:0, vol24h:0, loaded:true, ts:Date.now()};
+    lp = ptLP[sym];
   }
 
   if(amt > swST.wallet) { notif('Fonds insuffisants — ' + swST.wallet.toFixed(2) + ' €'); return; }
 
   var fees = ptFees(sym, amt, 'buy');
-  var latMs = ptLatency();
-  var execPx = ptExecPx(sym, lp.price, 'buy', latMs);
-  var netAmt = amt - fees.total;
+  var execPx = ptExecPx(sym, lp.price, 'buy', ptLatency());
 
-  swST.wallet -= amt;
-  swST.wallet = +swST.wallet.toFixed(4);
-
-  // Vérifier position existante (DCA)
-  var existing = swST.positions.find(function(p){ return p.sym===sym && p.stratId===strat.id && p.lev===lev; });
-  if(existing) {
-    var tot = existing.sizeEur + netAmt;
-    existing.execPx = (existing.execPx*existing.sizeEur + execPx*netAmt)/tot;
-    existing.sizeEur = +tot.toFixed(4);
-    existing.feesIn += fees.total;
-    existing.dcaCount = (existing.dcaCount||1)+1;
-  } else {
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 5000);
+    var r = await fetch(API + '/api/sw/trade', {
+      method: 'POST',
+      headers: { ...HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sym: sym, amount: amt, fees: fees.total, execPx: execPx,
+        stratId: strat.id, stratName: strat.name, stratEmoji: strat.emoji,
+        sl: strat.sl, tp1: strat.tp1, tp2: strat.tp2,
+        tp3: strat.tp3 || null, tp1sz: strat.tp1sz, lev: lev,
+        oScore: tok.score || 65, regime: ptOracleRegime,
+      }),
+      signal: ctrl.signal
+    });
+    var d = await r.json();
+    if(!d.ok) { notif('❌ ' + (d.error || 'Erreur trade')); return; }
+    await swLoadFromOracle();
+    swBuildSignalList();
+    notif('✅ Oracle LONG×' + lev + ' ' + sym + ' ' + (amt - fees.total).toFixed(2) + ' €');
+  } catch(e) {
+    var netAmt = amt - fees.total;
+    swST.wallet = +(swST.wallet - amt).toFixed(4);
     swST.positions.push({
       id:Date.now(), sym:sym, tokType:tok.type||'MEME',
       stratId:strat.id, strat:strat, oScore:tok.score||65,
       regime:ptOracleRegime, sizeEur:+netAmt.toFixed(4), lev:lev,
-      execPx:+execPx.toFixed(8), quotePx:+lp.price.toFixed(8),
-      feesIn:+fees.total.toFixed(4), slipPct:+fees.pct.toFixed(4),
-      latMs:latMs, tp1Hit:false, tp2Hit:false, tp3Hit:false,
-      openTs:Date.now(), dcaCount:1
+      execPx:+execPx.toFixed(8), feesIn:+fees.total.toFixed(4),
+      tp1Hit:false, tp2Hit:false, tp3Hit:false, openTs:Date.now()
     });
+    swRefreshUI();
+    swBuildSignalList();
+    notif('✅ (local) LONG×' + lev + ' ' + sym + ' ' + netAmt.toFixed(2) + ' €');
   }
-
-  swST.trades.unshift({
-    id:Date.now()+0.1, sym:sym, tokType:tok.type||'MEME', side:'buy',
-    sizeEur:+netAmt.toFixed(4), sizeGross:+amt.toFixed(4), lev:lev,
-    execPx:+execPx.toFixed(8), quotePx:+lp.price.toFixed(8),
-    stratId:strat.id, stratName:strat.name, oScore:tok.score||65,
-    regime:ptOracleRegime, feesIn:fees, latMs:latMs, ts:Date.now(), exitReason:'OPEN', netPnl:null
-  });
-
-  swSave();
-  swRefreshUI();
-  swBuildSignalList();
-  notif('✅ Oracle LONG×' + lev + ' ' + sym + ' ' + netAmt.toFixed(2) + ' €');
 }
 
-// ── Clôturer une position ──
-function swClosePos(sym) {
+// ── Clôturer une position via API Oracle ──
+async function swClosePos(sym) {
   var pos = swST.positions.find(function(p){ return p.sym===sym; });
   if(!pos) return;
   var lp = ptLP[sym];
-  var mark = (lp&&lp.price>0) ? lp.price : pos.execPx;
+  var mark = (lp && lp.price > 0) ? lp.price : pos.execPx;
   var exitFees = ptFees(sym, pos.sizeEur, 'sell');
-  var latMs = ptLatency();
-  var exitPx = ptExecPx(sym, mark, 'sell', latMs);
-  var rawPct = (exitPx-pos.execPx)/pos.execPx*100;
-  var levPct = rawPct*pos.lev;
-  var funding = ptFundingCost(pos);
-  var grossPnl = pos.sizeEur*levPct/100;
-  var netPnl = grossPnl - exitFees.total - funding;
-  var recovered = Math.max(0, pos.sizeEur + netPnl);
-  swST.wallet = +(swST.wallet + recovered).toFixed(4);
-  swST.trades.unshift({
-    id:Date.now(), sym:sym, side:'sell', sizeEur:+pos.sizeEur.toFixed(4),
-    lev:pos.lev, execPx:+exitPx.toFixed(8), entryPx:pos.execPx,
-    pctBrut:+levPct.toFixed(4), grossPnl:+grossPnl.toFixed(4),
-    feesOut:exitFees, netPnl:+netPnl.toFixed(4),
-    stratName:pos.strat.name, oScore:pos.oScore, regime:pos.regime,
-    exitReason:'MANUAL', latMs:latMs, openTs:pos.openTs,
-    closeTs:Date.now(), holdMs:Date.now()-pos.openTs
-  });
-  swST.positions = swST.positions.filter(function(p){ return p.sym!==sym; });
-  swSave();
-  swRefreshUI();
-  swBuildSignalList();
-  notif((netPnl>=0?'✅':'❌') + ' Clôture ' + sym + ' net ' + netPnl.toFixed(2) + ' €');
+  var exitPx = ptExecPx(sym, mark, 'sell', ptLatency());
+
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 5000);
+    var r = await fetch(API + '/api/sw/close', {
+      method: 'POST',
+      headers: { ...HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sym: sym, exitPx: exitPx, feesOut: exitFees.total, reason: 'MANUAL' }),
+      signal: ctrl.signal
+    });
+    var d = await r.json();
+    var netPnl = d.netPnl || 0;
+    await swLoadFromOracle();
+    swBuildSignalList();
+    notif((netPnl>=0?'✅':'❌') + ' Clôture ' + sym + ' net ' + netPnl.toFixed(2) + ' €');
+  } catch(e) {
+    // Fallback local
+    var rawPct = (exitPx - pos.execPx) / pos.execPx * 100;
+    var levPct = rawPct * pos.lev;
+    var netPnl = pos.sizeEur * levPct / 100 - exitFees.total;
+    swST.wallet = +(swST.wallet + Math.max(0, pos.sizeEur + netPnl)).toFixed(4);
+    swST.positions = swST.positions.filter(function(p){ return p.sym!==sym; });
+    swRefreshUI();
+    swBuildSignalList();
+    notif((netPnl>=0?'✅':'❌') + ' (local) Clôture ' + sym + ' net ' + netPnl.toFixed(2) + ' €');
+  }
 }
 
 // ── Vérifier TP/SL auto ──
@@ -3581,18 +3587,41 @@ function swRefreshUI() {
 }
 
 // ── Wallet ──
-function swSetWallet() {
+async function swSetWallet() {
   var v = parseFloat(document.getElementById('swNewAmt').value);
-  if(v > 0){ swST.wallet = v; swSave(); swRefreshUI(); }
   document.getElementById('swModal').style.display = 'none';
+  if(v > 0) {
+    try {
+      await fetch(API + '/api/sw/wallet', {
+        method: 'POST',
+        headers: { ...HEADERS, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet: v })
+      });
+      await swLoadFromOracle();
+      notif('✅ Capital mis à jour — ' + v.toFixed(2) + ' €');
+    } catch(e) {
+      swST.wallet = v; swRefreshUI();
+    }
+  }
 }
-function swDoReset(keepWallet) {
-  var w = keepWallet ? swST.wallet : 1000;
-  swST.wallet = w; swST.positions = []; swST.trades = [];
-  try{ localStorage.removeItem(SW_LS); }catch(e){}
-  swSave(); swRefreshUI(); swBuildSignalList();
+async function swDoReset(keepWallet) {
   document.getElementById('swResetModal').style.display = 'none';
-  notif('🔄 Wallet Signaux réinitialisé');
+  try {
+    var r = await fetch(API + '/api/sw/reset', {
+      method: 'POST',
+      headers: { ...HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keepWallet: keepWallet, amount: 1000 })
+    });
+    var d = await r.json();
+    await swLoadFromOracle();
+    swBuildSignalList();
+    notif('🔄 Wallet Signaux réinitialisé — ' + (d.wallet||1000).toFixed(2) + ' €');
+  } catch(e) {
+    swST.wallet = keepWallet ? swST.wallet : 1000;
+    swST.positions = []; swST.trades = [];
+    swRefreshUI(); swBuildSignalList();
+    notif('🔄 (local) Wallet réinitialisé');
+  }
 }
 
 // ── Ticker live pour positions Signaux ──
